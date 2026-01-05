@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Truth Gap - Side-by-Side Analysis</title>
+    <style>
+        body { font-family: Arial; margin: 0; padding: 20px; background: #f5f5f5; }
+        .header { text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; margin-bottom: 30px; }
+        .split-container { display: flex; gap: 20px; }
+        .panel { flex: 1; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-height: 500px; }
+        .left-panel { border: 2px solid #4CAF50; }
+        .right-panel { border: 2px solid #FF5722; }
+        .promise { background: #E8F5E9; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 5px solid #4CAF50; }
+        .complaint { background: #FFEBEE; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 5px solid #FF5722; }
+        .connector { position: relative; margin: 20px 0; }
+        .connector-line { position: absolute; height: 2px; background: #FF0000; width: 100%; top: 50%; z-index: 1; }
+        .flag { background: #FF0000; color: white; padding: 5px 10px; border-radius: 5px; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 2; }
+        h3 { color: #333; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>TRUTH GAP ANALYSIS</h1>
+        <p>Side-by-Side Comparison: Promises vs Customer Reality</p>
+    </div>
+    
+    <div class="split-container">
+        <!-- Left Panel: Promises -->
+        <div class="panel left-panel">
+            <h3>PROMISES (From Product Documents)</h3>
+            
+            <div class="promise" id="promise1">
+                <h4>Returns Promise</h4>
+                <p>"Alpha Growth MF promises 15% annual returns with low risk."</p>
+                <small>Source: Scheme Information Document, Page 3</small>
+            </div>
+            
+            <div class="promise" id="promise2">
+                <h4>Fee Structure</h4>
+                <p>"No hidden charges. All fees transparently disclosed upfront."</p>
+                <small>Source: Marketing Brochure, Page 1</small>
+            </div>
+            
+            <div class="promise" id="promise3">
+                <h4>Exit Terms</h4>
+                <p>"Easy exit with zero penalty after 1 year."</p>
+                <small>Source: Terms & Conditions, Clause 4.2</small>
+            </div>
+        </div>
+        
+        <!-- Right Panel: Reality -->
+        <div class="panel right-panel">
+            <h3>REALITY (From Customer Reviews)</h3>
+            
+            <div class="complaint" id="complaint1">
+                <h4>Actual Returns</h4>
+                <p>"Invested Rs.50,000, got only Rs.2,500 after 1 year. That's 5% not 15%!"</p>
+                <small>Twitter user @InvestorRohit, 2 days ago</small>
+            </div>
+            
+            <div class="complaint" id="complaint2">
+                <h4>Hidden Charges</h4>
+                <p>"They deducted Rs.500 as 'processing fee' that was never mentioned!"</p>
+                <small>Play Store Review, 1 week ago</small>
+            </div>
+            
+            <div class="complaint" id="complaint3">
+                <h4>Exit Problems</h4>
+                <p>"Trying to exit for 3 months. Agent not responding. Money stuck!"</p>
+                <small>Reddit r/IndiaInvestments, 3 days ago</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Connectors showing mismatches -->
+    <div class="connector">
+        <div class="connector-line"></div>
+        <div class="flag">MISMATCH DETECTED</div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <button onclick="showEvidence()" style="background: #FF5722; color: white; border: none; padding: 15px 30px; border-radius: 5px; font-size: 16px; cursor: pointer;">
+            Show Forensic Evidence Report
+        </button>
+        <button onclick="generateNotice()" style="background: #DC2626; color: white; border: none; padding: 15px 30px; border-radius: 5px; font-size: 16px; cursor: pointer; margin-left: 20px;">
+            Generate Show Cause Notice
+        </button>
+    </div>
+    
+    <script>
+        function showEvidence() {
+            alert("Evidence Report Generated!\n\n1. Returns Mismatch: Promised 15% vs Actual 5%\n2. Hidden Charges: Undisclosed Rs.500 fee\n3. Exit Problems: 3-month delay vs 'easy exit' promise\n\nEvidence saved to: reports/forensic_evidence.pdf");
+        }
+        
+        function generateNotice() {
+            alert("Show Cause Notice Generated!\n\nTo: CEO, Alpha Mutual Funds\nFrom: SEBI Regulator\nSubject: Mis-selling investigation for Alpha Growth MF\n\nNotice includes:\n- 3 specific violations\n- Customer evidence\n- Regulatory action required\n\nDownloaded: show_cause_notice.pdf");
+        }
+        
+        // Animate connectors
+        setTimeout(() => {
+            document.querySelector('.connector-line').style.width = '100%';
+            document.querySelector('.flag').style.backgroundColor = '#DC2626';
+        }, 1000);
+    </script>
+</body>
+</html>

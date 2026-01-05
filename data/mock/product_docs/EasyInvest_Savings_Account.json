@@ -1,0 +1,22 @@
+{
+  "product_name": "EasyInvest Savings Account",
+  "issuer": "SBI",
+  "launch_date": "2024-11-15",
+  "investment_objective": "High growth through aggressive equity allocation",
+  "promised_returns": "8.3% p.a.",
+  "risk_category": "Low",
+  "lock_in_period": "3 years",
+  "exit_load": "0.9% if redeemed before 1 years",
+  "min_investment": "\u20b910000",
+  "key_features": [
+    "Monthly income option available",
+    "Tax benefits under section 80C",
+    "Life cover included",
+    "Loan against policy available"
+  ],
+  "warnings": [
+    "Returns are not guaranteed",
+    "Past performance is not indicative of future results",
+    "Market risks apply"
+  ]
+}

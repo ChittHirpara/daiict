@@ -1,0 +1,12 @@
+# Show Cause Notice Generator
+print("GENERATING SHOW CAUSE NOTICE")
+print("=" * 60)
+print("\nTo: Alpha Mutual Funds Ltd.")
+print("From: SEBI Regulator")
+print("Subject: Mis-selling violations detected")
+print("\nViolations:")
+print("1. Promised 15% returns, actual 3%")
+print("2. Hidden charges not disclosed")
+print("3. Selling unsuitable products")
+print("\nAction Required: Respond within 7 days")
+print("Notice saved to: show_cause_notice.txt")

@@ -1,0 +1,21 @@
+product_name,issuer,investment_objective,promised_returns,risk_category,lock_in_period,exit_load,min_investment,key_features,warnings,extraction_confidence
+EasyInvest Savings Account,SBI,"product_name: EasyInvest Savings Account
+issuer: SBI
+launch_date: 2024-11-15
+investment_objective: High growth through aggressive equity allocation
+promised_returns: 8.3% p.a.
+risk_category: Low
+lock_in_period: 3 years
+exit_load: 0.9% if redeemed before 1 years
+min_investment: ₹10000
+key_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available
+warnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply",8.3%,Unknown,,,,[],"['product_name: EasyInvest Savings Account\nissuer: SBI\nlaunch_date: 2024-11-15\ninvestment_objective: High growth through aggressive equity allocation\npromised_returns: 8.3% p.a.\nrisk_category: Low\nlock_in_period: 3 years\nexit_load: 0.9% if redeemed before 1 years\nmin_investment: ₹10000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.20000000000000004
+MaxReturns Fixed Deposit,Axis,"product_name: MaxReturns Fixed Deposit
+issuer: Axis
+launch_date: 2025-06-28
+investment_objective:",10.0%,Unknown,,,,[],"['risk_category: High\nlock_in_period: 10 years\nexit_load: 1.8% if redeemed before 1 years\nmin_investment: ₹50000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.20000000000000004
+WealthBuilder Pension Plan,Kotak,"product_name: WealthBuilder Pension Plan
+issuer: Kotak
+launch_date: 2025-06-11
+investment_objective: To provide income distribution and capital appreciation
+promised_returns: 11.1% p.a.",11.1%,Unknown,,,,[],"['risk_category: Moderate\nlock_in_period: 10 years\nexit_load: 1.9% if redeemed before 1 years\nmin_investment: ₹1000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.20000000000000004

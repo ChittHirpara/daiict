@@ -1,0 +1,7 @@
+product,avg_sentiment,positive_count,negative_count,neutral_count,total_reviews,dissatisfaction_index,top_complaints,sentiment_trend,risk_score
+SecureLife Insurance Policy,0.5,10,10,5,25,40.0,"[('Hidden charges', 5.0), ('Poor returns', 3.0)]","                        date  sentiment_value
+0 2026-01-05 15:13:39.956489              0.5",0.4
+EasyInvest Savings Account,0.5,10,10,5,25,40.0,"[('Hidden charges', 5.0), ('Poor returns', 3.0)]","                        date  sentiment_value
+0 2026-01-05 15:13:39.957497              0.5",0.4
+Alpha Growth Mutual Fund,0.5,10,10,5,25,40.0,"[('Hidden charges', 5.0), ('Poor returns', 3.0)]","                        date  sentiment_value
+0 2026-01-05 15:13:39.958497              0.5",0.4

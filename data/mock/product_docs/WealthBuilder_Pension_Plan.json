@@ -1,0 +1,22 @@
+{
+  "product_name": "WealthBuilder Pension Plan",
+  "issuer": "Kotak",
+  "launch_date": "2025-06-11",
+  "investment_objective": "To provide income distribution and capital appreciation",
+  "promised_returns": "11.1% p.a.",
+  "risk_category": "Moderate",
+  "lock_in_period": "10 years",
+  "exit_load": "1.9% if redeemed before 1 years",
+  "min_investment": "\u20b91000",
+  "key_features": [
+    "Monthly income option available",
+    "Tax benefits under section 80C",
+    "Life cover included",
+    "Loan against policy available"
+  ],
+  "warnings": [
+    "Returns are not guaranteed",
+    "Past performance is not indicative of future results",
+    "Market risks apply"
+  ]
+}

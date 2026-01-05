@@ -1,0 +1,45 @@
+# Core
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Data Processing
+pandas==2.1.3
+numpy==1.24.3
+python-dotenv==1.0.0
+
+# NLP & ML
+transformers==4.35.2
+torch==2.1.1
+spacy==3.7.2
+scikit-learn==1.3.2
+nltk==3.8.1
+textblob==0.17.1
+gensim==4.3.2
+bertopic==0.15.0
+sentence-transformers==2.2.2
+
+# PDF Processing
+pypdf2==3.0.1
+pdfplumber==0.10.3
+pymupdf==1.23.8
+
+# Visualization
+plotly==5.18.0
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# Web & API
+requests==2.31.0
+aiohttp==3.9.1
+beautifulsoup4==4.12.2
+
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+
+# Frontend (if using Streamlit)
+streamlit==1.28.1
+streamlit-option-menu==0.3.6
+
+Faker==20.1.0

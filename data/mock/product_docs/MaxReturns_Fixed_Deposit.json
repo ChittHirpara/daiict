@@ -1,0 +1,22 @@
+{
+  "product_name": "MaxReturns Fixed Deposit",
+  "issuer": "Axis",
+  "launch_date": "2025-06-28",
+  "investment_objective": "To generate capital appreciation by investing in equity and equity-related instruments",
+  "promised_returns": "10.0% p.a.",
+  "risk_category": "High",
+  "lock_in_period": "10 years",
+  "exit_load": "1.8% if redeemed before 1 years",
+  "min_investment": "\u20b950000",
+  "key_features": [
+    "Monthly income option available",
+    "Tax benefits under section 80C",
+    "Life cover included",
+    "Loan against policy available"
+  ],
+  "warnings": [
+    "Returns are not guaranteed",
+    "Past performance is not indicative of future results",
+    "Market risks apply"
+  ]
+}

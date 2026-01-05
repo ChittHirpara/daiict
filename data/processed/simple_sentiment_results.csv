@@ -1,0 +1,6 @@
+product,avg_sentiment,positive_count,negative_count,neutral_count,total_reviews,dissatisfaction_index,top_complaints,risk_score
+SecureLife Insurance Policy,0.5165413533834586,12,16,10,38,42.10526315789473,"[('poor returns', 3), ('hidden charges', 1), ('bad service', 1)]",0.42105263157894735
+EasyInvest Savings Account,0.5833333333333335,13,11,12,36,30.555555555555557,"[('poor returns', 3), ('bad service', 2)]",0.3055555555555556
+Alpha Growth Mutual Fund,0.45435090702947845,10,18,14,42,42.857142857142854,"[('bad service', 5), ('poor returns', 3)]",0.42857142857142855
+MaxReturns Fixed Deposit,0.5925568425568425,21,8,8,37,21.62162162162162,"[('bad service', 2), ('hidden charges', 1), ('poor returns', 1)]",0.2162162162162162
+WealthBuilder Pension Plan,0.5076367781155016,20,24,3,47,51.06382978723404,"[('bad service', 4), ('poor returns', 4), ('misleading', 1)]",0.5106382978723404

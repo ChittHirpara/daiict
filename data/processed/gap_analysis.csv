@@ -1,0 +1,2 @@
+product_name,promise_confidence,sentiment_score,dissatisfaction_index,mismatches,overall_risk_score,risk_level,recommendations
+EasyInvest Savings Account,0.20000000000000004,0.5,40.0,"[{'promise_aspect': 'RETURNS', 'complaint_topic': 'Poor returns', 'severity': 0.744, 'mismatch_type': 'direct_contradiction'}]",0.6407999999999999,high,"['⚠️ High priority review needed', 'Request detailed explanation from product issuer', 'Monitor social media for emerging complaints', 'Verify actual returns vs promised RETURNS', 'Improve transparency in marketing materials']"

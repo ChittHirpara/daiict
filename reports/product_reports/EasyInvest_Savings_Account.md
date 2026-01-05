@@ -1,0 +1,19 @@
+# Product Analysis: EasyInvest Savings Account
+
+*Analysis Date: 2026-01-05 15:13:41*
+
+## Risk Overview
+- **Risk Level**: HIGH
+- **Risk Score**: 0.64/1.0
+- **Dissatisfaction Index**: 40.0%
+
+## Detected Issues
+### Issue 1
+- **Type**: Unknown
+- **Severity**: 0.50/1.0
+- **Description**: Promises don't match customer experience
+
+## Recommendations
+1. Monitor customer complaints regularly
+2. Review product disclosures for clarity
+3. Verify actual returns vs promised returns
