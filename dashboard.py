@@ -84,38 +84,73 @@ class VeritasDashboard:
             self.show_settings()
     
     def show_dashboard(self):
-        """Show main dashboard"""
+        """Show main dashboard with real data"""
+        # Calculate real metrics from data
+        if self.gap_df is None or len(self.gap_df) == 0:
+            st.error("⚠️ No data available. Please run main_pipeline.py first!")
+            if st.button("🔄 Run Pipeline Now"):
+                with st.spinner("Running pipeline..."):
+                    import subprocess
+                    result = subprocess.run(["python", "main_pipeline.py"], capture_output=True, text=True)
+                    if result.returncode == 0:
+                        st.success("✅ Pipeline completed! Refreshing...")
+                        st.rerun()
+                    else:
+                        st.error(f"❌ Pipeline failed: {result.stderr}")
+            return
+        
+        # Calculate real metrics
+        total_products = len(self.gap_df)
+        high_risk_products = len(self.gap_df[self.gap_df['risk_level'].isin(['high', 'critical'])])
+        
+        # Count total mismatches
+        total_mismatches = 0
+        mismatch_types = {}
+        for _, row in self.gap_df.iterrows():
+            try:
+                if isinstance(row.get('mismatches'), str):
+                    import json
+                    mismatches = json.loads(row.get('mismatches', '[]'))
+                    total_mismatches += len(mismatches)
+                    for m in mismatches:
+                        aspect = m.get('promise_aspect', 'Unknown')
+                        mismatch_types[aspect] = mismatch_types.get(aspect, 0) + 1
+            except:
+                pass
+        
+        avg_dissatisfaction = self.gap_df['dissatisfaction_index'].mean() if 'dissatisfaction_index' in self.gap_df.columns else 0
+        
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            st.markdown("""
+            st.markdown(f"""
             <div class="metric-card">
                 <h3>Products Analyzed</h3>
-                <h2>5</h2>
+                <h2>{total_products}</h2>
             </div>
             """, unsafe_allow_html=True)
         
         with col2:
-            st.markdown("""
+            st.markdown(f"""
             <div class="metric-card">
                 <h3>High Risk Products</h3>
-                <h2>2</h2>
+                <h2>{high_risk_products}</h2>
             </div>
             """, unsafe_allow_html=True)
         
         with col3:
-            st.markdown("""
+            st.markdown(f"""
             <div class="metric-card">
                 <h3>Total Mismatches</h3>
-                <h2>12</h2>
+                <h2>{total_mismatches}</h2>
             </div>
             """, unsafe_allow_html=True)
         
         with col4:
-            st.markdown("""
+            st.markdown(f"""
             <div class="metric-card">
                 <h3>Avg Dissatisfaction</h3>
-                <h2>45%</h2>
+                <h2>{avg_dissatisfaction:.0f}%</h2>
             </div>
             """, unsafe_allow_html=True)
         
@@ -135,23 +170,38 @@ class VeritasDashboard:
         
         with col2:
             st.subheader("Top Mismatch Types")
-            # Sample data - replace with actual
-            mismatch_data = {'Returns': 5, 'Risk': 4, 'Fees': 3, 'Service': 2}
-            fig = go.Figure(data=[go.Bar(
-                x=list(mismatch_data.keys()),
-                y=list(mismatch_data.values()),
-                marker_color=['#FF6B6B', '#FFD166', '#06D6A0', '#118AB2']
-            )])
-            fig.update_layout(height=400)
-            st.plotly_chart(fig, use_container_width=True)
+            if mismatch_types:
+                fig = go.Figure(data=[go.Bar(
+                    x=list(mismatch_types.keys()),
+                    y=list(mismatch_types.values()),
+                    marker_color=['#FF6B6B', '#FFD166', '#06D6A0', '#118AB2', '#7C3AED'][:len(mismatch_types)]
+                )])
+                fig.update_layout(height=400)
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("No mismatch data available")
         
-        # Recent Alerts
+        # Recent Alerts - Generate from real data
         st.subheader("🚨 Recent High-Risk Alerts")
-        alerts = [
-            {"product": "Alpha Growth Mutual Fund", "risk": "Critical", "issue": "Returns mismatch", "time": "2 hours ago"},
-            {"product": "SecureLife Insurance", "risk": "High", "issue": "Hidden charges", "time": "5 hours ago"},
-            {"product": "MaxReturns FD", "risk": "Medium", "issue": "Service complaints", "time": "1 day ago"}
-        ]
+        alerts = []
+        for _, row in self.gap_df.iterrows():
+            risk_level = str(row.get('risk_level', 'medium')).title()
+            if risk_level.lower() in ['high', 'critical']:
+                product_name = row.get('product_name', 'Unknown')
+                risk_score = row.get('overall_risk_score', 0)
+                issue = f"Risk score: {risk_score:.2f}"
+                alerts.append({
+                    "product": product_name,
+                    "risk": risk_level,
+                    "issue": issue,
+                    "time": "Recently detected"
+                })
+        
+        # Limit to top 3 alerts
+        alerts = alerts[:3]
+        
+        if not alerts:
+            st.info("No high-risk alerts currently")
         
         for alert in alerts:
             risk_class = f"risk-{alert['risk'].lower()}"
@@ -220,25 +270,55 @@ class VeritasDashboard:
         """Show risk alerts and notifications"""
         st.subheader("⚠️ Risk Alerts Dashboard")
         
-        # Create sample alert data
-        alerts_data = {
-            "Product": ["Alpha Growth MF", "SecureLife Insurance", "MaxReturns FD", "WealthBuilder Plan"],
-            "Risk Level": ["Critical", "High", "Medium", "Low"],
-            "Score": [0.92, 0.78, 0.45, 0.22],
-            "Mismatches": [4, 3, 2, 1],
-            "Dissatisfaction": [85, 72, 45, 20],
-            "Last Updated": ["2h ago", "5h ago", "1d ago", "2d ago"]
-        }
+        if self.gap_df is None or len(self.gap_df) == 0:
+            st.error("⚠️ No data available. Please run main_pipeline.py first!")
+            return
         
-        alerts_df = pd.DataFrame(alerts_data)
+        # Create real alert data from gap analysis
+        alerts_list = []
+        for _, row in self.gap_df.iterrows():
+            product_name = row.get('product_name', 'Unknown')
+            risk_level = str(row.get('risk_level', 'medium')).title()
+            risk_score = float(row.get('overall_risk_score', 0.5))
+            dissatisfaction = float(row.get('dissatisfaction_index', 0))
+            
+            # Count mismatches
+            mismatch_count = 0
+            try:
+                if isinstance(row.get('mismatches'), str):
+                    import json
+                    mismatches = json.loads(row.get('mismatches', '[]'))
+                    mismatch_count = len(mismatches)
+            except:
+                pass
+            
+            alerts_list.append({
+                "Product": product_name,
+                "Risk Level": risk_level,
+                "Score": risk_score,
+                "Mismatches": mismatch_count,
+                "Dissatisfaction": dissatisfaction,
+                "Last Updated": "Recently"
+            })
+        
+        alerts_df = pd.DataFrame(alerts_list)
+        
+        # Sort by risk score (highest first)
+        if len(alerts_df) > 0:
+            alerts_df = alerts_df.sort_values('Score', ascending=False)
+        
+        if len(alerts_df) == 0:
+            st.info("No alerts to display")
+            return
         
         # Color code risk levels
         def color_risk(val):
-            if val == "Critical":
+            val_str = str(val).lower()
+            if val_str == "critical":
                 return "background-color: #FFCCCC; color: #CC0000"
-            elif val == "High":
+            elif val_str == "high":
                 return "background-color: #FFE5CC; color: #FF6600"
-            elif val == "Medium":
+            elif val_str == "medium":
                 return "background-color: #FFFFCC; color: #CC9900"
             else:
                 return "background-color: #CCFFCC; color: #006600"
@@ -280,57 +360,140 @@ class VeritasDashboard:
         """Show insights and trends"""
         st.subheader("📈 Insights & Trends")
         
+        if self.gap_df is None or len(self.gap_df) == 0:
+            st.error("⚠️ No data available. Please run main_pipeline.py first!")
+            return
+        
         # Sentiment trend chart
         st.markdown("### Customer Sentiment Trend")
         
-        # Sample time series data
-        dates = pd.date_range(start='2023-01-01', periods=30, freq='D')
-        sentiment_trend = pd.DataFrame({
-            'Date': dates,
-            'Alpha Growth MF': [0.6 + 0.2 * (i % 7)/7 for i in range(30)],
-            'SecureLife Insurance': [0.4 + 0.3 * ((i+3) % 10)/10 for i in range(30)],
-            'MaxReturns FD': [0.7 - 0.1 * (i % 5)/5 for i in range(30)]
-        })
+        # Try to load time series data if available
+        time_series_path = "data/mock/sentiment_time_series.csv"
+        if os.path.exists(time_series_path):
+            try:
+                sentiment_trend = pd.read_csv(time_series_path)
+                sentiment_trend['date'] = pd.to_datetime(sentiment_trend['date'])
+                
+                # Pivot for plotting
+                if 'product' in sentiment_trend.columns and 'sentiment' in sentiment_trend.columns:
+                    pivot_df = sentiment_trend.pivot(index='date', columns='product', values='sentiment')
+                    fig = go.Figure()
+                    for col in pivot_df.columns[:5]:  # Limit to 5 products
+                        fig.add_trace(go.Scatter(
+                            x=pivot_df.index,
+                            y=pivot_df[col],
+                            mode='lines',
+                            name=col
+                        ))
+                    fig.update_layout(
+                        title="Sentiment Trends Over Time",
+                        xaxis_title="Date",
+                        yaxis_title="Sentiment Score",
+                        height=400
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    raise ValueError("Invalid time series format")
+            except Exception as e:
+                st.warning(f"Could not load time series data: {e}")
+                # Fallback to sample data
+                dates = pd.date_range(start='2023-01-01', periods=30, freq='D')
+                products = self.gap_df['product_name'].tolist()[:3]
+                sentiment_trend = pd.DataFrame({'Date': dates})
+                for i, product in enumerate(products):
+                    base_sentiment = float(self.gap_df[self.gap_df['product_name'] == product]['sentiment_score'].iloc[0]) if len(self.gap_df[self.gap_df['product_name'] == product]) > 0 else 0.5
+                    sentiment_trend[product] = [base_sentiment + 0.1 * (j % 7)/7 for j in range(30)]
+        else:
+            # Fallback: Create trend from current sentiment scores
+            dates = pd.date_range(start='2023-01-01', periods=30, freq='D')
+            products = self.gap_df['product_name'].tolist()[:3]
+            sentiment_trend = pd.DataFrame({'Date': dates})
+            for product in products:
+                base_sentiment = float(self.gap_df[self.gap_df['product_name'] == product]['sentiment_score'].iloc[0]) if len(self.gap_df[self.gap_df['product_name'] == product]) > 0 else 0.5
+                sentiment_trend[product] = [base_sentiment + 0.1 * (i % 7)/7 for i in range(30)]
         
-        fig = go.Figure()
-        for col in sentiment_trend.columns[1:]:
-            fig.add_trace(go.Scatter(
-                x=sentiment_trend['Date'],
-                y=sentiment_trend[col],
-                mode='lines',
-                name=col
-            ))
+        # Only create chart if we have the fallback data
+        if 'Date' in sentiment_trend.columns:
+            fig = go.Figure()
+            for col in sentiment_trend.columns[1:]:
+                fig.add_trace(go.Scatter(
+                    x=sentiment_trend['Date'],
+                    y=sentiment_trend[col],
+                    mode='lines',
+                    name=col
+                ))
+            
+            fig.update_layout(
+                title="Sentiment Trends Over Time",
+                xaxis_title="Date",
+                yaxis_title="Sentiment Score",
+                height=400
+            )
+            st.plotly_chart(fig, use_container_width=True)
         
-        fig.update_layout(
-            title="Sentiment Trends Over Time",
-            xaxis_title="Date",
-            yaxis_title="Sentiment Score",
-            height=400
-        )
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Mismatch patterns
+        # Mismatch patterns - Calculate from real data
         st.markdown("### Common Mismatch Patterns")
-        patterns = {
-            "Pattern": ["Returns Overpromise", "Risk Undisclosed", "Hidden Fees", "Service Gap"],
-            "Frequency": [45, 32, 28, 19],
-            "Severity": [0.8, 0.9, 0.7, 0.5],
-            "Affected Products": ["Mutual Funds", "Insurance", "All", "Insurance"]
-        }
+        patterns_dict = {}
+        for _, row in self.gap_df.iterrows():
+            try:
+                if isinstance(row.get('mismatches'), str):
+                    import json
+                    mismatches = json.loads(row.get('mismatches', '[]'))
+                    for m in mismatches:
+                        aspect = m.get('promise_aspect', 'Unknown')
+                        severity = float(m.get('severity', 0.5))
+                        if aspect not in patterns_dict:
+                            patterns_dict[aspect] = {'count': 0, 'severity_sum': 0, 'products': set()}
+                        patterns_dict[aspect]['count'] += 1
+                        patterns_dict[aspect]['severity_sum'] += severity
+                        patterns_dict[aspect]['products'].add(row.get('product_name', 'Unknown'))
+            except:
+                pass
         
-        patterns_df = pd.DataFrame(patterns)
-        st.dataframe(patterns_df, use_container_width=True)
+        if patterns_dict:
+            patterns_list = []
+            for aspect, data in patterns_dict.items():
+                patterns_list.append({
+                    "Pattern": aspect,
+                    "Frequency": data['count'],
+                    "Severity": data['severity_sum'] / data['count'] if data['count'] > 0 else 0,
+                    "Affected Products": len(data['products'])
+                })
+            patterns_df = pd.DataFrame(patterns_list)
+            patterns_df = patterns_df.sort_values('Frequency', ascending=False)
+            st.dataframe(patterns_df, use_container_width=True)
+        else:
+            st.info("No mismatch patterns detected yet")
         
-        # Regulatory impact
+        # Regulatory impact - Calculate from real data
         st.markdown("### Estimated Regulatory Impact")
         col1, col2, col3 = st.columns(3)
         
-        with col1:
-            st.metric("Potential Fines", "₹2.5 Cr", "25%")
-        with col2:
-            st.metric("Consumer Compensation", "₹15 Cr", "40%")
-        with col3:
-            st.metric("Prevented Losses", "₹50 Cr", "60%")
+        if self.gap_df is not None and len(self.gap_df) > 0:
+            high_risk_count = len(self.gap_df[self.gap_df['risk_level'].isin(['high', 'critical'])])
+            total_products = len(self.gap_df)
+            avg_dissatisfaction = self.gap_df['dissatisfaction_index'].mean()
+            
+            # Estimate fines (₹2.5 Cr per high-risk product)
+            potential_fines = high_risk_count * 2.5
+            # Estimate compensation (based on dissatisfaction)
+            consumer_compensation = total_products * (avg_dissatisfaction / 10) * 3
+            # Estimate prevented losses
+            prevented_losses = total_products * 10
+            
+            with col1:
+                st.metric("Potential Fines", f"₹{potential_fines:.1f} Cr", f"{high_risk_count} products")
+            with col2:
+                st.metric("Consumer Compensation", f"₹{consumer_compensation:.1f} Cr", f"{avg_dissatisfaction:.0f}% avg dissatisfaction")
+            with col3:
+                st.metric("Prevented Losses", f"₹{prevented_losses:.1f} Cr", f"{total_products} products monitored")
+        else:
+            with col1:
+                st.metric("Potential Fines", "₹2.5 Cr", "N/A")
+            with col2:
+                st.metric("Consumer Compensation", "₹15 Cr", "N/A")
+            with col3:
+                st.metric("Prevented Losses", "₹50 Cr", "N/A")
     
     def show_settings(self):
         """Show settings and configuration"""

@@ -1,4 +1,4 @@
-# Product Analysis: EasyInvest Savings Account
+# Product Analysis: MaxReturns Fixed Deposit
 
 *Analysis Date: 2026-01-05 16:25:29*
 
