@@ -56,6 +56,16 @@ class GapDetector:
                 'promise_terms': ['easy exit', 'liquid', 'withdraw anytime', 'flexible', 'no lock-in', 'instant withdrawal'],
                 'complaint_terms': ['cannot exit', 'locked', 'withdrawal problem', 'stuck', 'no withdrawal', 'exit blocked'],
                 'weight': 0.9
+            },
+            'transparency': {
+                'promise_terms': ['transparent', 'clear terms', 'no hidden', 'simple', 'honest', 'disclosed'],
+                'complaint_terms': ['fine print', 'confusing', 'complex', 'hidden terms', 'undisclosed', 'vague'],
+                'weight': 1.1
+            },
+            'ethics': {
+                'promise_terms': ['trusted', 'reliable', 'safe', 'integrity', 'customer first', 'ethical'],
+                'complaint_terms': ['fraud', 'scam', 'cheat', 'unethical', 'misselling', 'lied', 'forced'],
+                'weight': 1.4
             }
         }
     
@@ -161,6 +171,14 @@ class GapDetector:
                 evidence.append(f"Lock-in period: {promise['lock_in_period']}")
                 evidence.append("Complaints: Customers facing exit problems")
         
+        if aspect == 'transparency':
+            evidence.append("Promised: Transparent and clear terms")
+            evidence.append("Complaints: Issues with transparency or fine print")
+            
+        elif aspect == 'ethics':
+            evidence.append("Promised: Ethical business practices")
+            evidence.append("Complaints: Serious ethical violations reported")
+            
         return evidence
     
     def get_main_complaint(self, aspect: str, complaints: List) -> str:

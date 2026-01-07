@@ -1,5 +1,10 @@
-# backend/expectation_engine/promise_extractor.py - CORRECTED VERSION
-import spacy
+# backend/expectation_engine/promise_extractor.py - UPDATED VERSION
+try:
+    import spacy
+except (ImportError, Exception) as e:
+    print(f"[WARNING] Failed to import spacy ({e}). using regex fallback.")
+    spacy = None
+
 import re
 import json
 from typing import Dict, List, Any, Optional
@@ -7,6 +12,10 @@ from dataclasses import dataclass, asdict
 import pandas as pd
 import os
 from pathlib import Path
+try:
+    import PyPDF2
+except ImportError:
+    PyPDF2 = None
 
 @dataclass
 class FinancialPromise:
@@ -25,12 +34,21 @@ class FinancialPromise:
 class PromiseExtractor:
     def __init__(self):
         # Load spaCy model
-        try:
-            self.nlp = spacy.load("en_core_web_sm")
-        except:
-            print("Downloading spaCy model...")
-            os.system("python -m spacy download en_core_web_sm")
-            self.nlp = spacy.load("en_core_web_sm")
+        self.nlp = None
+        if spacy:
+            try:
+                self.nlp = spacy.load("en_core_web_sm")
+            except:
+                print("[WARNING] Could not load spaCy model. Using regex fallback.")
+                try:
+                    # Try downloading if not present
+                    print("Attempting to download spaCy model...")
+                    os.system("python -m spacy download en_core_web_sm")
+                    self.nlp = spacy.load("en_core_web_sm")
+                except:
+                    print("[ERROR] Failed to load spaCy. Will use basic text processing.")
+        else:
+            print("[WARNING] Spacy not available. Using regex fallback.")
         
         # Define regex patterns for financial terms
         self.patterns = {
@@ -64,8 +82,6 @@ class PromiseExtractor:
         
     def extract_from_text(self, text: str, product_info: Dict = None) -> FinancialPromise:
         """Extract promises from text"""
-        doc = self.nlp(text)
-        
         # Initialize extraction
         extraction = {
             'product_name': product_info.get('product_name', 'Unknown') if product_info else 'Unknown',
@@ -81,12 +97,42 @@ class PromiseExtractor:
             'extraction_confidence': 0.0
         }
         
-        # Find investment objective (usually first sentence or specific phrases)
-        sentences = [sent.text.strip() for sent in doc.sents]
+        # Sentence splitting (Spacy or Simple)
+        sentences = []
+        if self.nlp:
+            try:
+                doc = self.nlp(text)
+                sentences = [sent.text.strip() for sent in doc.sents]
+                
+                # Extract key features and warnings using NLP
+                for sent in doc.sents:
+                    sent_text = sent.text.lower()
+                    # Key features (positive assertions)
+                    if any(word in sent_text for word in ['feature', 'benefit', 'advantage', 'include', 'offer']):
+                        if len(sent_text.split()) < 20:
+                            extraction['key_features'].append(sent.text)
+                    
+                    # Warnings
+                    if any(word in sent_text for word in ['warning', 'risk', 'caution', 'note:', 'important:', 'disclaimer']):
+                        extraction['warnings'].append(sent.text)
+            except:
+                sentences = [s.strip() for s in text.split('.') if s.strip()]
+        else:
+            sentences = [s.strip() for s in text.split('.') if s.strip()]
+            
+            # Simple fallback for features/warnings
+            for sent in sentences:
+                sent_lower = sent.lower()
+                if any(word in sent_lower for word in ['feature', 'benefit', 'advantage']):
+                    extraction['key_features'].append(sent)
+                if any(word in sent_lower for word in ['warning', 'risk', 'caution']):
+                    extraction['warnings'].append(sent)
+        
+        # Find investment objective (usually first sentence)
         if sentences:
             extraction['investment_objective'] = sentences[0]
         
-        # Extract using patterns
+        # Extract using patterns (Robust Regex)
         for category, patterns in self.patterns.items():
             for pattern in patterns:
                 matches = re.finditer(pattern, text, re.IGNORECASE)
@@ -103,19 +149,7 @@ class PromiseExtractor:
                     elif category == 'investment':
                         extraction['min_investment'] = f"₹{match.group(1)}"
         
-        # Extract key features and warnings using NLP
-        for sent in doc.sents:
-            sent_text = sent.text.lower()
-            # Key features (positive assertions)
-            if any(word in sent_text for word in ['feature', 'benefit', 'advantage', 'include', 'offer']):
-                if len(sent_text.split()) < 20:  # Avoid long sentences
-                    extraction['key_features'].append(sent.text)
-            
-            # Warnings (cautions, risks)
-            if any(word in sent_text for word in ['warning', 'risk', 'caution', 'note:', 'important:', 'disclaimer']):
-                extraction['warnings'].append(sent.text)
-        
-        # Calculate confidence (simple heuristic)
+        # Calculate confidence
         confidence_factors = []
         if extraction['investment_objective']: confidence_factors.append(0.2)
         if extraction['promised_returns']: confidence_factors.append(0.2)
@@ -143,19 +177,64 @@ class PromiseExtractor:
         text = "\n".join(text_parts)
         return self.extract_from_text(text, data)
     
+    def extract_from_pdf(self, pdf_path: str) -> FinancialPromise:
+        """Extract promises from PDF file"""
+        if PyPDF2 is None:
+            raise ImportError("PyPDF2 is not installed. Please install it using 'pip install PyPDF2'")
+            
+        print(f"Reading PDF: {pdf_path}")
+        text = ""
+        try:
+            with open(pdf_path, 'rb') as f:
+                reader = PyPDF2.PdfReader(f)
+                for page in reader.pages:
+                    text += page.extract_text() + "\n"
+        except Exception as e:
+            print(f"Error reading PDF {pdf_path}: {e}")
+            return None
+
+        # Basic cleanup
+        text = re.sub(r'\s+', ' ', text).strip()
+        
+        # Infer product info from filename
+        filename = os.path.basename(pdf_path)
+        product_name = os.path.splitext(filename)[0].replace('_', ' ').title()
+        
+        product_info = {
+            'product_name': product_name,
+            'issuer': 'Detected from PDF' 
+        }
+        
+        return self.extract_from_text(text, product_info)
+    
     def batch_extract(self, data_dir: str) -> pd.DataFrame:
-        """Extract promises from multiple documents"""
+        """Extract promises from multiple documents (JSON and PDF)"""
         import glob
         
         promises = []
+        
+        # Process JSON files (Simulated docs)
         for file_path in glob.glob(os.path.join(data_dir, "*.json")):
             try:
                 promise = self.extract_from_json(file_path)
                 promises.append(asdict(promise))
-                print(f"✓ Extracted: {os.path.basename(file_path)}")
+                print(f"✓ Extracted (JSON): {os.path.basename(file_path)}")
+            except Exception as e:
+                print(f"✗ Error processing {file_path}: {e}")
+
+        # Process PDF files (Real docs)
+        for file_path in glob.glob(os.path.join(data_dir, "*.pdf")):
+            try:
+                promise = self.extract_from_pdf(file_path)
+                if promise:
+                    promises.append(asdict(promise))
+                    print(f"✓ Extracted (PDF): {os.path.basename(file_path)}")
             except Exception as e:
                 print(f"✗ Error processing {file_path}: {e}")
         
+        if not promises:
+            return pd.DataFrame() # Return empty if no promises found
+
         return pd.DataFrame(promises)
 
 # Test the extractor

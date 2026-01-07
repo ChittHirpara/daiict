@@ -1,27 +1,45 @@
 @echo off
-echo Starting ALL Veritas Finance Features...
+echo ========================================
+echo VERITAS FINANCE - Hackathon Launch
+echo ========================================
 echo.
 
-echo 1. Core AI Pipeline...
+echo Step 1: Checking prerequisites...
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo ERROR: Python not found!
+    pause
+    exit /b 1
+)
+
+echo Step 2: Generating mock data...
+if not exist "data\mock\customer_reviews.csv" (
+    echo Generating mock data...
+    python mock_data_generator.py
+) else (
+    echo Mock data already exists.
+)
+
+echo Step 3: Running AI pipeline (Core + Features)...
 python main_pipeline.py
+if errorlevel 1 (
+    echo WARNING: Pipeline had errors, but continuing...
+)
 
 echo.
-echo 2. Launching Features...
+echo Step 4: Launching Visualization Features...
 start features\split_screen.html
 start features\heatmap.html
-timeout /t 2
 
 echo.
-echo 3. Running Advanced Analysis...
-python features\hinglish_processor.py
-python features\notice_generator.py
-python features\influencer_tracker.py
+echo Step 5: Launching Main Dashboard...
+echo Opening presentation mode in 3 seconds...
+timeout /t 3
+start streamlit run presentation_mode.py
 
 echo.
-echo 4. Opening Main Dashboard...
-start reports\interactive_dashboard.html
-
-echo.
-echo 🚀 ALL FEATURES LAUNCHED!
-echo.
+echo ========================================
+echo ✅ Launch complete!
+echo Dashboard: http://localhost:8501
+echo ========================================
 pause

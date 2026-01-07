@@ -14,9 +14,9 @@ sys.path.append(str(Path(__file__).parent))
 # Try to import advanced analyzer, fallback to simple if needed
 try:
     from backend.expectation_engine.promise_extractor import PromiseExtractor
-    print("✅ Loaded PromiseExtractor")
+    print("[OK] Loaded PromiseExtractor")
 except ImportError as e:
-    print(f"⚠️ Warning: {e}")
+    print(f"[WARNING] {e}")
     # Create simple PromiseExtractor placeholder
     class PromiseExtractor:
         def batch_extract(self, data_dir):
@@ -31,9 +31,9 @@ except ImportError as e:
 
 try:
     from backend.reality_engine.sentiment_analyzer import AdvancedSentimentAnalyzer, SentimentResult
-    print("✅ Loaded AdvancedSentimentAnalyzer")
+    print("[OK] Loaded AdvancedSentimentAnalyzer")
 except ImportError as e:
-    print(f"⚠️ Warning: {e}")
+    print(f"[WARNING] {e}")
     # Define simple fallback classes
     from dataclasses import dataclass
     from typing import List, Tuple
@@ -73,9 +73,9 @@ except ImportError as e:
 
 try:
     from backend.gap_analyzer.gap_detector import GapDetector, GapAnalysisResult
-    print("✅ Loaded GapDetector")
+    print("[OK] Loaded GapDetector")
 except ImportError as e:
-    print(f"⚠️ Warning: {e}")
+    print(f"[WARNING] {e}")
     # Define simple fallback classes
     from dataclasses import dataclass
     from typing import List
@@ -238,6 +238,11 @@ class VeritasFinancePipeline:
             print("-" * 40)
             self.generate_reports()
             
+            # Step 5: Run Additional Features
+            print("\n5. STEP 5: Running Additional Features")
+            print("-" * 40)
+            self.run_all_features()
+            
             print("\n" + "=" * 60)
             print("✅ PIPELINE EXECUTION COMPLETE!")
             print("=" * 60)
@@ -248,6 +253,39 @@ class VeritasFinancePipeline:
             import traceback
             traceback.print_exc()
             return False
+
+    def run_all_features(self):
+        """Run all additional features"""
+        
+        # 1. Generate Notices
+        try:
+            from features.notice_generator import generate_notices_from_csv
+            print("\n  Generating Regulatory Notices...")
+            generate_notices_from_csv()
+        except ImportError:
+            print("  ⚠️ Notice generator module not found")
+        except Exception as e:
+            print(f"  ⚠️ Notice generator failed: {e}")
+            
+        # 2. Track Influencers
+        try:
+            from features.influencer_tracker import track_influencers
+            print("\n  Tracking Influencers...")
+            track_influencers()
+        except ImportError:
+            print("  ⚠️ Influencer tracker module not found")
+        except Exception as e:
+            print(f"  ⚠️ Influencer tracker failed: {e}")
+            
+        # 3. Process Hinglish
+        try:
+            from features.hinglish_processor import process_hinglish_complaints
+            print("\n  Processing Hinglish Complaints...")
+            process_hinglish_complaints()
+        except ImportError:
+            print("  ⚠️ Hinglish processor module not found")
+        except Exception as e:
+            print(f"  ⚠️ Hinglish processor failed: {e}")
         
     def extract_promises(self) -> bool:
         """

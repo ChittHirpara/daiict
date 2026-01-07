@@ -1,11 +1,11 @@
-# Product Analysis: MaxReturns Fixed Deposit
+# Product Analysis: Alpha Growth Mutual Fund
 
 *Analysis Date: 2026-01-07 12:22:58*
 
 ## Risk Overview
-- **Risk Level**: MEDIUM
-- **Risk Score**: 0.30/1.0
-- **Dissatisfaction Index**: 53.8%
+- **Risk Level**: LOW
+- **Risk Score**: 0.28/1.0
+- **Dissatisfaction Index**: 47.2%
 
 ## Detected Issues
 ### Issue 1

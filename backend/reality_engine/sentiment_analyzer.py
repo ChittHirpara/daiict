@@ -1,14 +1,25 @@
 # backend/reality_engine/sentiment_analyzer.py - ADVANCED VERSION
-from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+try:
+    from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+except ImportError:
+    pipeline = None
+
 import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple, Any
 from dataclasses import dataclass
 import plotly.express as px
 from datetime import datetime, timedelta
-from bertopic import BERTopic
-from sentence_transformers import SentenceTransformer
-from umap import UMAP
+
+try:
+    from bertopic import BERTopic
+    from sentence_transformers import SentenceTransformer
+    from umap import UMAP
+except ImportError:
+    BERTopic = None
+    SentenceTransformer = None
+    UMAP = None
+
 import warnings
 warnings.filterwarnings('ignore')
 import os
@@ -52,32 +63,64 @@ class AdvancedSentimentAnalyzer:
         
         # Financial-specific keywords for complaint detection
         self.financial_keywords = {
-            'hidden_charges': ['hidden charge', 'hidden fee', 'undisclosed cost', 'extra charge'],
-            'poor_returns': ['poor return', 'low return', 'bad return', 'not getting returns'],
-            'misleading': ['mislead', 'false promise', 'lied', 'fake promise'],
-            'service_issues': ['bad service', 'poor service', 'no response', 'ignore'],
-            'difficult_exit': ['cannot exit', 'exit problem', 'withdrawal issue', 'lock in'],
-            'agent_problem': ['agent fraud', 'agent cheat', 'bad agent', 'mis-selling']
+            'hidden_charges': ['hidden charge', 'hidden fee', 'undisclosed cost', 'extra charge', 'deducted money'],
+            'poor_returns': ['poor return', 'low return', 'bad return', 'not getting returns', 'loss', 'underperforming'],
+            'misleading': ['mislead', 'false promise', 'lied', 'fake promise', 'scam', 'cheat'],
+            'service_issues': ['bad service', 'poor service', 'no response', 'ignore', 'rude', 'unhelpful'],
+            'difficult_exit': ['cannot exit', 'exit problem', 'withdrawal issue', 'lock in', 'stuck'],
+            'agent_problem': ['agent fraud', 'agent cheat', 'bad agent', 'mis-selling', 'forced'],
+            'transparency': ['fine print', 'terms and conditions', 'complicated', 'confusing', 'not clear']
         }
         print("✅ Sentiment analyzer ready!")
     
     def simple_analyze_sentiment(self, text: str) -> Dict:
-        """Simple sentiment analysis fallback"""
+        """Simple sentiment analysis fallback with negation handling"""
         text_lower = str(text).lower()
         
         # Simple keyword-based sentiment
-        positive_words = ['good', 'great', 'excellent', 'happy', 'satisfied', 'recommend']
-        negative_words = ['bad', 'poor', 'terrible', 'avoid', 'worst', 'cheat', 'fraud']
+        positive_words = ['good', 'great', 'excellent', 'happy', 'satisfied', 'recommend', 'profit', 'best']
+        negative_words = ['bad', 'poor', 'terrible', 'avoid', 'worst', 'cheat', 'fraud', 'loss', 'angry']
         
-        pos_count = sum(1 for word in positive_words if word in text_lower)
-        neg_count = sum(1 for word in negative_words if word in text_lower)
+        # Helper to check context
+        def count_with_negation(words, text):
+            count = 0
+            for word in words:
+                start = 0
+                while True:
+                    idx = text.find(word, start)
+                    if idx == -1:
+                        break
+                    
+                    # Check previous 3 words for negation
+                    snippet = text[max(0, idx-20):idx]
+                    if not any(neg in snippet for neg in ['not ', 'no ', 'never ', "n't "]):
+                        count += 1
+                        
+                    start = idx + 1
+            return count
+
+        pos_count = count_with_negation(positive_words, text_lower)
+        neg_count = sum(1 for word in negative_words if word in text_lower) # Negatives usually aren't negated ("not bad" is rare in complaints)
+        
+        # Special case: "not bad"
+        if "not bad" in text_lower:
+            pos_count += 0.5
+            
+        score = 0.5
+        label = 'NEUTRAL'
         
         if pos_count > neg_count:
-            return {'label': 'POSITIVE', 'score': 0.8, 'sentiment_value': 0.8}
+            label = 'POSITIVE'
+            score = 0.6 + (min(pos_count, 5) * 0.08)
+            sentiment_value = 1.0
         elif neg_count > pos_count:
-            return {'label': 'NEGATIVE', 'score': 0.8, 'sentiment_value': 0.2}
+            label = 'NEGATIVE'
+            score = 0.6 + (min(neg_count, 5) * 0.08)
+            sentiment_value = 0.0
         else:
-            return {'label': 'NEUTRAL', 'score': 0.5, 'sentiment_value': 0.5}
+            sentiment_value = 0.5
+            
+        return {'label': label, 'score': min(0.99, score), 'sentiment_value': sentiment_value}
     
     def analyze_sentiment(self, text: str) -> Dict:
         """Analyze sentiment of a single text"""

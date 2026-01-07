@@ -1,11 +1,11 @@
-# Product Analysis: MaxReturns Fixed Deposit
+# Product Analysis: SecureLife Insurance Policy
 
 *Analysis Date: 2026-01-07 12:22:58*
 
 ## Risk Overview
 - **Risk Level**: MEDIUM
-- **Risk Score**: 0.30/1.0
-- **Dissatisfaction Index**: 53.8%
+- **Risk Score**: 0.32/1.0
+- **Dissatisfaction Index**: 59.1%
 
 ## Detected Issues
 ### Issue 1

@@ -1,27 +1,27 @@
 # VERITAS FINANCE - Executive Summary
 
-*Report Generated: 2026-01-05 16:25:27*
+*Report Generated: 2026-01-07 12:22:58*
 
 ## Overall Statistics
-- **Products Analyzed**: 3
-- **Average Risk Score**: 0.26/1.0
+- **Products Analyzed**: 5
+- **Average Risk Score**: 0.28/1.0
 - **High/Critical Risk Products**: 0
 
 ## Top Risky Products
-### EasyInvest Savings Account
-- **Risk Level**: LOW
-- **Risk Score**: 0.26/1.0
-- **Dissatisfaction**: 40.0%
+### SecureLife Insurance Policy
+- **Risk Level**: MEDIUM
+- **Risk Score**: 0.32/1.0
+- **Dissatisfaction**: 59.1%
 
 ### MaxReturns Fixed Deposit
-- **Risk Level**: LOW
-- **Risk Score**: 0.26/1.0
-- **Dissatisfaction**: 40.0%
+- **Risk Level**: MEDIUM
+- **Risk Score**: 0.30/1.0
+- **Dissatisfaction**: 53.8%
 
-### WealthBuilder Pension Plan
+### Alpha Growth Mutual Fund
 - **Risk Level**: LOW
-- **Risk Score**: 0.26/1.0
-- **Dissatisfaction**: 40.0%
+- **Risk Score**: 0.28/1.0
+- **Dissatisfaction**: 47.2%
 
 
 ## Key Recommendations
