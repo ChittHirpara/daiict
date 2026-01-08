@@ -5,14 +5,23 @@ import random
 from typing import Dict, List, Optional
 import os
 
+try:
+    from backend.gemini_client import GeminiClient
+except ImportError:
+    # Fallback if run from different context
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+    from backend.gemini_client import GeminiClient
+
 class VeritasAssistant:
     """
     Veritas AI Assistant - An intelligent chatbot for the Mis-selling Detection System.
-    Uses pattern matching and data querying to provide instant answers about analyzed products.
+    Powered by Google Gemini Pro.
     """
     
     def __init__(self):
         self.load_data()
+        self.gemini = GeminiClient()
         self.context = {}
         
     def load_data(self):
@@ -25,18 +34,61 @@ class VeritasAssistant:
             self.gap_df = pd.DataFrame()
             self.promises_df = pd.DataFrame()
 
+    def set_api_key(self, key: str):
+        """Update the Gemini API Key"""
+        self.gemini.update_api_key(key)
+
     def get_response(self, user_query: str) -> str:
         """
         Process user query and return an AI-generated response.
         """
-        query = user_query.lower()
-        
-        # reload data to ensure freshness
+        # Reload data to ensure freshness
         self.load_data()
+        
+        # If Gemini is ready, use it
+        if self.gemini.is_configured():
+            return self._get_gemini_response(user_query)
+        
+        # Fallback to legacy regex system
+        return self._get_legacy_response(user_query)
+
+    def _get_gemini_response(self, query: str) -> str:
+        """Use Gemini to generate a response with data context"""
+        
+        # Construct Data Context
+        context_str = "You are Veritas AI, a financial regulatory assistant. You analyze financial products for mis-selling risks.\n"
+        context_str += "Here is the summary of the latest analysis:\n\n"
+        
+        if not self.gap_df.empty:
+            stats = {
+                "total_products": len(self.gap_df),
+                "high_risk_count": len(self.gap_df[self.gap_df['risk_level'].isin(['high', 'critical'])]),
+                "avg_dissatisfaction": self.gap_df['dissatisfaction_index'].mean() if 'dissatisfaction_index' in self.gap_df.columns else 0
+            }
+            context_str += f"Statistics: {stats}\n\n"
+            
+            # Add top 5 risky products details
+            risky_products = self.gap_df.sort_values('overall_risk_score', ascending=False).head(5)
+            context_str += "Top Risky Products Details:\n"
+            for _, row in risky_products.iterrows():
+                context_str += f"- Name: {row.get('product_name')}\n"
+                context_str += f"  Risk Level: {row.get('risk_level')}\n"
+                context_str += f"  Score: {row.get('overall_risk_score')}\n"
+                context_str += f"  Issues: {row.get('mismatches')}\n"
+        else:
+            context_str += "No analysis data available yet. Ask the user to run the pipeline.\n"
+            
+        context_str += "\nAnswer the user's question based on this data. Be professional, concise, and helpful."
+        
+        return self.gemini.generate_response(query, context_str)
+
+    def _get_legacy_response(self, query: str) -> str:
+        """Legacy Pattern Matching (Fallback)"""
+        query = query.lower()
         
         # 1. GREETINGS
         if re.search(r'\b(hi|hello|hey|greetings)\b', query):
-            return "Hello! I am the Veritas AI Assistant. I can help you analyze financial products, detect mis-selling risks, and explain regulations. What would you like to know?"
+            return "Hello! I am the Veritas AI Assistant (Legacy Mode). I can help you analyze financial products. add a Gemini API Key for smarter answers!"
 
         # 2. OVERALL STATUS / SUMMARY
         if re.search(r'\b(summary|status|overview|how many)\b', query):
@@ -51,17 +103,8 @@ class VeritasAssistant:
         if product_match:
             return self._explain_product(product_match)
 
-        # 5. HELP / CAPABILITIES
-        if re.search(r'\b(help|can you|what do you do)\b', query):
-            return """I can help you with:
-1. **Risk Analysis**: Ask "Which products are high risk?"
-2. **Product Details**: Ask "Explain [Product Name]"
-3. **Evidence**: Ask "What is wrong with [Product Name]?"
-4. **Summary**: Ask "Give me a summary of all findings"
-"""
-        
         # FALLBACK
-        return "I'm not sure I understood that regarding the financial data. You can ask me about 'high risk products', 'summaries', or specific product details."
+        return "I'm in Legacy Mode. Please add a Gemini API Key in the sidebar for full AI capabilities. You can ask me about 'high risk products' or 'summary'."
 
     def _get_overall_summary(self) -> str:
         if self.gap_df.empty:

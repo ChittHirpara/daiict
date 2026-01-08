@@ -946,6 +946,26 @@ class VeritasDashboard:
                 st.success("Configuration saved successfully!")
 
         st.markdown("---")
+        st.markdown("### 🤖 AI Configuration")
+        
+        # Check current key status
+        current_key = st.session_state.get('gemini_api_key', '')
+        # Mask key for display
+        display_key = current_key[:4] + "*" * (len(current_key)-4) if current_key and len(current_key) > 4 else ""
+        
+        new_key = st.text_input("Google Gemini API Key", value=display_key, type="password", help="Get your key from Google AI Studio")
+        
+        if st.button("Update API Key"):
+            if new_key and new_key != display_key:
+                st.session_state['gemini_api_key'] = new_key
+                if st.session_state.ai_assistant:
+                    st.session_state.ai_assistant.set_api_key(new_key)
+                st.success("✅ API Key updated! The AI Assistant is now powered by Gemini.")
+            elif not new_key:
+                st.warning("Please enter a valid API Key")
+
+
+        st.markdown("---")
         st.markdown("### 👥 User Management (Admin)")
         
         if self.auth:

@@ -45,3 +45,4 @@ streamlit-option-menu==0.3.6
 Faker==20.1.0
 opencv-python
 bcrypt
+google-generativeai>=0.8.0
