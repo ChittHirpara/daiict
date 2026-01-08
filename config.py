@@ -13,9 +13,15 @@ class Config:
     MOCK_DATA_DIR = DATA_DIR / "mock"
     MODELS_DIR = BASE_DIR / "ml_models"
     
-    # API Keys (for demo, use mock)
-    TWITTER_API_KEY = "mock_twitter_key"
-    REDDIT_CLIENT_ID = "mock_reddit_id"
+    # API Keys - ALL DISABLED FOR FREE OPERATION
+    # Project uses FREE mock data by default
+    # No API keys needed - everything works free!
+    TWITTER_API_KEY = ""  # Empty = use free mock data
+    REDDIT_CLIENT_ID = ""  # Empty = use free mock data
+    NEWS_API_KEY = ""  # Empty = use free mock data
+    
+    # Force Free Mode - Ensures no paid services
+    FORCE_FREE_MODE = True  # Always use free options
     
     # Model Settings
     SENTIMENT_MODEL = "distilbert-base-uncased-finetuned-sst-2-english"

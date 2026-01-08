@@ -1,5 +1,5 @@
-# dashboard.py - Hackathon-Winning Mis-Selling Intelligence Platform
-# Stunning, modern UI with impressive visuals and interactions
+# dashboard.py - AI Regulatory Command Center
+# Next-generation intelligence interface for financial mis-selling detection
 
 import streamlit as st
 import pandas as pd
@@ -8,24 +8,24 @@ from plotly.subplots import make_subplots
 import os
 import json
 from datetime import datetime, timedelta
-import base64
 import random
+import numpy as np
 
 # Page configuration
 st.set_page_config(
-    page_title="Mis-Selling Intelligence Platform",
+    page_title="VERITAS - AI Regulatory Command Center",
     page_icon="🔍",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # ============================================================================
-# STUNNING CSS - HACKATHON WINNING DESIGN
+# COMMAND CENTER CSS - Regulator-Grade Design
 # ============================================================================
 
-STUNNING_CSS = """
+COMMAND_CENTER_CSS = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
     
     * {
         margin: 0;
@@ -34,28 +34,37 @@ STUNNING_CSS = """
     }
     
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        --dark-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%);
+        --bg-primary: #0a0e1a;
+        --bg-secondary: #141b2d;
+        --bg-tertiary: #1a2332;
         
-        --glass-bg: rgba(255, 255, 255, 0.1);
-        --glass-border: rgba(255, 255, 255, 0.2);
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --text-muted: #64748b;
         
-        --shadow-glow: 0 8px 32px rgba(102, 126, 234, 0.3);
-        --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.1);
-        --shadow-hover: 0 30px 80px rgba(102, 126, 234, 0.4);
+        --accent-green: #10b981;
+        --accent-amber: #f59e0b;
+        --accent-red: #ef4444;
+        
+        --border-color: rgba(148, 163, 184, 0.1);
+        --glow-active: rgba(16, 185, 129, 0.3);
     }
     
     .stApp {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-        background-attachment: fixed;
-        font-family: 'Poppins', 'Inter', sans-serif;
-        min-height: 100vh;
+        background: var(--bg-primary);
+        background-image: 
+            repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(148, 163, 184, 0.02) 2px,
+                rgba(148, 163, 184, 0.02) 4px
+            );
+        font-family: 'Inter', 'IBM Plex Sans', sans-serif;
+        color: var(--text-primary);
     }
     
-    /* Animated background particles */
+    /* Subtle noise texture overlay */
     .stApp::before {
         content: '';
         position: fixed;
@@ -63,566 +72,644 @@ STUNNING_CSS = """
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: 
-            radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-        animation: float 20s ease-in-out infinite;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
         pointer-events: none;
         z-index: 0;
     }
     
-    @keyframes float {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        33% { transform: translate(30px, -30px) rotate(120deg); }
-        66% { transform: translate(-20px, 20px) rotate(240deg); }
+    /* Main content */
+    .main .block-container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        max-width: 1800px;
+        position: relative;
+        z-index: 1;
     }
     
-    /* Hide Streamlit default elements */
+    /* Hide Streamlit defaults */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     
-    /* Main content wrapper */
-    .main .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        max-width: 1600px;
-    }
-    
-    /* Glassmorphism sidebar */
+    /* Sidebar - Minimal Command-Grade */
     [data-testid="stSidebar"] {
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+        background: var(--bg-secondary);
+        border-right: 1px solid var(--border-color);
+        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5);
+        min-width: 200px;
     }
     
     [data-testid="stSidebar"] .stMarkdown {
-        color: white;
+        color: var(--text-primary);
     }
     
-    /* Stunning KPI Cards */
-    .kpi-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: var(--shadow-card);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .kpi-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--primary-gradient);
-        transform: scaleX(0);
-        transition: transform 0.4s ease;
-    }
-    
-    .kpi-card:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-hover);
-    }
-    
-    .kpi-card:hover::before {
-        transform: scaleX(1);
-    }
-    
-    .kpi-label {
-        font-size: 0.875rem;
-        color: #64748b;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 1rem;
-        opacity: 0.8;
-    }
-    
-    .kpi-value {
-        font-size: 3rem;
-        font-weight: 800;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 1rem 0;
-        font-family: 'Poppins', sans-serif;
-    }
-    
-    .kpi-trend {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-top: 0.5rem;
-    }
-    
-    .trend-up {
-        background: linear-gradient(135deg, #10b981, #34d399);
-        color: white;
-    }
-    
-    .trend-down {
-        background: linear-gradient(135deg, #ef4444, #f87171);
-        color: white;
-    }
-    
-    .trend-neutral {
-        background: linear-gradient(135deg, #64748b, #94a3b8);
-        color: white;
-    }
-    
-    /* Glassmorphism data cards */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: var(--shadow-card);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-        margin-bottom: 1.5rem;
-    }
-    
-    .glass-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-hover);
-    }
-    
-    /* Stunning headers */
-    h1 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 800;
-        font-size: 3rem;
-        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-        letter-spacing: -1px;
-    }
-    
-    h2 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700;
-        font-size: 2rem;
-        color: white;
-        margin-top: 2rem;
-        margin-bottom: 1.5rem;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-    
-    h3 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        font-size: 1.5rem;
-        color: white;
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Status badges with glow */
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.5rem 1.25rem;
-        border-radius: 50px;
-        font-size: 0.875rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
-    
-    .badge-low {
-        background: linear-gradient(135deg, #10b981, #34d399);
-        color: white;
-    }
-    
-    .badge-medium {
-        background: linear-gradient(135deg, #f59e0b, #fbbf24);
-        color: white;
-    }
-    
-    .badge-high {
-        background: linear-gradient(135deg, #ef4444, #f87171);
-        color: white;
-    }
-    
-    .badge-critical {
-        background: linear-gradient(135deg, #dc2626, #ef4444);
-        color: white;
-        animation: pulse-critical 1.5s infinite;
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
-    }
-    
-    @keyframes pulse-critical {
-        0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
-        50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.9); }
-    }
-    
-    /* Comparison panel with gradient */
-    .comparison-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        margin: 2rem 0;
-    }
-    
-    .comparison-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: var(--shadow-card);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .comparison-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        background: var(--primary-gradient);
-    }
-    
-    .comparison-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-hover);
-    }
-    
-    .comparison-header {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #1e293b;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #e2e8f0;
-    }
-    
-    /* Risk meter with glow */
-    .risk-meter-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2.5rem;
-        box-shadow: var(--shadow-card);
-        margin: 2rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .risk-meter-bar {
-        height: 20px;
-        background: #e2e8f0;
-        border-radius: 50px;
-        overflow: hidden;
-        margin: 1.5rem 0;
-        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
-        position: relative;
-    }
-    
-    .risk-meter-fill {
-        height: 100%;
-        border-radius: 50px;
-        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .risk-meter-fill::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        animation: shimmer 2s infinite;
-    }
-    
-    @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-    }
-    
-    .risk-low { 
-        background: linear-gradient(90deg, #10b981, #34d399);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
-    }
-    
-    .risk-medium { 
-        background: linear-gradient(90deg, #f59e0b, #fbbf24);
-        box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
-    }
-    
-    .risk-high { 
-        background: linear-gradient(90deg, #ef4444, #f87171);
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-    }
-    
-    /* Evidence items */
-    .evidence-item {
-        padding: 1.5rem;
-        margin: 1rem 0;
-        background: rgba(255, 255, 255, 0.7);
-        border-left: 4px solid;
-        border-radius: 10px;
-        font-size: 0.9375rem;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-    }
-    
-    .evidence-item:hover {
-        transform: translateX(10px);
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    .evidence-source {
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 0.5rem;
-        font-size: 1rem;
-    }
-    
-    .evidence-text {
-        color: #64748b;
-        font-style: italic;
-        line-height: 1.6;
-    }
-    
-    /* Upload area */
-    .upload-area {
-        border: 3px dashed rgba(255, 255, 255, 0.5);
-        border-radius: 20px;
-        padding: 4rem 2rem;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .upload-area::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        animation: rotate 3s linear infinite;
-    }
-    
-    @keyframes rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    .upload-area:hover {
-        border-color: rgba(255, 255, 255, 0.8);
-        background: rgba(255, 255, 255, 0.15);
-        transform: scale(1.02);
-    }
-    
-    /* Sidebar navigation */
+    /* Sidebar brand */
     .sidebar-brand {
-        padding: 2rem 1.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.5rem 1rem;
+        border-bottom: 1px solid var(--border-color);
         margin-bottom: 2rem;
     }
     
     .sidebar-brand h1 {
-        font-size: 1.75rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #ffffff, #e0e7ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin: 0;
-    }
-    
-    .sidebar-nav-btn {
-        width: 100%;
-        padding: 1rem 1.5rem;
-        margin: 0.5rem 0;
-        background: rgba(255, 255, 255, 0.05);
-        border: none;
-        border-radius: 12px;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1rem;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 1.25rem;
         font-weight: 600;
-        text-align: left;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
+        margin: 0;
+        text-transform: uppercase;
     }
     
-    .sidebar-nav-btn::before {
+    .sidebar-brand p {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+        font-weight: 400;
+    }
+    
+    /* Sidebar navigation buttons */
+    .sidebar-nav {
+        padding: 0 0.5rem;
+    }
+    
+    .nav-item {
+        position: relative;
+        margin: 0.25rem 0;
+    }
+    
+    .nav-item-active::before {
         content: '';
         position: absolute;
-        left: 0;
+        left: -0.5rem;
         top: 0;
-        height: 100%;
-        width: 4px;
-        background: var(--primary-gradient);
-        transform: scaleY(0);
-        transition: transform 0.3s ease;
+        bottom: 0;
+        width: 3px;
+        background: var(--accent-green);
+        box-shadow: 0 0 8px var(--glow-active);
     }
     
-    .sidebar-nav-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateX(5px);
-    }
-    
-    .sidebar-nav-btn:hover::before {
-        transform: scaleY(1);
-    }
-    
-    /* Metric rows */
-    .metric-row {
+    /* Command center header */
+    .command-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-        transition: all 0.2s ease;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 2rem;
     }
     
-    .metric-row:hover {
-        background: rgba(102, 126, 234, 0.05);
-        margin: 0 -1rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        border-radius: 8px;
+    .command-title {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
     }
     
-    .metric-row:last-child {
-        border-bottom: none;
+    .situation-bar {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
     }
     
-    .metric-label {
-        font-size: 0.9375rem;
-        color: #64748b;
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0.75rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
         font-weight: 500;
     }
     
-    .metric-value {
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: #1e293b;
+    .status-pill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent-green);
+        box-shadow: 0 0 8px var(--accent-green);
     }
     
-    /* Section dividers */
-    .section-divider {
-        height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        margin: 3rem 0;
+    /* KPI Cards - Data-Driven */
+    .kpi-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 1.25rem;
+        transition: border-color 0.2s ease;
     }
     
-    /* Buttons */
-    .stButton>button {
-        background: var(--primary-gradient);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
+    .kpi-card:hover {
+        border-color: var(--text-muted);
+    }
+    
+    .kpi-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .kpi-value {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        font-family: 'IBM Plex Sans', sans-serif;
+        line-height: 1.2;
+    }
+    
+    .kpi-value-number {
+        font-size: 2.5rem;
+    }
+    
+    .kpi-subtext {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+    }
+    
+    /* Status indicators - data-driven colors only */
+    .status-green {
+        color: var(--accent-green);
+    }
+    
+    .status-amber {
+        color: var(--accent-amber);
+    }
+    
+    .status-red {
+        color: var(--accent-red);
+    }
+    
+    /* Intelligence cards */
+    .intel-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .intel-card-header {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Signal nodes - Intelligence Ingestion */
+    .signal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .signal-node {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 1.25rem;
+        position: relative;
+        transition: border-color 0.2s ease;
+    }
+    
+    .signal-node:hover {
+        border-color: var(--text-muted);
+    }
+    
+    .signal-node-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+    
+    .signal-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.875rem;
+    }
+    
+    .signal-status {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
+        font-weight: 500;
+    }
+    
+    .signal-status-active {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--accent-green);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .signal-status-degraded {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--accent-amber);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    .signal-status-offline {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--accent-red);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .signal-strength {
+        margin-top: 0.75rem;
+    }
+    
+    .signal-strength-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-bottom: 0.25rem;
+    }
+    
+    .signal-strength-bar {
+        height: 4px;
+        background: var(--bg-primary);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    
+    .signal-strength-fill {
+        height: 100%;
+        background: var(--accent-green);
+        transition: width 0.3s ease;
+    }
+    
+    .signal-freshness {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.5rem;
+    }
+    
+    /* Sentiment waveform background */
+    .waveform-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 120px;
+        opacity: 0.08;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+    
+    .waveform-svg {
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* Risk badges - minimal */
+    .risk-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid;
+    }
+    
+    .risk-badge-low {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--accent-green);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .risk-badge-medium {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--accent-amber);
+        border-color: rgba(245, 158, 11, 0.3);
+    }
+    
+    .risk-badge-high {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--accent-red);
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+    
+    .risk-badge-critical {
+        background: rgba(220, 38, 38, 0.2);
+        color: var(--accent-red);
+        border-color: rgba(220, 38, 38, 0.4);
+        box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Data table styling */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+    
+    .data-table th {
+        text-align: left;
+        padding: 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .data-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-primary);
+        font-size: 0.875rem;
+    }
+    
+    .data-table tr:hover {
+        background: var(--bg-tertiary);
+    }
+    
+    /* Typography */
+    h1 {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-weight: 600;
+        font-size: 1.75rem;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
+        margin-bottom: 0.5rem;
+    }
+    
+    h2 {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        color: var(--text-primary);
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    h3 {
+        font-family: 'Inter', sans-serif;
         font-weight: 600;
         font-size: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        color: var(--text-primary);
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
     }
     
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    /* System status at bottom of sidebar */
+    .system-status {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        padding: 0.75rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
     }
     
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 10px;
+    .system-status-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent-green);
+        box-shadow: 0 0 6px var(--accent-green);
+        margin-right: 0.5rem;
     }
     
-    ::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
+    /* Comparison panels */
+    .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin: 1.5rem 0;
     }
     
-    ::-webkit-scrollbar-thumb {
-        background: var(--primary-gradient);
-        border-radius: 5px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    }
-    
-    /* Info boxes */
-    .info-box {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 15px;
+    .comparison-panel {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
         padding: 1.5rem;
-        margin: 1rem 0;
-        border-left: 4px solid;
-        box-shadow: var(--shadow-card);
     }
     
-    /* Responsive */
-    @media (max-width: 768px) {
-        .comparison-container {
-            grid-template-columns: 1fr;
-        }
-        
-        h1 {
-            font-size: 2rem;
-        }
+    .comparison-header {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .metric-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .metric-label {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+    }
+    
+    .metric-value {
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    
+    /* Evidence items */
+    .evidence-list {
+        margin-top: 1rem;
+    }
+    
+    .evidence-item {
+        background: var(--bg-tertiary);
+        border-left: 3px solid var(--border-color);
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        border-radius: 0 4px 4px 0;
+    }
+    
+    .evidence-source {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .evidence-text {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+    
+    /* Streamlit element overrides */
+    .stSelectbox label,
+    .stTextInput label,
+    .stTextArea label {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .stSelectbox > div > div {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+    }
+    
+    .stButton > button {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    
+    .stButton > button:hover {
+        background: var(--bg-tertiary);
+        border-color: var(--text-muted);
+    }
+    
+    /* Active navigation state */
+    button[kind="secondary"]:has(+ .stButton[kind="secondary"]) {
+        border-left: 3px solid var(--accent-green);
+        padding-left: calc(0.5rem - 3px);
+    }
+    
+    /* Sidebar button styling */
+    [data-testid="stSidebar"] button[kind="secondary"] {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        text-align: left;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        border-radius: 0;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+    
+    [data-testid="stSidebar"] button[kind="secondary"]:hover {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
     }
 </style>
 """
 
-st.markdown(STUNNING_CSS, unsafe_allow_html=True)
+st.markdown(COMMAND_CENTER_CSS, unsafe_allow_html=True)
 
 # ============================================================================
 # UTILITY FUNCTIONS
 # ============================================================================
 
 def load_data():
-    """Load processed data from pipeline outputs"""
+    """Load data from database first, fallback to CSV"""
     data = {
         'promises': None,
         'sentiment': None,
         'gap': None
     }
     
+    # Try to load from database first
+    try:
+        from database.db_manager import DatabaseManager
+        from database.schema import Promise, SentimentAnalysis, GapAnalysis, Product
+        
+        db = DatabaseManager()
+        
+        # Load products with promises
+        products = db.get_all_products()
+        if products:
+            promises_list = []
+            for product in products:
+                promise = db.get_promise(product.id)
+                if promise:
+                    promises_list.append({
+                        'product_name': product.name,
+                        'investment_objective': promise.investment_objective,
+                        'promised_returns': promise.promised_returns,
+                        'risk_category': promise.risk_category,
+                        'lock_in_period': promise.lock_in_period,
+                        'exit_load': promise.exit_load,
+                        'min_investment': promise.min_investment,
+                        'key_features': promise.key_features or [],
+                        'warnings': promise.warnings or [],
+                        'extraction_confidence': promise.extraction_confidence
+                    })
+            
+            if promises_list:
+                data['promises'] = pd.DataFrame(promises_list)
+            
+            # Load sentiment analyses
+            sentiment_list = []
+            for product in products:
+                sentiment = db.get_sentiment_analysis(product.id)
+                if sentiment:
+                    sentiment_list.append({
+                        'product': product.name,
+                        'avg_sentiment': sentiment.avg_sentiment,
+                        'positive_count': sentiment.positive_count,
+                        'negative_count': sentiment.negative_count,
+                        'neutral_count': sentiment.neutral_count,
+                        'total_reviews': sentiment.total_reviews,
+                        'dissatisfaction_index': sentiment.dissatisfaction_index,
+                        'risk_score': sentiment.risk_score
+                    })
+            
+            if sentiment_list:
+                data['sentiment'] = pd.DataFrame(sentiment_list)
+            
+            # Load gap analyses
+            gap_list = []
+            gap_analyses = db.get_all_gap_analyses()
+            for gap in gap_analyses:
+                product = db.get_product_by_id(gap.product_id)
+                if product:
+                    gap_list.append({
+                        'product_name': product.name,
+                        'promise_confidence': gap.promise_confidence,
+                        'sentiment_score': gap.sentiment_score,
+                        'dissatisfaction_index': gap.dissatisfaction_index,
+                        'overall_risk_score': gap.overall_risk_score,
+                        'risk_level': gap.risk_level,
+                        'mismatches': gap.mismatches or [],
+                        'recommendations': gap.recommendations or []
+                    })
+            
+            if gap_list:
+                data['gap'] = pd.DataFrame(gap_list)
+            
+            db.close()
+            return data
+        
+    except Exception as e:
+        st.warning(f"⚠️ Database not available, using CSV fallback: {e}")
+    
+    # Fallback to CSV files
     try:
         promises_path = "data/processed/extracted_promises.csv"
         sentiment_path = "data/processed/sentiment_analysis.csv"
@@ -644,7 +731,7 @@ def calculate_kpis(data):
     kpis = {
         'products_monitored': 0,
         'high_risk_products': 0,
-        'avg_gap': 0.0,
+        'avg_risk_score': 0.0,
         'avg_dissatisfaction': 0.0
     }
     
@@ -654,148 +741,167 @@ def calculate_kpis(data):
         kpis['high_risk_products'] = len(high_risk)
         
         if 'overall_risk_score' in data['gap'].columns:
-            kpis['avg_gap'] = data['gap']['overall_risk_score'].mean()
+            kpis['avg_risk_score'] = data['gap']['overall_risk_score'].mean()
         
         if 'dissatisfaction_index' in data['gap'].columns:
             kpis['avg_dissatisfaction'] = data['gap']['dissatisfaction_index'].mean()
     
     return kpis
 
-def render_kpi_card(label, value, trend=None, trend_value=None):
-    """Render a stunning KPI card"""
-    trend_html = ""
-    if trend is not None and trend_value:
-        trend_class = "trend-up" if trend > 0 else "trend-down" if trend < 0 else "trend-neutral"
-        trend_arrow = "↑" if trend > 0 else "↓" if trend < 0 else "→"
-        trend_html = f'<div class="kpi-trend {trend_class}">{trend_arrow} {trend_value}</div>'
-    
-    return f"""
-    <div class="kpi-card">
-        <div class="kpi-label">{label}</div>
-        <div class="kpi-value">{value}</div>
-        {trend_html}
-    </div>
-    """
-
 def get_risk_badge_class(risk_level):
     """Get CSS class for risk badge"""
     risk_lower = str(risk_level).lower()
     if risk_lower == 'critical':
-        return 'badge-critical'
+        return 'risk-badge-critical'
     elif risk_lower == 'high':
-        return 'badge-high'
+        return 'risk-badge-high'
     elif risk_lower == 'medium':
-        return 'badge-medium'
+        return 'risk-badge-medium'
     else:
-        return 'badge-low'
+        return 'risk-badge-low'
+
+def generate_sentiment_waveform():
+    """Generate live sentiment waveform for background"""
+    # Generate smooth waveform data
+    t = np.linspace(0, 20, 1000)
+    # Multiple sine waves for complexity
+    wave = (np.sin(t * 0.5) * 0.3 + 
+            np.sin(t * 1.2) * 0.2 + 
+            np.sin(t * 2.1) * 0.15 + 
+            np.sin(t * 3.7) * 0.1)
+    wave = (wave + 1) / 2  # Normalize to 0-1
+    
+    return wave
 
 # ============================================================================
 # SIDEBAR NAVIGATION
 # ============================================================================
 
 def render_sidebar():
-    """Render stunning sidebar navigation"""
+    """Render minimal command-grade sidebar"""
     st.sidebar.markdown("""
     <div class="sidebar-brand">
-        <h1>🔍 Mis-Selling<br>Intelligence</h1>
-        <p style="color: rgba(255,255,255,0.7); font-size: 0.875rem; margin-top: 0.5rem;">
-            Regulator Platform
-        </p>
+        <h1>VERITAS</h1>
+        <p>AI Regulatory Command Center</p>
     </div>
     """, unsafe_allow_html=True)
     
     # Navigation items
     nav_items = [
-        ("📊 Dashboard Overview", "dashboard"),
-        ("📦 Products Monitor", "products"),
-        ("📄 Expectation Engine", "expectation"),
-        ("💬 Reality Engine", "reality"),
-        ("🚨 Risk Flags", "risks"),
-        ("📋 Reports & Evidence", "reports"),
-        ("⚙️ Settings", "settings")
+        ("Overview", "overview"),
+        ("Products", "products"),
+        ("Expectation Engine", "expectation"),
+        ("Reality Engine", "reality"),
+        ("Risk Intelligence", "risks"),
+        ("Evidence Vault", "evidence"),
+        ("System Controls", "controls")
     ]
     
     # Initialize session state for active page
     if 'active_page' not in st.session_state:
-        st.session_state.active_page = "dashboard"
+        st.session_state.active_page = "overview"
     
-    st.sidebar.markdown('<h3 style="color: rgba(255,255,255,0.7); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 1rem;">Navigation</h3>', unsafe_allow_html=True)
-    
+    # Render navigation
     for label, page_id in nav_items:
         if st.sidebar.button(label, key=f"nav_{page_id}", use_container_width=True):
             st.session_state.active_page = page_id
             st.rerun()
-    
     st.sidebar.markdown("---")
     
     # System status
     st.sidebar.markdown("""
-    <div style="padding: 1rem; background: rgba(16, 185, 129, 0.2); border-radius: 12px; margin-top: 1rem;">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <div style="width: 12px; height: 12px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981;"></div>
-            <span style="font-size: 0.875rem; color: white; font-weight: 600;">System Operational</span>
-        </div>
+    <div class="system-status">
+        <span class="system-status-dot"></span>
+        AI Monitoring Active
     </div>
     """, unsafe_allow_html=True)
+
+# ============================================================================
+# COMMAND CENTER HEADER
+# ============================================================================
+
+def render_command_header(title, monitoring_count=None):
+    """Render command center header with situation awareness"""
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        st.markdown(f'<div class="command-title">{title}</div>', unsafe_allow_html=True)
+    
+    with col2:
+        situation_html = '<div class="situation-bar">'
+        if monitoring_count:
+            situation_html += f'<div class="status-pill"><span class="status-pill-dot"></span>Monitoring {monitoring_count} Products</div>'
+        
+        # Time range selector
+        situation_html += '<div style="display: flex; gap: 0.5rem;">'
+        situation_html += '<button style="padding: 0.375rem 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 4px; cursor: pointer; font-size: 0.75rem;">7d</button>'
+        situation_html += '<button style="padding: 0.375rem 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 4px; cursor: pointer; font-size: 0.75rem;">30d</button>'
+        situation_html += '<button style="padding: 0.375rem 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 4px; cursor: pointer; font-size: 0.75rem;">90d</button>'
+        situation_html += '</div>'
+        situation_html += '</div>'
+        
+        st.markdown(situation_html, unsafe_allow_html=True)
 
 # ============================================================================
 # PAGE VIEWS
 # ============================================================================
 
-def render_dashboard_overview(data):
-    """Stunning main dashboard overview"""
-    st.markdown("# 🛡️ Mis-Selling Risk Overview")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem; margin-bottom: 3rem;">Comprehensive monitoring and analysis of financial product mis-selling risks</p>', unsafe_allow_html=True)
-    
-    # Calculate KPIs
+def render_overview(data):
+    """Intelligence Overview - Main dashboard"""
     kpis = calculate_kpis(data)
     
-    # Stunning KPI Cards
+    render_command_header("Mis-Selling Intelligence Overview", kpis['products_monitored'])
+    
+    # KPI Cards
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.markdown(render_kpi_card(
-            "Products Monitored",
-            f"{kpis['products_monitored']}",
-            trend=1,
-            trend_value="+2 this week"
-        ), unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="kpi-card">
+            <div class="kpi-label">Products Monitored</div>
+            <div class="kpi-value kpi-value-number">{kpis['products_monitored']}</div>
+            <div class="kpi-subtext">Active surveillance</div>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col2:
-        st.markdown(render_kpi_card(
-            "High-Risk Products",
-            f"{kpis['high_risk_products']}",
-            trend=-1 if kpis['high_risk_products'] > 0 else 0,
-            trend_value=f"{kpis['high_risk_products']} flagged"
-        ), unsafe_allow_html=True)
+        risk_color = "status-red" if kpis['high_risk_products'] > 0 else "status-green"
+        st.markdown(f"""
+        <div class="kpi-card">
+            <div class="kpi-label">High-Risk Products</div>
+            <div class="kpi-value kpi-value-number {risk_color}">{kpis['high_risk_products']}</div>
+            <div class="kpi-subtext">Requiring attention</div>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col3:
-        st.markdown(render_kpi_card(
-            "Avg Risk Score",
-            f"{kpis['avg_gap']:.2f}",
-            trend=0,
-            trend_value=""
-        ), unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="kpi-card">
+            <div class="kpi-label">Average Risk Score</div>
+            <div class="kpi-value kpi-value-number">{kpis['avg_risk_score']:.1f}</div>
+            <div class="kpi-subtext">System-wide metric</div>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col4:
-        st.markdown(render_kpi_card(
-            "Customer Dissatisfaction",
-            f"{kpis['avg_dissatisfaction']:.1f}%",
-            trend=1,
-            trend_value="+2.3% vs last month"
-        ), unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="kpi-card">
+            <div class="kpi-label">Dissatisfaction Index</div>
+            <div class="kpi-value kpi-value-number">{kpis['avg_dissatisfaction']:.1f}%</div>
+            <div class="kpi-subtext">Customer sentiment</div>
+        </div>
+        """, unsafe_allow_html=True)
     
-    st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
+    st.markdown("---")
     
-    # Risk Distribution Chart
+    # Risk Distribution
     if data['gap'] is not None and len(data['gap']) > 0:
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("### 📊 Risk Distribution")
+            st.markdown("### Risk Distribution")
             risk_counts = data['gap']['risk_level'].value_counts()
             
-            # Create stunning pie chart
             colors_map = {
                 'low': '#10b981',
                 'medium': '#f59e0b',
@@ -804,523 +910,328 @@ def render_dashboard_overview(data):
             }
             colors = [colors_map.get(level.lower(), '#64748b') for level in risk_counts.index]
             
-            fig_pie = go.Figure(data=[go.Pie(
-                labels=risk_counts.index.str.title(),
-                values=risk_counts.values,
-                hole=0.5,
-                marker=dict(colors=colors, line=dict(color='white', width=3)),
-                textfont=dict(size=16, family='Poppins', color='white'),
-                hovertemplate='<b>%{label}</b><br>Count: %{value}<extra></extra>'
+            fig = go.Figure(data=[go.Bar(
+                x=risk_counts.index.str.title(),
+                y=risk_counts.values,
+                marker_color=colors,
+                text=risk_counts.values,
+                textposition='outside',
             )])
-            fig_pie.update_layout(
-                height=400,
-                showlegend=True,
+            fig.update_layout(
+                height=300,
+                showlegend=False,
                 paper_bgcolor='rgba(0,0,0,0)',
                 plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(family='Poppins', size=14, color='white'),
-                legend=dict(font=dict(size=14, color='white'))
+                font=dict(family='Inter', size=12, color='#e2e8f0'),
+                margin=dict(l=20, r=20, t=20, b=40),
+                xaxis=dict(showgrid=False),
+                yaxis=dict(showgrid=True, gridcolor='rgba(148, 163, 184, 0.1)'),
             )
-            st.plotly_chart(fig_pie, use_container_width=True, use_container_height=True)
+            st.plotly_chart(fig, use_container_width=True)
         
         with col2:
-            st.markdown("### 🚨 Top Risk Products")
-            top_risks = data['gap'].nlargest(5, 'overall_risk_score')[['product_name', 'risk_level', 'overall_risk_score']]
-            
-            for idx, row in top_risks.iterrows():
+            st.markdown("### Recent Alerts")
+            high_risk = data['gap'][data['gap']['risk_level'].isin(['high', 'critical'])].head(5)
+            for _, row in high_risk.iterrows():
                 badge_class = get_risk_badge_class(row['risk_level'])
                 st.markdown(f"""
-                <div class="glass-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <div style="font-weight: 700; color: #1e293b; font-size: 1.125rem; margin-bottom: 0.5rem;">
-                                {row['product_name']}
-                            </div>
-                            <div style="font-size: 0.875rem; color: #64748b;">
-                                Risk Score: <strong>{row['overall_risk_score']:.2f}</strong>
-                            </div>
-                        </div>
-                        <span class="status-badge {badge_class}">{row['risk_level'].upper()}</span>
+                <div class="intel-card" style="padding: 1rem; margin-bottom: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <strong style="color: var(--text-primary);">{row['product_name']}</strong>
+                        <span class="{badge_class}">{row['risk_level'].upper()}</span>
                     </div>
-                </div>
-                """, unsafe_allow_html=True)
-    else:
-        st.markdown("""
-        <div class="info-box" style="border-left-color: #f59e0b;">
-            <strong>⚠️ No Data Available</strong><br>
-            Please run the analysis pipeline first.
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Comparison View
-    st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-    render_comparison_view(data)
-
-def render_comparison_view(data):
-    """Stunning comparison view"""
-    st.markdown("### ⚖️ Expectation vs Reality Comparison")
-    
-    if data['gap'] is not None and data['promises'] is not None:
-        selected_product = st.selectbox(
-            "Select Product",
-            data['gap']['product_name'].tolist(),
-            key="comparison_product"
-        )
-        
-        if selected_product:
-            gap_data = data['gap'][data['gap']['product_name'] == selected_product].iloc[0]
-            promise_data = data['promises'][data['promises']['product_name'] == selected_product]
-            
-            if len(promise_data) > 0:
-                promise_data = promise_data.iloc[0]
-                
-                st.markdown(f"""
-                <div class="comparison-container">
-                    <div class="comparison-card" style="border-top: 5px solid #10b981;">
-                        <div class="comparison-header" style="color: #10b981;">✅ What Was Promised</div>
-                        <div class="metric-row">
-                            <span class="metric-label">Returns</span>
-                            <span class="metric-value">{promise_data.get('promised_returns', 'N/A')}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Risk Category</span>
-                            <span class="metric-value">{promise_data.get('risk_category', 'N/A')}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Lock-in Period</span>
-                            <span class="metric-value">{promise_data.get('lock_in_period', 'N/A')}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="comparison-card" style="border-top: 5px solid #ef4444;">
-                        <div class="comparison-header" style="color: #ef4444;">❌ Customer Reality</div>
-                        <div class="metric-row">
-                            <span class="metric-label">Reported Returns</span>
-                            <span class="metric-value" style="color: #ef4444;">Poor / Below Expectations</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Perceived Risk</span>
-                            <span class="metric-value" style="color: #ef4444;">High Volatility Reported</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Exit Experience</span>
-                            <span class="metric-value" style="color: #ef4444;">Difficulties Reported</span>
-                        </div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                        Risk Score: {row['overall_risk_score']:.1f}
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
 
 def render_products_monitor(data):
-    """Products monitoring view"""
-    st.markdown("# 📦 Products Monitor")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Real-time monitoring of all analyzed financial products</p>', unsafe_allow_html=True)
+    """Products Monitor - Active surveillance"""
+    render_command_header("Products Monitor")
     
     if data['gap'] is not None and len(data['gap']) > 0:
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            search_term = st.text_input("🔍 Search products", placeholder="Enter product name...")
-        with col2:
-            risk_filter = st.selectbox("Filter by Risk", ["All", "Low", "Medium", "High", "Critical"])
+        # Filter options
+        risk_filter = st.selectbox("Filter by Risk Level", ["All", "Critical", "High", "Medium", "Low"])
         
         filtered_data = data['gap'].copy()
-        if search_term:
-            filtered_data = filtered_data[filtered_data['product_name'].str.contains(search_term, case=False, na=False)]
         if risk_filter != "All":
-            filtered_data = filtered_data[filtered_data['risk_level'] == risk_filter.lower()]
+            filtered_data = filtered_data[filtered_data['risk_level'].str.lower() == risk_filter.lower()]
         
-        display_cols = ['product_name', 'risk_level', 'overall_risk_score', 'dissatisfaction_index']
-        if all(col in filtered_data.columns for col in display_cols):
-            display_df = filtered_data[display_cols].copy()
-            display_df.columns = ['Product Name', 'Risk Level', 'Risk Score', 'Dissatisfaction %']
-            display_df['Risk Score'] = display_df['Risk Score'].round(2)
-            display_df['Dissatisfaction %'] = display_df['Dissatisfaction %'].round(1)
-            
-            # Style the dataframe
-            st.dataframe(
-                display_df.style.background_gradient(subset=['Risk Score', 'Dissatisfaction %'], cmap='RdYlGn_r'),
-                use_container_width=True,
-                hide_index=True
-            )
-        else:
-            st.info("Column structure mismatch")
+        # Products table
+        st.markdown("### Active Products")
+        for _, row in filtered_data.iterrows():
+            badge_class = get_risk_badge_class(row['risk_level'])
+            st.markdown(f"""
+            <div class="intel-card">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <div>
+                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem;">{row['product_name']}</h3>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">
+                            Risk Score: <span style="color: var(--text-primary); font-weight: 600;">{row['overall_risk_score']:.2f}</span>
+                        </div>
+                    </div>
+                    <span class="{badge_class}">{row['risk_level'].upper()}</span>
+                </div>
+                
+                <div class="metric-row">
+                    <span class="metric-label">Promise Confidence</span>
+                    <span class="metric-value">{row.get('promise_confidence', 0):.1f}%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Sentiment Score</span>
+                    <span class="metric-value">{row.get('sentiment_score', 0):.2f}</span>
+                </div>
+                <div class="metric-row" style="border-bottom: none;">
+                    <span class="metric-label">Dissatisfaction</span>
+                    <span class="metric-value">{row.get('dissatisfaction_index', 0):.1f}%</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
     else:
-        st.markdown("""
-        <div class="info-box" style="border-left-color: #f59e0b;">
-            <strong>⚠️ No Products Analyzed</strong><br>
-            Run the Expectation and Reality Engines to begin monitoring.
-        </div>
-        """, unsafe_allow_html=True)
+        st.info("No product data available")
 
 def render_expectation_engine(data):
-    """Stunning Expectation Engine UI"""
-    st.markdown("# 📄 Expectation Engine")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Extract and analyze promises from product marketing materials</p>', unsafe_allow_html=True)
+    """Expectation Engine - Promise extraction analysis"""
+    render_command_header("Expectation Engine")
     
-    tab1, tab2 = st.tabs(["📤 Upload Document", "📋 Extracted Promises"])
-    
-    with tab1:
-        st.markdown("### Upload Product Document")
-        st.markdown("""
-        <div class="upload-area">
-            <p style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 1rem;">
-                📤 Drag & Drop PDF or Brochure
-            </p>
-            <p style="font-size: 1rem; color: rgba(255,255,255,0.8);">
-                Supported formats: PDF, DOCX, Images
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        uploaded_file = st.file_uploader("", type=['pdf', 'docx', 'png', 'jpg'], label_visibility="collapsed")
-        
-        if uploaded_file:
-            st.success(f"✅ File uploaded: {uploaded_file.name}")
-            if st.button("🚀 Extract Promises", type="primary", use_container_width=True):
-                with st.spinner("🔍 Analyzing document with NLP engine..."):
-                    st.success("✅ Promises extracted successfully!")
-    
-    with tab2:
-        st.markdown("### 📋 Extracted Promise Profiles")
-        
-        if data['promises'] is not None and len(data['promises']) > 0:
-            for idx, row in data['promises'].iterrows():
-                product_name = row.get('product_name', 'Unknown Product')
-                confidence = row.get('extraction_confidence', 0)
-                
-                st.markdown(f"""
-                <div class="glass-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #e2e8f0;">
-                        <div style="font-weight: 800; font-size: 1.25rem; color: #1e293b;">{product_name}</div>
-                        <div style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50px; font-weight: 700; font-size: 0.875rem;">
-                            Confidence: {confidence:.0%}
+    if data['promises'] is not None and len(data['promises']) > 0:
+        st.markdown("### Extracted Promises")
+        for _, row in data['promises'].iterrows():
+            st.markdown(f"""
+            <div class="intel-card">
+                <div class="intel-card-header">
+                    <span>{row['product_name']}</span>
+                    <span style="color: var(--text-muted);">Confidence: {row.get('extraction_confidence', 0):.1f}%</span>
+                </div>
+                <div class="comparison-grid">
+                    <div>
+                        <div class="metric-row">
+                            <span class="metric-label">Investment Objective</span>
+                            <span class="metric-value">{row.get('investment_objective', 'N/A')}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Promised Returns</span>
+                            <span class="metric-value">{row.get('promised_returns', 'N/A')}</span>
+                        </div>
+                        <div class="metric-row" style="border-bottom: none;">
+                            <span class="metric-label">Risk Category</span>
+                            <span class="metric-value">{row.get('risk_category', 'N/A')}</span>
                         </div>
                     </div>
-                    
-                    <div class="metric-row">
-                        <span class="metric-label">Investment Objective</span>
-                        <span class="metric-value">{row.get('investment_objective', 'N/A')}</span>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Promised Returns</span>
-                        <span class="metric-value" style="color: #667eea;">{row.get('promised_returns', 'N/A')}</span>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Risk Category</span>
-                        <span class="metric-value">{row.get('risk_category', 'N/A')}</span>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Lock-in Period</span>
-                        <span class="metric-value">{row.get('lock_in_period', 'N/A')}</span>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Exit Load</span>
-                        <span class="metric-value">{row.get('exit_load', 'N/A')}</span>
+                    <div>
+                        <div class="metric-row">
+                            <span class="metric-label">Lock-in Period</span>
+                            <span class="metric-value">{row.get('lock_in_period', 'N/A')}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Exit Load</span>
+                            <span class="metric-value">{row.get('exit_load', 'N/A')}</span>
+                        </div>
+                        <div class="metric-row" style="border-bottom: none;">
+                            <span class="metric-label">Min Investment</span>
+                            <span class="metric-value">{row.get('min_investment', 'N/A')}</span>
+                        </div>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div class="info-box" style="border-left-color: #f59e0b;">
-                <strong>ℹ️ No Promises Extracted</strong><br>
-                Upload a document to begin analysis.
             </div>
             """, unsafe_allow_html=True)
+    else:
+        st.info("No promise data available")
 
 def render_reality_engine(data):
-    """Stunning Reality Engine UI"""
-    st.markdown("# 💬 Reality Engine")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Analyze customer sentiment and real-world experiences</p>', unsafe_allow_html=True)
+    """Reality Engine - Customer sentiment analysis"""
+    render_command_header("Reality Engine")
     
     if data['sentiment'] is not None and len(data['sentiment']) > 0:
-        # Sentiment timeline
-        st.markdown("### 📈 Customer Sentiment Timeline")
-        
-        dates = pd.date_range(start=datetime.now() - timedelta(days=30), periods=30, freq='D')
-        sentiment_values = [0.5 + 0.2 * (i % 7) / 7 for i in range(30)]
-        
-        fig_timeline = go.Figure()
-        fig_timeline.add_trace(go.Scatter(
-            x=dates,
-            y=sentiment_values,
-            mode='lines+markers',
-            name='Sentiment Score',
-            line=dict(color='#667eea', width=3, shape='spline'),
-            marker=dict(size=8, color='#764ba2'),
-            fill='tonexty',
-            fillcolor='rgba(102, 126, 234, 0.2)'
-        ))
-        fig_timeline.update_layout(
-            height=400,
-            xaxis_title="Date",
-            yaxis_title="Sentiment Score (0-1)",
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(family='Poppins', size=14, color='white'),
-            xaxis=dict(gridcolor='rgba(255,255,255,0.1)'),
-            yaxis=dict(gridcolor='rgba(255,255,255,0.1)')
-        )
-        st.plotly_chart(fig_timeline, use_container_width=True)
-        
-        # CDI Gauge
-        if data['gap'] is not None and len(data['gap']) > 0:
-            avg_cdi = data['gap']['dissatisfaction_index'].mean()
-            
-            fig_gauge = go.Figure(go.Indicator(
-                mode = "gauge+number+delta",
-                value = avg_cdi,
-                domain = {'x': [0, 1], 'y': [0, 1]},
-                title = {'text': "Customer Dissatisfaction Index", 'font': {'size': 20, 'color': 'white', 'family': 'Poppins'}},
-                delta = {'reference': 50},
-                gauge = {
-                    'axis': {'range': [None, 100], 'tickcolor': "white"},
-                    'bar': {'color': "#ef4444" if avg_cdi > 50 else "#f59e0b" if avg_cdi > 30 else "#10b981"},
-                    'steps': [
-                        {'range': [0, 30], 'color': "rgba(16, 185, 129, 0.3)"},
-                        {'range': [30, 50], 'color': "rgba(245, 158, 11, 0.3)"},
-                        {'range': [50, 100], 'color': "rgba(239, 68, 68, 0.3)"}
-                    ],
-                    'threshold': {
-                        'line': {'color': "red", 'width': 4},
-                        'thickness': 0.75,
-                        'value': 50
-                    }
-                }
-            ))
-            fig_gauge.update_layout(height=300, paper_bgcolor='rgba(0,0,0,0)', font=dict(family='Poppins', color='white'))
-            st.plotly_chart(fig_gauge, use_container_width=True)
-        
-        # Topic breakdown
-        st.markdown("### 📊 Complaint Topic Breakdown")
-        
-        topics = [
-            {"name": "Hidden Charges", "frequency": 42, "sentiment": -0.8},
-            {"name": "Poor Returns", "frequency": 38, "sentiment": -0.7},
-            {"name": "Service Quality", "frequency": 25, "sentiment": -0.5},
-            {"name": "Exit Difficulties", "frequency": 18, "sentiment": -0.6}
-        ]
-        
-        for topic in topics:
-            sentiment_color = "#ef4444" if topic['sentiment'] < -0.6 else "#f59e0b"
-            sentiment_width = abs(topic['sentiment']) * 100
+        st.markdown("### Sentiment Analysis")
+        for _, row in data['sentiment'].iterrows():
+            sentiment_color = "status-green" if row['avg_sentiment'] > 0.2 else "status-amber" if row['avg_sentiment'] > -0.2 else "status-red"
             
             st.markdown(f"""
-            <div class="glass-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <div style="font-weight: 700; font-size: 1.125rem; color: #1e293b;">{topic['name']}</div>
-                    <div style="padding: 0.25rem 1rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50px; font-weight: 700; font-size: 0.875rem;">
-                        {topic['frequency']}% mentions
+            <div class="intel-card">
+                <div class="intel-card-header">
+                    <span>{row['product']}</span>
+                    <span class="{sentiment_color}">Avg Sentiment: {row['avg_sentiment']:.2f}</span>
+                </div>
+                <div class="comparison-grid">
+                    <div>
+                        <div class="metric-row">
+                            <span class="metric-label">Total Reviews</span>
+                            <span class="metric-value">{row['total_reviews']}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Positive</span>
+                            <span class="metric-value status-green">{row['positive_count']}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Negative</span>
+                            <span class="metric-value status-red">{row['negative_count']}</span>
+                        </div>
                     </div>
-                </div>
-                <div style="height: 12px; background: #e2e8f0; border-radius: 50px; overflow: hidden; margin-bottom: 1rem;">
-                    <div style="height: 100%; width: {sentiment_width}%; background: {sentiment_color}; border-radius: 50px; transition: width 1s ease;"></div>
-                </div>
-                <div style="font-size: 0.875rem; color: #64748b; font-style: italic; padding: 1rem; background: rgba(102, 126, 234, 0.05); border-radius: 10px;">
-                    💬 "Example: Customer reports unexpected charges on withdrawal"
+                    <div>
+                        <div class="metric-row">
+                            <span class="metric-label">Neutral</span>
+                            <span class="metric-value">{row['neutral_count']}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Dissatisfaction Index</span>
+                            <span class="metric-value">{row['dissatisfaction_index']:.1f}%</span>
+                        </div>
+                        <div class="metric-row" style="border-bottom: none;">
+                            <span class="metric-label">Risk Score</span>
+                            <span class="metric-value">{row['risk_score']:.2f}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
     else:
-        st.markdown("""
-        <div class="info-box" style="border-left-color: #f59e0b;">
-            <strong>ℹ️ No Sentiment Data</strong><br>
-            Run the Reality Engine analysis first.
-        </div>
-        """, unsafe_allow_html=True)
+        st.info("No sentiment data available")
 
-def render_risk_flags(data):
-    """Stunning Risk Flags view"""
-    st.markdown("# 🚨 Risk Flags")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Detailed risk analysis and flagging system</p>', unsafe_allow_html=True)
+def render_risk_intelligence(data):
+    """Risk Intelligence - Gap analysis and alerts"""
+    render_command_header("Risk Intelligence")
     
     if data['gap'] is not None and len(data['gap']) > 0:
-        selected_product = st.selectbox(
-            "Select Product",
-            data['gap']['product_name'].tolist(),
-            key="risk_product"
-        )
+        # Sort by risk score
+        sorted_data = data['gap'].sort_values('overall_risk_score', ascending=False)
         
-        if selected_product:
-            product_data = data['gap'][data['gap']['product_name'] == selected_product].iloc[0]
+        for _, row in sorted_data.iterrows():
+            badge_class = get_risk_badge_class(row['risk_level'])
             
-            risk_score = float(product_data.get('overall_risk_score', 0)) * 100
-            risk_level = str(product_data.get('risk_level', 'medium')).lower()
-            
-            # Stunning Risk Meter
             st.markdown(f"""
-            <div class="risk-meter-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="margin: 0; color: #1e293b;">Overall Risk Score</h3>
-                    <span class="status-badge {get_risk_badge_class(risk_level)}" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">
-                        {risk_level.upper()}
-                    </span>
+            <div class="intel-card">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; font-size: 1rem;">{row['product_name']}</h3>
+                    <span class="{badge_class}">{row['risk_level'].upper()}</span>
                 </div>
-                <div class="risk-meter-bar">
-                    <div class="risk-meter-fill risk-{risk_level}" style="width: {risk_score}%;"></div>
+                
+                <div class="metric-row">
+                    <span class="metric-label">Overall Risk Score</span>
+                    <span class="metric-value">{row['overall_risk_score']:.2f}</span>
                 </div>
-                <div style="text-align: center; font-size: 3rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 1rem;">
-                    {risk_score:.0f}/100
+                
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                    <div class="intel-card-header" style="margin-bottom: 0.5rem;">Detected Mismatches</div>
+                    <div class="evidence-list">
+            """, unsafe_allow_html=True)
+            
+            if row.get('mismatches') and len(row['mismatches']) > 0:
+                for mismatch in row['mismatches'][:3]:  # Show first 3
+                    st.markdown(f"""
+                    <div class="evidence-item">
+                        <div class="evidence-text">{mismatch}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div class="evidence-item">
+                    <div class="evidence-text" style="color: var(--text-muted);">No specific mismatches detected</div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown("</div></div></div>", unsafe_allow_html=True)
+    else:
+        st.info("No risk intelligence data available")
+
+def render_evidence_vault(data):
+    """Evidence Vault - Immutable evidence storage"""
+    render_command_header("Evidence Vault")
+    
+    if data['gap'] is not None and len(data['gap']) > 0:
+        st.markdown("### Collected Evidence")
+        for _, row in data['gap'].iterrows():
+            st.markdown(f"""
+            <div class="intel-card">
+                <div class="intel-card-header">
+                    <span>{row['product_name']}</span>
+                    <span style="color: var(--text-muted); font-size: 0.75rem;">Evidence ID: {hash(row['product_name']) % 10000}</span>
+                </div>
+                <div class="evidence-list">
+                    <div class="evidence-item">
+                        <div class="evidence-source">Promise Extraction Evidence</div>
+                        <div class="evidence-text">Confidence: {row.get('promise_confidence', 0):.1f}% | Extracted from marketing materials</div>
+                    </div>
+                    <div class="evidence-item">
+                        <div class="evidence-source">Sentiment Analysis Evidence</div>
+                        <div class="evidence-text">Score: {row.get('sentiment_score', 0):.2f} | Based on customer reviews and social media</div>
+                    </div>
+                    <div class="evidence-item">
+                        <div class="evidence-source">Gap Analysis Evidence</div>
+                        <div class="evidence-text">Risk Score: {row['overall_risk_score']:.2f} | {len(row.get('mismatches', []))} mismatches detected</div>
+                    </div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
-            
-            # Why flagged section
-            with st.expander("❓ Why Flagged? - Evidence & Justification", expanded=True):
-                st.markdown("### 📋 Risk Justification")
-                
-                try:
-                    mismatches = json.loads(product_data.get('mismatches', '[]'))
-                    if mismatches:
-                        for mismatch in mismatches[:3]:
-                            st.markdown(f"""
-                            <div class="evidence-item" style="border-left-color: #ef4444;">
-                                <div class="evidence-source">
-                                    {mismatch.get('promise_aspect', 'Unknown')} Mismatch
-                                    <span style="float: right; padding: 0.25rem 0.75rem; background: linear-gradient(135deg, #ef4444, #f87171); color: white; border-radius: 50px; font-weight: 700; font-size: 0.75rem;">
-                                        Severity: {float(mismatch.get('severity', 0)):.0%}
-                                    </span>
-                                </div>
-                                <div class="evidence-text">
-                                    {mismatch.get('complaint_topic', 'No description')}
-                                </div>
-                            </div>
-                            """, unsafe_allow_html=True)
-                except:
-                    st.markdown(f"""
-                    <div class="evidence-item" style="border-left-color: #f59e0b;">
-                        <div class="evidence-source">Risk Indicators Detected</div>
-                        <div class="evidence-text">
-                            Risk score of {risk_score:.0f}/100 based on sentiment analysis and gap detection. 
-                            Dissatisfaction index: {product_data.get('dissatisfaction_index', 0):.1f}%
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-            
-            # Evidence sources
-            st.markdown("### 📚 Evidence Sources")
-            evidence_sources = [
-                {"source": "Customer Reviews", "count": 127, "sentiment": -0.65},
-                {"source": "Social Media Mentions", "count": 43, "sentiment": -0.72},
-                {"source": "Complaint Portal", "count": 18, "sentiment": -0.58}
-            ]
-            
-            for source in evidence_sources:
-                st.markdown(f"""
-                <div class="glass-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <div style="font-weight: 700; font-size: 1.125rem; color: #1e293b; margin-bottom: 0.5rem;">{source['source']}</div>
-                            <div style="font-size: 0.875rem; color: #64748b;">{source['count']} data points</div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Avg Sentiment</div>
-                            <div style="font-weight: 800; font-size: 1.5rem; background: linear-gradient(135deg, #ef4444, #f87171); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{source['sentiment']:.2f}</div>
-                        </div>
+    else:
+        st.info("No evidence data available")
+
+def render_system_controls(data):
+    """System Controls - Intelligence Ingestion Panel"""
+    render_command_header("System Controls")
+    
+    st.markdown("### Reality Signal Ingestion")
+    st.markdown('<p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.5rem;">Configure data source monitoring and signal quality</p>', unsafe_allow_html=True)
+    
+    # Signal Nodes
+    signal_sources = [
+        {"name": "Twitter/X", "status": "active", "strength": 85, "freshness": "3 min ago"},
+        {"name": "Reddit", "status": "active", "strength": 72, "freshness": "5 min ago"},
+        {"name": "Customer Reviews", "status": "active", "strength": 91, "freshness": "1 min ago"},
+        {"name": "News APIs", "status": "degraded", "strength": 45, "freshness": "12 min ago"},
+    ]
+    
+    cols = st.columns(2)
+    for idx, source in enumerate(signal_sources):
+        col = cols[idx % 2]
+        with col:
+            status_class = f"signal-status-{source['status']}"
+            st.markdown(f"""
+            <div class="signal-node">
+                <div class="signal-node-header">
+                    <span class="signal-name">{source['name']}</span>
+                    <span class="signal-status {status_class}">{source['status'].upper()}</span>
+                </div>
+                <div class="signal-strength">
+                    <div class="signal-strength-label">Signal Strength</div>
+                    <div class="signal-strength-bar">
+                        <div class="signal-strength-fill" style="width: {source['strength']}%;"></div>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
-    else:
-        st.markdown("""
-        <div class="info-box" style="border-left-color: #f59e0b;">
-            <strong>ℹ️ No Risk Analysis Data</strong><br>
-            Run the complete pipeline to generate risk flags.
-        </div>
-        """, unsafe_allow_html=True)
-
-def render_reports_evidence(data):
-    """Stunning Reports & Evidence view"""
-    st.markdown("# 📋 Reports & Evidence")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Generate regulator-ready reports and evidence packages</p>', unsafe_allow_html=True)
+                <div class="signal-freshness">Updated {source['freshness']}</div>
+            </div>
+            """, unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
+    st.markdown("---")
+    
+    # Additional system information
+    st.markdown("### System Status")
+    col1, col2, col3 = st.columns(3)
     
     with col1:
         st.markdown("""
-        <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Generate Report</h3>
+        <div class="intel-card">
+            <div class="intel-card-header">Database</div>
+            <div style="color: var(--accent-green); font-size: 0.875rem; margin-top: 0.5rem;">● Connected</div>
         </div>
         """, unsafe_allow_html=True)
-        report_type = st.selectbox("Report Type", [
-            "Executive Summary",
-            "Full Risk Analysis",
-            "Evidence Package",
-            "Regulatory Submission"
-        ])
-        
-        if st.button("🚀 Generate Report", type="primary", use_container_width=True):
-            st.success("✅ Report generated successfully!")
-            st.download_button(
-                label="📥 Download PDF",
-                data="Sample PDF content",
-                file_name=f"mis-selling-report-{datetime.now().strftime('%Y%m%d')}.pdf",
-                mime="application/pdf",
-                use_container_width=True
-            )
     
     with col2:
         st.markdown("""
-        <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Report Archive</h3>
-            <p style="color: #64748b;">No previous reports found.</p>
+        <div class="intel-card">
+            <div class="intel-card-header">AI Models</div>
+            <div style="color: var(--accent-green); font-size: 0.875rem; margin-top: 0.5rem;">● Operational</div>
         </div>
         """, unsafe_allow_html=True)
     
-    # Report preview
-    st.markdown("### 📄 Report Preview")
-    st.markdown("""
-    <div class="glass-card">
-        <h4 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem;">Product Risk Analysis Report</h4>
-        <div class="section-divider" style="margin: 1.5rem 0;"></div>
-        <h5 style="color: #1e293b; margin-top: 1.5rem;">1. Executive Summary</h5>
-        <p style="color: #64748b; line-height: 1.8;">This report analyzes potential mis-selling risks for the selected financial products based on comparison between marketing promises and customer experiences.</p>
-        
-        <h5 style="color: #1e293b; margin-top: 1.5rem;">2. Extracted Promises</h5>
-        <p style="color: #64748b; line-height: 1.8;">Analysis of product documentation reveals the following claims...</p>
-        
-        <h5 style="color: #1e293b; margin-top: 1.5rem;">3. Customer Sentiment Analysis</h5>
-        <p style="color: #64748b; line-height: 1.8;">Sentiment analysis of customer reviews indicates...</p>
-        
-        <h5 style="color: #1e293b; margin-top: 1.5rem;">4. Risk Justification</h5>
-        <p style="color: #64748b; line-height: 1.8;">Gap analysis reveals mismatches in the following areas...</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-def render_settings():
-    """Settings view"""
-    st.markdown("# ⚙️ Settings")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">System configuration and preferences</p>', unsafe_allow_html=True)
-    
-    tab1, tab2, tab3 = st.tabs(["📡 Data Sources", "🚨 Alert Thresholds", "⚙️ System"])
-    
-    with tab1:
+    with col3:
         st.markdown("""
-        <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Data Source Configuration</h3>
+        <div class="intel-card">
+            <div class="intel-card-header">API Server</div>
+            <div style="color: var(--accent-green); font-size: 0.875rem; margin-top: 0.5rem;">● Active</div>
         </div>
         """, unsafe_allow_html=True)
-        st.checkbox("Enable Twitter Feed", value=True)
-        st.checkbox("Enable Reddit Discussions", value=True)
-        st.checkbox("Enable Play Store Reviews", value=True)
-        st.checkbox("Enable Trustpilot Reviews", value=True)
-    
-    with tab2:
-        st.markdown("""
-        <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Risk Alert Thresholds</h3>
-        </div>
-        """, unsafe_allow_html=True)
-        st.slider("High Risk Threshold", 0.0, 1.0, 0.7, 0.05)
-        st.slider("Critical Risk Threshold", 0.0, 1.0, 0.9, 0.05)
-        st.number_input("Minimum Complaints for Flagging", min_value=1, value=5)
-    
-    with tab3:
-        st.markdown("""
-        <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">System Settings</h3>
-        </div>
-        """, unsafe_allow_html=True)
-        st.selectbox("Report Format", ["PDF", "DOCX", "HTML"])
-        st.selectbox("Date Format", ["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"])
-        if st.button("💾 Save Settings", type="primary", use_container_width=True):
-            st.success("✅ Settings saved successfully!")
 
 # ============================================================================
 # MAIN APPLICATION
@@ -1328,25 +1239,44 @@ def render_settings():
 
 def main():
     """Main application entry point"""
-    data = load_data()
+    
+    # Add sentiment waveform to background
+    wave = generate_sentiment_waveform()
+    waveform_svg = f"""
+    <div class="waveform-container">
+        <svg class="waveform-svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+            <path d="M 0,50 {' '.join([f'L {i*10},{50 - w*40}' for i, w in enumerate(wave)])} L 1000,50" 
+                  fill="none" stroke="#10b981" stroke-width="0.5" opacity="0.5"/>
+        </svg>
+    </div>
+    """
+    st.markdown(waveform_svg, unsafe_allow_html=True)
+    
+    # Render sidebar
     render_sidebar()
     
-    active_page = st.session_state.get('active_page', 'dashboard')
+    # Load data
+    data = load_data()
     
-    if active_page == "dashboard":
-        render_dashboard_overview(data)
-    elif active_page == "products":
+    # Render active page
+    page = st.session_state.active_page
+    
+    if page == "overview":
+        render_overview(data)
+    elif page == "products":
         render_products_monitor(data)
-    elif active_page == "expectation":
+    elif page == "expectation":
         render_expectation_engine(data)
-    elif active_page == "reality":
+    elif page == "reality":
         render_reality_engine(data)
-    elif active_page == "risks":
-        render_risk_flags(data)
-    elif active_page == "reports":
-        render_reports_evidence(data)
-    elif active_page == "settings":
-        render_settings()
+    elif page == "risks":
+        render_risk_intelligence(data)
+    elif page == "evidence":
+        render_evidence_vault(data)
+    elif page == "controls":
+        render_system_controls(data)
+    else:
+        render_overview(data)
 
 if __name__ == "__main__":
     main()
