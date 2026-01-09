@@ -9,6 +9,7 @@ try:
 except ImportError as e:
     print(f"❌ dotenv failed: {e}")
 
+<<<<<<< HEAD
 try:
     import google.generativeai as genai
     print("✅ google.generativeai imported")
@@ -27,6 +28,11 @@ except ImportError as e:
     print(f"❌ GeminiClient import failed: {e}")
 except Exception as e:
     print(f"❌ GeminiClient init failed: {e}")
+=======
+
+# Gemini checks removed
+
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
 
 try:
     from main_pipeline import VeritasFinancePipeline

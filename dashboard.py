@@ -296,10 +296,17 @@ def render_login_page():
                     if success:
                         st.session_state.logged_in = True
                         st.session_state.username = username
+<<<<<<< HEAD
                         st.success(f"{msg}")
                         st.rerun()
                     else:
                         st.error(f"{msg}")
+=======
+                        st.success(f"✅ {msg}")
+                        st.rerun()
+                    else:
+                        st.error(f"❌ {msg}")
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
             
             st.markdown("---")
             st.markdown("### 👤 Face ID Login")
@@ -322,12 +329,21 @@ def render_login_page():
                         if success:
                             st.session_state.logged_in = True
                             st.session_state.username = result
+<<<<<<< HEAD
                             st.success(f"Welcome back, {result}!")
                             st.rerun()
                         else:
                             st.error(f"{result}")
                     else:
                         st.warning("Could not detect face clearly.")
+=======
+                            st.success(f"✅ Welcome back, {result}!")
+                            st.rerun()
+                        else:
+                            st.error(f"❌ {result}")
+                    else:
+                        st.warning("⚠️ Could not detect face clearly.")
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
                 except Exception as e:
                     st.error(f"Error processing face: {e}")
 
@@ -347,9 +363,15 @@ def render_login_page():
                 
                 if submitted:
                     if new_pass != confirm_pass:
+<<<<<<< HEAD
                         st.error("Passwords do not match")
                     elif len(new_pass) < 4:
                         st.error("Password too short")
+=======
+                        st.error("❌ Passwords do not match")
+                    elif len(new_pass) < 4:
+                        st.error("❌ Password too short")
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
                     else:
                         # Handle Face ID registration if checked
                         face_encoding = None
@@ -360,18 +382,32 @@ def render_login_page():
                                     image_np = np.array(image)
                                     face_encoding = auth.get_face_encoding_from_image(image_np)
                                     if face_encoding is None:
+<<<<<<< HEAD
                                         st.warning("Face capture failed. Account will be created without Face ID.")
                                 except Exception as e:
                                     st.error(f"Error processing face: {e}")
                             else:
                                 st.warning("No face captured. Account will be created without Face ID.")
+=======
+                                        st.warning("⚠️ Face capture failed. Account will be created without Face ID.")
+                                except Exception as e:
+                                    st.error(f"Error processing face: {e}")
+                            else:
+                                st.warning("⚠️ No face captured. Account will be created without Face ID.")
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
                         
                         success, msg = auth.signup(new_user, new_pass, face_encoding=face_encoding)
                         
                         if success:
+<<<<<<< HEAD
                             st.success("Account created! Please log in.")
                         else:
                             st.error(f"{msg}")
+=======
+                            st.success("✅ Account created! Please log in.")
+                        else:
+                            st.error(f"❌ {msg}")
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
 
 # ============================================================================
 # UTILITY FUNCTIONS
@@ -538,6 +574,7 @@ def render_sidebar():
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 🤖 Veritas AI Assistant")
     
+<<<<<<< HEAD
     # API Key Configuration
     # Using centralized key from .env (Configured in backend)
     # api_key = st.sidebar.text_input("Gemini API Key", type="password", key="gemini_api_key")
@@ -548,6 +585,15 @@ def render_sidebar():
     with st.sidebar.expander("Chat with AI", expanded=True):
         if not st.session_state.get('assistant'):
             st.error("AI Assistant failed to initialize.")
+=======
+    # API Key Configuration REMOVED
+
+    
+    # Chat Interface
+    with st.sidebar.expander("💬 Chat with AI", expanded=True):
+        if not st.session_state.get('assistant'):
+            st.error("⚠️ AI Assistant failed to initialize.")
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
         else:
             # Display history
             for msg in st.session_state.chat_history:
@@ -602,10 +648,16 @@ def render_sidebar():
 # ============================================================================
 
 def render_dashboard_overview(data):
+<<<<<<< HEAD
     """Main dashboard overview"""
     st.markdown("# Mis-Selling Risk Overview")
     st.markdown("Comprehensive monitoring and analysis of financial product mis-selling risks")
     st.divider()
+=======
+    """Stunning main dashboard overview"""
+    st.markdown("# 🛡️ Mis-Selling Risk Overview")
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem; margin-bottom: 3rem;">Comprehensive monitoring and analysis of financial product mis-selling risks</p>', unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     
     # Calculate KPIs
     kpis = calculate_kpis(data)
@@ -614,6 +666,7 @@ def render_dashboard_overview(data):
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
+<<<<<<< HEAD
         st.metric(
             label="Products Monitored",
             value=kpis['products_monitored'],
@@ -640,6 +693,38 @@ def render_dashboard_overview(data):
             value=f"{kpis['avg_dissatisfaction']:.1f}%",
             delta="+2.3% vs last month"
         )
+=======
+        st.markdown(make_card(
+            "Products Monitored",
+            f"{kpis['products_monitored']}",
+            trend=1,
+            trend_value="+2 this week"
+        ), unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown(make_card(
+            "High-Risk Products",
+            f"{kpis['high_risk_products']}",
+            trend=-1 if kpis['high_risk_products'] > 0 else 0,
+            trend_value=f"{kpis['high_risk_products']} flagged"
+        ), unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown(make_card(
+            "Avg Risk Score",
+            f"{kpis['avg_gap']:.2f}",
+            trend=0,
+            trend_value=""
+        ), unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown(make_card(
+            "Customer Dissatisfaction",
+            f"{kpis['avg_dissatisfaction']:.1f}%",
+            trend=1,
+            trend_value="+2.3% vs last month"
+        ), unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     
     st.divider()
     
@@ -683,10 +768,29 @@ def render_dashboard_overview(data):
             top_risks = data['gap'].nlargest(5, 'overall_risk_score')[['product_name', 'risk_level', 'overall_risk_score']]
             
             for idx, row in top_risks.iterrows():
+<<<<<<< HEAD
                 with st.container():
                     st.markdown(f"**{row['product_name']}**")
                     st.markdown(f"Risk Level: **{row['risk_level'].upper()}** | Score: {row['overall_risk_score']:.2f}")
                     st.divider()
+=======
+                badge_class = get_risk_badge_class(row['risk_level'])
+                st.markdown(f"""
+                <div class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; color: var(--text-primary); font-size: 1.125rem; margin-bottom: 0.5rem;">
+                                {row['product_name']}
+                            </div>
+                            <div style="font-size: 0.875rem; color: #64748b;">
+                                Risk Score: <strong>{row['overall_risk_score']:.2f}</strong>
+                            </div>
+                        </div>
+                        <span class="status-badge {badge_class}">{row['risk_level'].upper()}</span>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     else:
         st.info("No Data Available - Please run the analysis pipeline first.")
     
@@ -712,6 +816,7 @@ def render_comparison_view(data):
             if len(promise_data) > 0:
                 promise_data = promise_data.iloc[0]
                 
+<<<<<<< HEAD
                 col1, col2 = st.columns(2)
                 
                 with col1:
@@ -730,6 +835,31 @@ def render_products_monitor(data):
     """Products monitoring view"""
     st.markdown("# Products Monitor")
     st.markdown("Real-time monitoring of all analyzed financial products")
+=======
+                content = textwrap.dedent(f"""
+                <div class="comparison-container">
+                    <div class="comparison-card" style="border-top: 5px solid var(--success);">
+                        <div class="comparison-header" style="color: var(--success);">✅ What Was Promised</div>
+                        {make_metric_row("Returns", promise_data.get('promised_returns', 'N/A'))}
+                        {make_metric_row("Risk Category", promise_data.get('risk_category', 'N/A'))}
+                        {make_metric_row("Lock-in Period", promise_data.get('lock_in_period', 'N/A'))}
+                    </div>
+                    
+                    <div class="comparison-card" style="border-top: 5px solid var(--danger);">
+                        <div class="comparison-header" style="color: var(--danger);">❌ Customer Reality</div>
+                        {make_metric_row("Reported Returns", "Poor / Below Expectations", "var(--danger)")}
+                        {make_metric_row("Perceived Risk", "High Volatility Reported", "var(--danger)")}
+                        {make_metric_row("Exit Experience", "Difficulties Reported", "var(--danger)")}
+                    </div>
+                </div>
+                """)
+                st.markdown(content, unsafe_allow_html=True)
+
+def render_products_monitor(data):
+    """Products monitoring view"""
+    st.markdown("# 📦 Products Monitor")
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Real-time monitoring of all analyzed financial products</p>', unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     
     if data['gap'] is not None and len(data['gap']) > 0:
         col1, col2 = st.columns([3, 1])
@@ -784,9 +914,15 @@ def render_products_monitor(data):
         st.info("No Products Analyzed - Run the Expectation and Reality Engines to begin monitoring.")
 
 def render_expectation_engine(data):
+<<<<<<< HEAD
     """Expectation Engine UI"""
     st.markdown("# Expectation Engine")
     st.markdown("Extract and analyze promises from product marketing materials")
+=======
+    """Stunning Expectation Engine UI"""
+    st.markdown("# 📄 Expectation Engine")
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Extract and analyze promises from product marketing materials</p>', unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     
     tab1, tab2 = st.tabs(["Upload Document", "Extracted Promises"])
     
@@ -797,9 +933,15 @@ def render_expectation_engine(data):
         uploaded_file = st.file_uploader("", type=['pdf', 'docx', 'png', 'jpg'], label_visibility="collapsed")
         
         if uploaded_file:
+<<<<<<< HEAD
             st.success(f"File uploaded: {uploaded_file.name}")
             if st.button("Extract Promises", type="primary", use_container_width=True):
                 with st.spinner("Analyzing document with NLP engine..."):
+=======
+            st.success(f"✅ File uploaded: {uploaded_file.name}")
+            if st.button("🚀 Extract Promises", type="primary", use_container_width=True):
+                with st.spinner("🔍 Analyzing document with NLP engine..."):
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
                     # Save file temporarily
                     try:
                         os.makedirs("data/uploaded", exist_ok=True)
@@ -828,6 +970,7 @@ def render_expectation_engine(data):
                             os.makedirs("data/processed", exist_ok=True)
                             data['promises'].to_csv("data/processed/extracted_promises.csv", index=False)
                             
+<<<<<<< HEAD
                             st.success("Extraction complete!")
                             
                             # Option to run full pipeline
@@ -845,6 +988,25 @@ def render_expectation_engine(data):
 
                         else:
                             st.error("Failed to extract content from file.")
+=======
+                            st.balloons()
+                            
+                            # Option to run full pipeline
+                            st.divider()
+                            st.info("💡 To update Risk Flags and Reports with this new data, run the analysis pipeline.")
+                            if st.button("🔄 Run Full Risk Analysis", type="secondary", use_container_width=True):
+                                with st.spinner("Running full compliance analysis pipeline..."):
+                                    pipeline = VeritasFinancePipeline()
+                                    if pipeline.run_pipeline():
+                                        st.success("✅ Analysis Complete! Check 'Risk Flags' and 'Reports' pages.")
+                                        # Reload data
+                                        st.session_state.data = load_data()
+                                    else:
+                                        st.error("❌ Analysis failed. Check console for details.")
+
+                        else:
+                            st.error("❌ Failed to extract content from file.")
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
                     except Exception as e:
                         st.error(f"Error during extraction: {e}")
     
@@ -856,6 +1018,7 @@ def render_expectation_engine(data):
                 product_name = row.get('product_name', 'Unknown Product')
                 confidence = row.get('extraction_confidence', 0)
                 
+<<<<<<< HEAD
                 with st.expander(f"{product_name} - Confidence: {confidence:.0%}", expanded=False):
                     col1, col2 = st.columns(2)
                     
@@ -870,13 +1033,36 @@ def render_expectation_engine(data):
                         st.write(f"**Min Investment:** {row.get('min_investment', 'N/A')}")
                 
                 st.divider()
+=======
+                content = textwrap.dedent(f"""
+                <div class="glass-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid rgba(255,255,255,0.1);">
+                <div style="font-weight: 800; font-size: 1.25rem; color: var(--text-primary);">{product_name}</div>
+                <div style="padding: 0.5rem 1rem; background: var(--gradient-primary); color: white; border-radius: 50px; font-weight: 700; font-size: 0.875rem;">
+                Confidence: {confidence:.0%}
+                </div>
+                </div>
+{make_metric_row("Investment Objective", row.get('investment_objective', 'N/A'))}
+{make_metric_row("Promised Returns", row.get('promised_returns', 'N/A'), "var(--accent-secondary)")}
+{make_metric_row("Risk Category", row.get('risk_category', 'N/A'))}
+{make_metric_row("Lock-in Period", row.get('lock_in_period', 'N/A'))}
+{make_metric_row("Exit Load", row.get('exit_load', 'N/A'))}
+                </div>
+                """)
+                st.markdown(content, unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
         else:
             st.info("No Promises Extracted - Upload a document to begin analysis.")
 
 def render_reality_engine(data):
     """Stunning Reality Engine UI"""
+<<<<<<< HEAD
     st.markdown("# Reality Engine")
     st.markdown("Analyze customer sentiment and real-world experiences")
+=======
+    st.markdown("# 💬 Reality Engine")
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Analyze customer sentiment and real-world experiences</p>', unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     
     if data['sentiment'] is not None and len(data['sentiment']) > 0:
         # Sentiment timeline
@@ -947,6 +1133,7 @@ def render_reality_engine(data):
         ]
         
         for topic in topics:
+<<<<<<< HEAD
             with st.container():
                 col1, col2 = st.columns([3, 1])
                 with col1:
@@ -960,13 +1147,39 @@ def render_reality_engine(data):
                 
                 st.caption('Example: Customer reports unexpected charges on withdrawal')
                 st.divider()
+=======
+            sentiment_color = "#ef4444" if topic['sentiment'] < -0.6 else "#f59e0b"
+            sentiment_width = abs(topic['sentiment']) * 100
+            
+            st.markdown(f"""
+            <div class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="font-weight: 700; font-size: 1.125rem; color: var(--text-primary);">{topic['name']}</div>
+                    <div style="padding: 0.25rem 1rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50px; font-weight: 700; font-size: 0.875rem;">
+                        {topic['frequency']}% mentions
+                    </div>
+                </div>
+                <div style="height: 12px; background: #e2e8f0; border-radius: 50px; overflow: hidden; margin-bottom: 1rem;">
+                    <div style="height: 100%; width: {sentiment_width}%; background: {sentiment_color}; border-radius: 50px; transition: width 1s ease;"></div>
+                </div>
+                <div style="font-size: 0.875rem; color: #64748b; font-style: italic; padding: 1rem; background: rgba(102, 126, 234, 0.05); border-radius: 10px;">
+                    💬 "Example: Customer reports unexpected charges on withdrawal"
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     else:
         st.info("No Sentiment Data - Run the Reality Engine analysis first.")
 
 def render_risk_flags(data):
     """Stunning Risk Flags view"""
+<<<<<<< HEAD
     st.markdown("# Risk Flags")
     st.markdown("Detailed risk analysis and flagging system")
+=======
+    st.markdown("# 🚨 Risk Flags")
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Detailed risk analysis and flagging system</p>', unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     
     if data['gap'] is not None and len(data['gap']) > 0:
         selected_product = st.selectbox(
@@ -981,6 +1194,7 @@ def render_risk_flags(data):
             risk_score = float(product_data.get('overall_risk_score', 0)) * 100
             risk_level = str(product_data.get('risk_level', 'medium')).lower()
             
+<<<<<<< HEAD
             # Risk Score Display
             col1, col2 = st.columns([3, 1])
             with col1:
@@ -993,6 +1207,25 @@ def render_risk_flags(data):
             
             # Risk score metric
             st.metric("", f"{risk_score:.0f}/100", label_visibility="collapsed")
+=======
+            # Stunning Risk Meter
+            st.markdown(f"""
+            <div class="risk-meter-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; color: var(--text-primary);">Overall Risk Score</h3>
+                    <span class="status-badge {get_risk_badge_class(risk_level)}" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">
+                        {risk_level.upper()}
+                    </span>
+                </div>
+                <div class="risk-meter-bar">
+                    <div class="risk-meter-fill risk-{risk_level}" style="width: {risk_score}%;"></div>
+                </div>
+                <div style="text-align: center; font-size: 3rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 1rem;">
+                    {risk_score:.0f}/100
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
             
             # Why flagged section
             with st.expander("Why Flagged? - Evidence & Justification", expanded=True):
@@ -1027,6 +1260,7 @@ def render_risk_flags(data):
             ]
             
             for source in evidence_sources:
+<<<<<<< HEAD
                 col1, col2 = st.columns([2, 1])
                 with col1:
                     st.markdown(f"**{source['source']}**")
@@ -1035,6 +1269,22 @@ def render_risk_flags(data):
                     st.caption("Avg Sentiment")
                     st.metric("", f"{source['sentiment']:.2f}", label_visibility="collapsed")
                 st.divider()
+=======
+                st.markdown(f"""
+                <div class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.125rem; color: var(--text-primary); margin-bottom: 0.5rem;">{source['source']}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">{source['count']} data points</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Avg Sentiment</div>
+                            <div style="font-weight: 800; font-size: 1.5rem; background: linear-gradient(135deg, #ef4444, #f87171); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{source['sentiment']:.2f}</div>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     else:
         st.info("No Risk Analysis Data - Run the complete pipeline to generate risk flags.")
 
@@ -1093,10 +1343,70 @@ def generate_pdf_report(report_type, data):
     
     return pdf.output(dest='S').encode('latin-1')
 
+def generate_pdf_report(report_type, data):
+    """Generate a PDF report using FPDF"""
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Title
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(0, 10, f"Veritas Finance - {report_type}", ln=True, align="C")
+    pdf.ln(10)
+    
+    # Date
+    pdf.set_font("Arial", "", 10)
+    pdf.cell(0, 10, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True, align="R")
+    pdf.ln(10)
+    
+    # Executive Summary
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "1. Executive Summary", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 8, "This report analyzes potential mis-selling risks for the selected financial products based on comparison between marketing promises and customer experiences. Our AI engine has detected several discrepancies that warrant further investigation.")
+    pdf.ln(5)
+
+    # Stats
+    if data.get('gap') is not None:
+        high_risk = len(data['gap'][data['gap']['risk_level'].isin(['high', 'critical'])])
+        avg_risk = data['gap']['overall_risk_score'].mean()
+        pdf.set_font("Arial", "B", 11)
+        pdf.cell(0, 10, f"Key Metrics:", ln=True)
+        pdf.set_font("Arial", "", 11)
+        pdf.cell(0, 8, f"- Products Analyzed: {len(data['gap'])}", ln=True)
+        pdf.cell(0, 8, f"- High Risk Alerts: {high_risk}", ln=True)
+        pdf.cell(0, 8, f"- Average Risk Score: {avg_risk:.2f}", ln=True)
+        pdf.ln(5)
+    
+    # Extracted Promises
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "2. Extracted Promises Analysis", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 8, "Product marketing materials were analyzed using NLP to extract key promises regarding returns, lock-in periods, and risk levels.")
+    pdf.ln(5)
+    
+    # Reality Check
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "3. Customer Reality Check", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 8, "Sentiment analysis of customer reviews and complaints reveals significant deviation from promised features in identified high-risk products.")
+    pdf.ln(5)
+
+    # Footer
+    pdf.set_y(-15)
+    pdf.set_font("Arial", "I", 8)
+    pdf.cell(0, 10, f"Generated by Veritas Finance Regulatory Platform - Page {pdf.page_no()}", 0, 0, 'C')
+    
+    return pdf.output(dest='S').encode('latin-1')
+
 def render_reports_evidence(data):
     """Stunning Reports & Evidence view"""
+<<<<<<< HEAD
     st.markdown("# Reports & Evidence")
     st.markdown("Generate regulator-ready reports and evidence packages")
+=======
+    st.markdown("# 📋 Reports & Evidence")
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Generate regulator-ready reports and evidence packages</p>', unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     
     col1, col2 = st.columns(2)
     
@@ -1109,8 +1419,13 @@ def render_reports_evidence(data):
             "Regulatory Submission"
         ])
         
+<<<<<<< HEAD
         if st.button("Generate Report", type="primary", use_container_width=True):
             st.success("Report generated successfully!")
+=======
+        if st.button("🚀 Generate Report", type="primary", use_container_width=True):
+            st.success("✅ Report generated successfully!")
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
             
             # Generate real PDF
             pdf_bytes = generate_pdf_report(report_type, data)
@@ -1124,6 +1439,7 @@ def render_reports_evidence(data):
             )
     
     with col2:
+<<<<<<< HEAD
         st.markdown("### Report Archive")
         st.info("No previous reports found.")
     
@@ -1144,24 +1460,78 @@ def render_settings():
     """Settings view"""
     st.markdown("# Settings")
     st.markdown("System configuration and preferences")
+=======
+        st.markdown(textwrap.dedent("""
+        <div class="glass-card">
+        <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Report Archive</h3>
+        <p style="color: #64748b;">No previous reports found.</p>
+        </div>
+        """), unsafe_allow_html=True)
+    
+    # Report preview
+    st.markdown("### 📄 Report Preview")
+    st.markdown(textwrap.dedent("""
+    <div class="glass-card">
+    <h4 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem;">Product Risk Analysis Report</h4>
+    <div class="section-divider" style="margin: 1.5rem 0; background: rgba(255,255,255,0.1);"></div>
+    <h5 style="margin-top: 1.5rem;">1. Executive Summary</h5>
+    <p style="line-height: 1.8;">This report analyzes potential mis-selling risks for the selected financial products based on comparison between marketing promises and customer experiences.</p>
+    <h5 style="margin-top: 1.5rem;">2. Extracted Promises</h5>
+    <p style="line-height: 1.8;">Analysis of product documentation reveals the following claims...</p>
+    <h5 style="margin-top: 1.5rem;">3. Customer Sentiment Analysis</h5>
+    <p style="line-height: 1.8;">Sentiment analysis of customer reviews indicates...</p>
+    <h5 style="margin-top: 1.5rem;">4. Risk Justification</h5>
+    <p style="line-height: 1.8;">Gap analysis reveals mismatches in the following areas...</p>
+    </div>
+    """), unsafe_allow_html=True)
+
+def render_settings():
+    """Settings view"""
+    st.markdown("# ⚙️ Settings")
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">System configuration and preferences</p>', unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     
     tab1, tab2, tab3 = st.tabs(["Data Sources", "Alert Thresholds", "System"])
     
     with tab1:
+<<<<<<< HEAD
         st.markdown("### Data Source Configuration")
+=======
+        st.markdown("""
+        <div class="glass-card">
+            <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">Data Source Configuration</h3>
+        </div>
+        """, unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
         st.checkbox("Enable Twitter Feed", value=True)
         st.checkbox("Enable Reddit Discussions", value=True)
         st.checkbox("Enable Play Store Reviews", value=True)
         st.checkbox("Enable Trustpilot Reviews", value=True)
     
     with tab2:
+<<<<<<< HEAD
         st.markdown("### Risk Alert Thresholds")
+=======
+        st.markdown("""
+        <div class="glass-card">
+            <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">Risk Alert Thresholds</h3>
+        </div>
+        """, unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
         st.slider("High Risk Threshold", 0.0, 1.0, 0.7, 0.05)
         st.slider("Critical Risk Threshold", 0.0, 1.0, 0.9, 0.05)
         st.number_input("Minimum Complaints for Flagging", min_value=1, value=5)
     
     with tab3:
+<<<<<<< HEAD
         st.markdown("### System Settings")
+=======
+        st.markdown("""
+        <div class="glass-card">
+            <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">System Settings</h3>
+        </div>
+        """, unsafe_allow_html=True)
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
         st.selectbox("Report Format", ["PDF", "DOCX", "HTML"])
         st.selectbox("Date Format", ["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"])
         if st.button("Save Settings", type="primary", use_container_width=True):
@@ -1177,6 +1547,17 @@ def render_settings():
                     st.session_state.data = load_data() # Reload data
                 else:
                     st.error("Pipeline execution failed.")
+
+        st.divider()
+        st.markdown("### 🛠️ System Maintenance")
+        if st.button("🔄 Run Full Analysis Pipeline", use_container_width=True):
+            with st.spinner("Running system-wide analysis..."):
+                pipeline = VeritasFinancePipeline()
+                if pipeline.run_pipeline():
+                    st.success("✅ Pipeline execution successful!")
+                    st.session_state.data = load_data() # Reload data
+                else:
+                    st.error("❌ Pipeline execution failed.")
 
 # ============================================================================
 # MAIN APPLICATION

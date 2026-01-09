@@ -534,6 +534,7 @@
     "ironspider": {
         "password_hash": "$2b$12$H8xChETMXFN8WBwVBfqPj.K4.DuUfQRBYPJhOR3hoPfOQIcgFHNpi",
         "has_face_id": false
+<<<<<<< HEAD
     },
     "chit": {
         "password_hash": "$2b$12$qlwpBbwePnhl0ZqUGAOVWO4kGLy4SH99Fpp4EH9YNZmfPZ1zq0kva",
@@ -796,5 +797,7 @@
             0.0,
             0.0
         ]
+=======
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
     }
 }

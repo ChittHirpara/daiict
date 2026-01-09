@@ -1,5 +1,6 @@
 # VERITAS FINANCE - Executive Summary
 
+<<<<<<< HEAD
 *Report Generated: 2026-01-08 23:09:28*
 
 ## Overall Statistics
@@ -22,6 +23,30 @@
 - **Risk Level**: LOW
 - **Risk Score**: 0.26/1.0
 - **Dissatisfaction**: 40.0%
+=======
+*Report Generated: 2026-01-09 09:50:24*
+
+## Overall Statistics
+- **Products Analyzed**: 3
+- **Average Risk Score**: 0.38/1.0
+- **High/Critical Risk Products**: 0
+
+## Top Risky Products
+### SecureLife Insurance Policy
+- **Risk Level**: MEDIUM
+- **Risk Score**: 0.44/1.0
+- **Dissatisfaction**: 100.0%
+
+### MaxReturns Fixed Deposit
+- **Risk Level**: MEDIUM
+- **Risk Score**: 0.36/1.0
+- **Dissatisfaction**: 72.0%
+
+### Alpha Growth Mutual Fund
+- **Risk Level**: MEDIUM
+- **Risk Score**: 0.35/1.0
+- **Dissatisfaction**: 69.2%
+>>>>>>> f52b126d82de756a540f1962a41d4d2955fbfa4e
 
 
 ## Key Recommendations
