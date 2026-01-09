@@ -10,6 +10,8 @@ import os
 import sys
 from pathlib import Path
 
+import textwrap
+
 # Add project root to path
 sys.path.append(str(Path(__file__).parent))
 
@@ -382,7 +384,7 @@ class HackathonPresentation:
             st.markdown("### 🏗️ Architecture")
             
             # Create architecture visualization
-            arch_html = """
+            arch_html = textwrap.dedent("""
             <div style="background: white; padding: 20px; border-radius: 10px;">
                 <div style="text-align: center; margin: 10px; padding: 10px; background: #E3F2FD; border-radius: 5px;">
                     <strong>📄 Product Documents</strong><br>
@@ -425,7 +427,7 @@ class HackathonPresentation:
                     <small>Risk Scores & Recommendations</small>
                 </div>
             </div>
-            """
+            """)
             st.markdown(arch_html, unsafe_allow_html=True)
         
         with col2:
@@ -460,13 +462,13 @@ class HackathonPresentation:
             ]
             
             for innovation in innovations:
-                st.markdown(f"""
+                st.markdown(textwrap.dedent(f"""
                 <div style="background: rgba(255,255,255,0.9); padding: 15px; margin: 10px 0; border-radius: 10px; border-left: 5px solid #1E3A8A;">
                     <span style="font-size: 24px;">{innovation['icon']}</span>
                     <strong>{innovation['title']}</strong><br>
                     <small>{innovation['desc']}</small>
                 </div>
-                """, unsafe_allow_html=True)
+                """), unsafe_allow_html=True)
         
         # LIVE DEMO SECTION
         st.markdown('<div class="section-header">🎬 LIVE DEMO: Real-time Monitoring Dashboard</div>', 
@@ -573,13 +575,13 @@ class HackathonPresentation:
         
         for idx, (icon, title, value, color) in enumerate(impact_data):
             with cols[idx]:
-                st.markdown(f"""
+                st.markdown(textwrap.dedent(f"""
                 <div style="background: {color}; color: white; padding: 20px; border-radius: 15px; text-align: center; height: 100%;">
                     <span style="font-size: 2rem;">{icon}</span>
                     <h3>{value}</h3>
                     <p style="margin: 0; font-size: 0.9rem;">{title}</p>
                 </div>
-                """, unsafe_allow_html=True)
+                """), unsafe_allow_html=True)
         
         # LIVE DATA FEED (Simulated)
         st.markdown("### 📡 Live Data Feed")
@@ -587,18 +589,36 @@ class HackathonPresentation:
         feed_container = st.empty()
         
         # Simulate live data
-        live_messages = [
-            "📊 Processing Alpha Growth MF document... Promises extracted: 15% returns, Low risk",
-            "😔 Negative sentiment detected for SecureLife Insurance: 42 complaints about hidden charges",
-            "⚡ MISMATCH ALERT: MaxReturns FD promises 'easy exit' but customers report withdrawal issues",
-            "📈 Sentiment trend for WealthBuilder Plan shows 300% increase in complaints this month",
-            "🔍 New social media post analyzed: 'Avoid EasyInvest - they cheated me!'",
-            "🚨 CRITICAL RISK: Alpha Growth MF risk score increased to 0.92",
-            "📨 Alert sent to RBI regulator: High risk pattern detected",
-            "💾 Evidence package generated for investigation team",
-            "📊 Updated dashboard with real-time metrics",
-            "✅ System scan complete: 5 products analyzed, 3 high-risk alerts generated"
-        ]
+        if self.gap_df is not None and not self.gap_df.empty:
+            # Generate dynamic messages from real data
+            live_messages = []
+            
+            # Add processing messages
+            for product in self.products[:3]:
+                live_messages.append(f"📊 Processing {product} document... Data extracted.")
+                
+            # Add alert messages
+            for alert in self.alerts[:5]:
+                icon = "🚨" if alert['severity'] in ['critical', 'high'] else "⚠️"
+                live_messages.append(f"{icon} {alert['type'].upper()}: {alert['product']} - {alert['description']}")
+                
+            # Add system messages
+            live_messages.append(f"✅ System scan complete: {len(self.products)} products analyzed")
+            live_messages.append(f"💾 Evidence package generated for {len(self.alerts)} alerts")
+        else:
+            # Fallback for demo if no data
+            live_messages = [
+                "📊 Processing Alpha Growth MF document... Promises extracted: 15% returns, Low risk",
+                "😔 Negative sentiment detected for SecureLife Insurance: 42 complaints about hidden charges",
+                "⚡ MISMATCH ALERT: MaxReturns FD promises 'easy exit' but customers report withdrawal issues",
+                "📈 Sentiment trend for WealthBuilder Plan shows 300% increase in complaints this month",
+                "🔍 New social media post analyzed: 'Avoid EasyInvest - they cheated me!'",
+                "🚨 CRITICAL RISK: Alpha Growth MF risk score increased to 0.92",
+                "📨 Alert sent to RBI regulator: High risk pattern detected",
+                "💾 Evidence package generated for investigation team",
+                "📊 Updated dashboard with real-time metrics",
+                "✅ System scan complete: 5 products analyzed, 3 high-risk alerts generated"
+            ]
         
         # Display animated feed
         feed_html = '<div class="live-feed">'

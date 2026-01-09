@@ -1,54 +1,45 @@
 @echo off
-title VERITAS Command Center Launcher
-color 0A
-
 echo ========================================
-echo   VERITAS AI Regulatory Command Center
+echo VERITAS FINANCE - Hackathon Launch
 echo ========================================
 echo.
 
-echo [1/5] Checking Python installation...
+echo Step 1: Checking prerequisites...
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo ERROR: Python not found! Please install Python 3.8+
+    echo ERROR: Python not found!
     pause
     exit /b 1
 )
-echo       Python OK
-echo.
 
-echo [2/5] Checking dependencies...
-python -c "import streamlit, fastapi" >nul 2>&1
-if errorlevel 1 (
-    echo       Installing dependencies...
-    pip install -r requirements_upgraded.txt
+echo Step 2: Generating mock data...
+if not exist "data\mock\customer_reviews.csv" (
+    echo Generating mock data...
+    python mock_data_generator.py
+) else (
+    echo Mock data already exists.
 )
-echo       Dependencies OK
-echo.
 
-echo [3/5] Setting up database...
-python setup_database.py
-echo       Database OK
-echo.
+echo Step 3: Running AI pipeline (Core + Features)...
+python main_pipeline.py
+if errorlevel 1 (
+    echo WARNING: Pipeline had errors, but continuing...
+)
 
-echo [4/5] Starting API server...
-start "VERITAS API Server" cmd /k "cd /d %~dp0 && python api/main.py"
-timeout /t 3 >nul
-echo       API Server started at http://localhost:8000
 echo.
+echo Step 4: Launching Visualization Features...
+start features\split_screen.html
+start features\heatmap.html
 
-echo [5/5] Starting Command Center Dashboard...
-start "VERITAS Dashboard" cmd /k "cd /d %~dp0 && streamlit run dashboard.py"
-timeout /t 2 >nul
-echo       Dashboard starting at http://localhost:8501
 echo.
+echo Step 5: Launching Main Dashboard...
+echo Opening presentation mode in 3 seconds...
+timeout /t 3
+start streamlit run presentation_mode.py
 
+echo.
 echo ========================================
-echo   LAUNCH COMPLETE!
+echo ✅ Launch complete!
+echo Dashboard: http://localhost:8501
 echo ========================================
-echo.
-echo   API:        http://localhost:8000/docs
-echo   Dashboard:  http://localhost:8501
-echo.
-echo   Press any key to exit...
-pause >nul
+pause
