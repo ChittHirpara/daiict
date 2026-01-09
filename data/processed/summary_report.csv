@@ -1,0 +1,6 @@
+product,risk_level,risk_score,dissatisfaction,mismatches_count
+Alpha Growth Mutual Fund,high,0.68,40.5%,1
+EasyInvest Savings Account,high,0.70,42.6%,1
+MaxReturns Fixed Deposit,low,0.29,51.2%,0
+SecureLife Insurance Policy,critical,1.00,100.0%,1
+WealthBuilder Pension Plan,high,0.76,52.3%,1

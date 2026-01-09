@@ -1,0 +1,30 @@
+{
+  "name": "daiict",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.2.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.25.0",
+    "lucide-react": "^0.562.0",
+    "mongoose": "^9.1.2",
+    "next": "16.1.1",
+    "papaparse": "^5.5.3",
+    "pdf-parse": "^2.4.5",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "recharts": "^3.6.0",
+    "sentiment": "^5.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-next": "16.1.1"
+  }
+}

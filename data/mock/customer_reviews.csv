@@ -1,0 +1,201 @@
+review_id,product,bank,date,text,source,rating,verified_purchase,location,sentiment_score,complaint_type
+rev_0000,SecureLife Insurance Policy,SBI,2025-01-14,SBI misled me about SecureLife Insurance Policy. Now facing misleading information.,Reddit,1,true,New Reed,0.06550427223460432,misleading information
+rev_0001,EasyInvest Savings Account,ICICI,2025-11-24,ICICI's EasyInvest Savings Account gave me good returns this quarter.,Twitter,4,false,North Wilberburgh,0.8551310379882054,
+rev_0002,EasyInvest Savings Account,Axis,2025-04-17,"Mixed feelings about EasyInvest Savings Account. Some good, some bad.",Play Store,1,false,Lake Daniellebury,0.38530007634604213,
+rev_0003,WealthBuilder Pension Plan,SBI,2025-03-15,SBI's WealthBuilder Pension Plan gave me good returns this quarter.,Trustpilot,3,true,Greggburgh,0.7367973315631885,
+rev_0004,WealthBuilder Pension Plan,SBI,2025-07-30,Terrible experience with WealthBuilder Pension Plan. hidden charges.,Twitter,1,false,Osinskiboro,0.010529545006138785,hidden charges
+rev_0005,MaxReturns Fixed Deposit,Axis,2025-09-26,Happy with my MaxReturns Fixed Deposit from Axis. Returns are as promised.,Reddit,4,false,West Rosarioworth,0.9517560558749836,
+rev_0006,EasyInvest Savings Account,Kotak,2026-01-06,Happy with my EasyInvest Savings Account from Kotak. Returns are as promised.,Trustpilot,4,true,New Cierra,0.8553402550457573,
+rev_0007,WealthBuilder Pension Plan,ICICI,2025-08-10,Terrible experience with WealthBuilder Pension Plan. hidden charges.,Reddit,1,false,Shoreline,0.18955772077311409,hidden charges
+rev_0008,MaxReturns Fixed Deposit,Axis,2025-07-03,Happy with my MaxReturns Fixed Deposit from Axis. Returns are as promised.,Reddit,4,false,Melvinaworth,0.9382903405427105,
+rev_0009,WealthBuilder Pension Plan,ICICI,2025-02-06,Avoid WealthBuilder Pension Plan from ICICI! They have bad service.,Play Store,1,false,Ornbury,0.08533070794348775,bad service
+rev_0010,WealthBuilder Pension Plan,Kotak,2025-10-09,Kotak misled me about WealthBuilder Pension Plan. Now facing difficult claims.,Play Store,1,false,South Katherynview,0.08107546749085918,difficult claims
+rev_0011,Alpha Growth Mutual Fund,SBI,2025-12-15,No complaints about Alpha Growth Mutual Fund. Service was excellent.,Twitter,3,false,Skokie,0.7195892478461541,
+rev_0012,MaxReturns Fixed Deposit,Kotak,2025-10-04,Avoid MaxReturns Fixed Deposit from Kotak! They have bad service.,Reddit,1,true,West Ryleehaven,0.11665798034555648,bad service
+rev_0013,EasyInvest Savings Account,HDFC,2025-10-20,HDFC misled me about EasyInvest Savings Account. Now facing bad service.,Reddit,1,false,New Domenicabury,0.11883876612528373,bad service
+rev_0014,Alpha Growth Mutual Fund,ICICI,2025-11-02,Terrible experience with Alpha Growth Mutual Fund. bad service.,Reddit,1,false,Lake Jacquesmouth,0.2883643653607005,bad service
+rev_0015,EasyInvest Savings Account,ICICI,2025-08-05,ICICI misled me about EasyInvest Savings Account. Now facing long processing time.,Twitter,1,false,Fort Adolphworth,0.1351688241184059,long processing time
+rev_0016,EasyInvest Savings Account,ICICI,2025-08-16,ICICI misled me about EasyInvest Savings Account. Now facing poor returns.,Play Store,1,true,Port Osvaldoport,0.19381523768057443,poor returns
+rev_0017,EasyInvest Savings Account,Kotak,2025-06-05,Kotak misled me about EasyInvest Savings Account. Now facing hidden charges.,Trustpilot,1,true,Castro Valley,0.17881746286682806,hidden charges
+rev_0018,EasyInvest Savings Account,SBI,2025-05-04,Avoid EasyInvest Savings Account from SBI! They have difficult claims.,Play Store,1,true,West Tomasboro,0.0459325812020542,difficult claims
+rev_0019,MaxReturns Fixed Deposit,ICICI,2025-07-01,Terrible experience with MaxReturns Fixed Deposit. difficult claims.,Trustpilot,1,true,Port Breana,0.21827249573551952,difficult claims
+rev_0020,SecureLife Insurance Policy,SBI,2025-03-18,Terrible experience with SecureLife Insurance Policy. long processing time.,Play Store,1,false,Lake Steve,0.1662837811619761,long processing time
+rev_0021,Alpha Growth Mutual Fund,ICICI,2025-06-13,Terrible experience with Alpha Growth Mutual Fund. poor returns.,Play Store,1,true,Hannachester,0.23958103266619257,poor returns
+rev_0022,WealthBuilder Pension Plan,HDFC,2025-07-15,HDFC's WealthBuilder Pension Plan gave me good returns this quarter.,Twitter,4,true,East Delphineport,0.9383237601284848,
+rev_0023,WealthBuilder Pension Plan,HDFC,2025-04-16,Avoid WealthBuilder Pension Plan from HDFC! They have long processing time.,Play Store,1,true,Chesterfield,0.14821638322556,long processing time
+rev_0024,EasyInvest Savings Account,Axis,2025-09-02,Axis's EasyInvest Savings Account gave me good returns this quarter.,Twitter,4,false,Brodycester,0.8007392487886928,
+rev_0025,WealthBuilder Pension Plan,Axis,2025-09-12,Axis misled me about WealthBuilder Pension Plan. Now facing bad service.,Reddit,1,false,Kautzerside,0.11296971015062637,bad service
+rev_0026,WealthBuilder Pension Plan,HDFC,2026-01-05,No complaints about WealthBuilder Pension Plan. Service was excellent.,Twitter,4,true,Jacobsside,0.9237109159477752,
+rev_0027,MaxReturns Fixed Deposit,Kotak,2025-12-05,Avoid MaxReturns Fixed Deposit from Kotak! They have long processing time.,Reddit,1,false,Darrionview,0.2895563318434196,long processing time
+rev_0028,WealthBuilder Pension Plan,ICICI,2025-05-05,No complaints about WealthBuilder Pension Plan. Service was excellent.,Twitter,3,false,Stromanstead,0.7618402950244791,
+rev_0029,SecureLife Insurance Policy,Axis,2025-11-14,Avoid SecureLife Insurance Policy from Axis! They have long processing time.,Play Store,1,false,Westminster,0.23383657142580738,long processing time
+rev_0030,EasyInvest Savings Account,ICICI,2025-01-14,ICICI's EasyInvest Savings Account gave me good returns this quarter.,Play Store,4,false,Cicerotown,0.8058117377639666,
+rev_0031,MaxReturns Fixed Deposit,Axis,2025-05-06,Axis misled me about MaxReturns Fixed Deposit. Now facing hidden charges.,Play Store,1,false,Fort Rubie,0.17935820799198524,hidden charges
+rev_0032,EasyInvest Savings Account,Axis,2025-09-15,Avoid EasyInvest Savings Account from Axis! They have difficult claims.,Play Store,1,false,Lake Nakia,0.2672222018907567,difficult claims
+rev_0033,Alpha Growth Mutual Fund,Axis,2025-02-11,Axis misled me about Alpha Growth Mutual Fund. Now facing long processing time.,Trustpilot,1,true,Lake Rylan,0.16586382783645823,long processing time
+rev_0034,EasyInvest Savings Account,HDFC,2025-11-05,HDFC's EasyInvest Savings Account gave me good returns this quarter.,Play Store,4,true,Pricebury,0.8107877365178647,
+rev_0035,Alpha Growth Mutual Fund,Kotak,2025-03-09,Not sure about Alpha Growth Mutual Fund. Need to wait and watch.,Play Store,2,true,Casperborough,0.4595620932148626,
+rev_0036,EasyInvest Savings Account,SBI,2025-10-23,No complaints about EasyInvest Savings Account. Service was excellent.,Reddit,4,true,Darwinmouth,0.8675441666187562,
+rev_0037,Alpha Growth Mutual Fund,Axis,2025-07-25,Terrible experience with Alpha Growth Mutual Fund. poor returns.,Twitter,1,false,South Benton,0.1624632839188828,poor returns
+rev_0038,SecureLife Insurance Policy,SBI,2025-10-22,Avoid SecureLife Insurance Policy from SBI! They have bad service.,Play Store,1,false,Cleveland,0.05021551544439749,bad service
+rev_0039,EasyInvest Savings Account,Axis,2025-02-15,Axis misled me about EasyInvest Savings Account. Now facing difficult claims.,Twitter,1,true,North Alejandrinboro,0.000417792786571991,difficult claims
+rev_0040,MaxReturns Fixed Deposit,SBI,2025-10-02,Avoid MaxReturns Fixed Deposit from SBI! They have misleading information.,Twitter,1,true,Heathcotechester,0.1898407630414819,misleading information
+rev_0041,WealthBuilder Pension Plan,HDFC,2025-10-31,HDFC misled me about WealthBuilder Pension Plan. Now facing poor returns.,Reddit,1,false,South Dee,0.012084550235209723,poor returns
+rev_0042,MaxReturns Fixed Deposit,Kotak,2025-05-27,Kotak misled me about MaxReturns Fixed Deposit. Now facing difficult claims.,Reddit,1,false,Predovicland,0.18312992040221562,difficult claims
+rev_0043,SecureLife Insurance Policy,Kotak,2025-01-11,Avoid SecureLife Insurance Policy from Kotak! They have misleading information.,Twitter,1,false,Kirlinstead,0.13822768543127137,misleading information
+rev_0044,Alpha Growth Mutual Fund,ICICI,2025-12-11,ICICI misled me about Alpha Growth Mutual Fund. Now facing misleading information.,Trustpilot,1,false,Chula Vista,0.0925430869159358,misleading information
+rev_0045,WealthBuilder Pension Plan,Kotak,2025-06-15,Avoid WealthBuilder Pension Plan from Kotak! They have bad service.,Play Store,1,false,West Winifred,0.07901045760891912,bad service
+rev_0046,Alpha Growth Mutual Fund,Axis,2025-11-06,Axis misled me about Alpha Growth Mutual Fund. Now facing misleading information.,Trustpilot,1,false,Grand Junction,0.29384254415891403,misleading information
+rev_0047,EasyInvest Savings Account,ICICI,2025-02-20,"Mixed feelings about EasyInvest Savings Account. Some good, some bad.",Trustpilot,1,true,Powlowskiburgh,0.3244236044953388,
+rev_0048,Alpha Growth Mutual Fund,Kotak,2025-03-08,Kotak misled me about Alpha Growth Mutual Fund. Now facing agent misconduct.,Reddit,1,true,Arecibo,0.06804673288395789,agent misconduct
+rev_0049,MaxReturns Fixed Deposit,Axis,2025-04-06,Axis misled me about MaxReturns Fixed Deposit. Now facing difficult claims.,Twitter,1,false,Independence,0.09678314347017788,difficult claims
+rev_0050,MaxReturns Fixed Deposit,ICICI,2025-01-20,Avoid MaxReturns Fixed Deposit from ICICI! They have hidden charges.,Reddit,1,false,Daytonstad,0.12246906799943408,hidden charges
+rev_0051,SecureLife Insurance Policy,Axis,2025-07-22,Terrible experience with SecureLife Insurance Policy. bad service.,Trustpilot,1,true,Thompsonberg,0.014089267074755517,bad service
+rev_0052,WealthBuilder Pension Plan,HDFC,2025-08-19,Avoid WealthBuilder Pension Plan from HDFC! They have bad service.,Reddit,1,false,Rathside,0.03324704989829098,bad service
+rev_0053,SecureLife Insurance Policy,Axis,2025-03-27,Avoid SecureLife Insurance Policy from Axis! They have bad service.,Twitter,1,true,West Armani,0.1520205344438304,bad service
+rev_0054,MaxReturns Fixed Deposit,SBI,2025-06-10,No complaints about MaxReturns Fixed Deposit. Service was excellent.,Play Store,4,false,Willishaven,0.9035419333535961,
+rev_0055,EasyInvest Savings Account,HDFC,2025-08-07,Happy with my EasyInvest Savings Account from HDFC. Returns are as promised.,Reddit,4,false,South Katarina,0.9294315152279276,
+rev_0056,MaxReturns Fixed Deposit,ICICI,2025-05-22,Avoid MaxReturns Fixed Deposit from ICICI! They have misleading information.,Reddit,1,true,Cadefield,0.02941496743692292,misleading information
+rev_0057,WealthBuilder Pension Plan,HDFC,2025-03-20,Not sure about WealthBuilder Pension Plan. Need to wait and watch.,Play Store,2,false,Terryfield,0.4126938419116412,
+rev_0058,EasyInvest Savings Account,HDFC,2025-07-17,Terrible experience with EasyInvest Savings Account. poor returns.,Trustpilot,1,true,Fort Reyes,0.06675370879181793,poor returns
+rev_0059,Alpha Growth Mutual Fund,Kotak,2025-08-07,Avoid Alpha Growth Mutual Fund from Kotak! They have hidden charges.,Play Store,1,false,North Wilberville,0.277640275225919,hidden charges
+rev_0060,WealthBuilder Pension Plan,Axis,2025-12-01,Not sure about WealthBuilder Pension Plan. Need to wait and watch.,Twitter,3,true,East Margret,0.6185331809817426,
+rev_0061,EasyInvest Savings Account,ICICI,2025-08-25,Avoid EasyInvest Savings Account from ICICI! They have poor returns.,Trustpilot,1,true,West Adrienborough,0.10272049685413161,poor returns
+rev_0062,WealthBuilder Pension Plan,HDFC,2025-07-28,Avoid WealthBuilder Pension Plan from HDFC! They have hidden charges.,Trustpilot,1,true,Hayeschester,0.23217014854271006,hidden charges
+rev_0063,SecureLife Insurance Policy,ICICI,2025-06-10,Terrible experience with SecureLife Insurance Policy. bad service.,Play Store,1,false,Valentinfort,0.15663887995400938,bad service
+rev_0064,WealthBuilder Pension Plan,ICICI,2025-12-07,Not sure about WealthBuilder Pension Plan. Need to wait and watch.,Reddit,2,false,North Annabelle,0.4380899189500218,
+rev_0065,SecureLife Insurance Policy,Axis,2025-08-29,Axis misled me about SecureLife Insurance Policy. Now facing difficult claims.,Twitter,1,false,Fort Myers,0.010100324828925011,difficult claims
+rev_0066,EasyInvest Savings Account,Axis,2025-04-14,Terrible experience with EasyInvest Savings Account. misleading information.,Reddit,1,false,Micahstad,0.05541641741568954,misleading information
+rev_0067,Alpha Growth Mutual Fund,HDFC,2025-02-01,Happy with my Alpha Growth Mutual Fund from HDFC. Returns are as promised.,Reddit,4,true,Port Hershel,0.9346617463401511,
+rev_0068,WealthBuilder Pension Plan,ICICI,2025-02-13,ICICI misled me about WealthBuilder Pension Plan. Now facing poor returns.,Trustpilot,1,false,Turlock,0.09045788147588359,poor returns
+rev_0069,SecureLife Insurance Policy,HDFC,2025-12-28,Terrible experience with SecureLife Insurance Policy. misleading information.,Reddit,1,false,Linden,0.2803962140597629,misleading information
+rev_0070,WealthBuilder Pension Plan,HDFC,2026-01-07,WealthBuilder Pension Plan from HDFC is okay. Nothing special.,Trustpilot,1,false,West Elianport,0.38871045957113276,
+rev_0071,MaxReturns Fixed Deposit,HDFC,2025-03-28,Terrible experience with MaxReturns Fixed Deposit. bad service.,Play Store,1,true,Diannacester,0.07521784527714206,bad service
+rev_0072,Alpha Growth Mutual Fund,ICICI,2025-06-13,Alpha Growth Mutual Fund from ICICI is okay. Nothing special.,Twitter,2,true,South Henry,0.4478332592768537,
+rev_0073,Alpha Growth Mutual Fund,Kotak,2025-08-09,No complaints about Alpha Growth Mutual Fund. Service was excellent.,Trustpilot,4,true,Joliet,0.9546645815954751,
+rev_0074,WealthBuilder Pension Plan,ICICI,2025-12-30,No complaints about WealthBuilder Pension Plan. Service was excellent.,Trustpilot,3,false,Fort Collinfort,0.7667006064620111,
+rev_0075,SecureLife Insurance Policy,Axis,2025-11-24,Axis misled me about SecureLife Insurance Policy. Now facing bad service.,Play Store,1,true,Thomasworth,0.14173504134941492,bad service
+rev_0076,EasyInvest Savings Account,Axis,2026-01-06,Terrible experience with EasyInvest Savings Account. misleading information.,Twitter,1,true,Sierra Vista,0.1732912082373659,misleading information
+rev_0077,EasyInvest Savings Account,Axis,2025-01-27,Avoid EasyInvest Savings Account from Axis! They have misleading information.,Reddit,1,true,Fort Collins,0.25226217728175815,misleading information
+rev_0078,WealthBuilder Pension Plan,Axis,2025-10-06,Terrible experience with WealthBuilder Pension Plan. misleading information.,Play Store,1,false,North Nicolaton,0.024704125840928116,misleading information
+rev_0079,Alpha Growth Mutual Fund,SBI,2025-03-08,Terrible experience with Alpha Growth Mutual Fund. difficult claims.,Play Store,1,false,Lake Taurean,0.1280606059993034,difficult claims
+rev_0080,SecureLife Insurance Policy,SBI,2025-03-13,Terrible experience with SecureLife Insurance Policy. agent misconduct.,Play Store,1,false,West Myamouth,0.1959842538676311,agent misconduct
+rev_0081,Alpha Growth Mutual Fund,SBI,2025-03-20,Alpha Growth Mutual Fund from SBI is okay. Nothing special.,Twitter,1,false,Forestville,0.3560408827030153,
+rev_0082,SecureLife Insurance Policy,SBI,2026-01-07,Avoid SecureLife Insurance Policy from SBI! They have difficult claims.,Trustpilot,1,true,Spencerfield,0.2080988413756097,difficult claims
+rev_0083,EasyInvest Savings Account,Axis,2025-11-25,Axis misled me about EasyInvest Savings Account. Now facing long processing time.,Twitter,1,true,West Leonora,0.047931091022818936,long processing time
+rev_0084,Alpha Growth Mutual Fund,Axis,2025-09-22,Axis's Alpha Growth Mutual Fund gave me good returns this quarter.,Twitter,4,true,North Tomasaburgh,0.8150033080235415,
+rev_0085,Alpha Growth Mutual Fund,SBI,2025-08-23,Not sure about Alpha Growth Mutual Fund. Need to wait and watch.,Twitter,1,false,Enidshire,0.35073166145098617,
+rev_0086,SecureLife Insurance Policy,HDFC,2025-04-07,HDFC misled me about SecureLife Insurance Policy. Now facing difficult claims.,Play Store,1,false,Port Wavaport,0.01527916472234887,difficult claims
+rev_0087,WealthBuilder Pension Plan,HDFC,2025-02-21,No complaints about WealthBuilder Pension Plan. Service was excellent.,Reddit,4,false,West Raegan,0.945067458268265,
+rev_0088,EasyInvest Savings Account,SBI,2025-05-15,SBI's EasyInvest Savings Account gave me good returns this quarter.,Reddit,4,false,Cremincester,0.8405941219971262,
+rev_0089,EasyInvest Savings Account,ICICI,2025-04-17,"Mixed feelings about EasyInvest Savings Account. Some good, some bad.",Reddit,1,false,Bauchton,0.39789046830968194,
+rev_0090,EasyInvest Savings Account,HDFC,2025-04-04,"Mixed feelings about EasyInvest Savings Account. Some good, some bad.",Trustpilot,3,false,Fort Zelda,0.6996464159417263,
+rev_0091,MaxReturns Fixed Deposit,Axis,2025-01-29,Axis's MaxReturns Fixed Deposit gave me good returns this quarter.,Reddit,4,true,East Honolulu,0.9863463561691832,
+rev_0092,MaxReturns Fixed Deposit,SBI,2025-02-15,Not sure about MaxReturns Fixed Deposit. Need to wait and watch.,Trustpilot,1,false,Spinkafort,0.3275881609516678,
+rev_0093,EasyInvest Savings Account,HDFC,2025-05-18,"Mixed feelings about EasyInvest Savings Account. Some good, some bad.",Reddit,1,false,North Major,0.3854590123720247,
+rev_0094,SecureLife Insurance Policy,Kotak,2025-01-25,Terrible experience with SecureLife Insurance Policy. difficult claims.,Reddit,1,true,Zulahaven,0.26149775586252144,difficult claims
+rev_0095,SecureLife Insurance Policy,ICICI,2025-08-09,Avoid SecureLife Insurance Policy from ICICI! They have misleading information.,Reddit,1,false,Ursulaport,0.20187669261181243,misleading information
+rev_0096,Alpha Growth Mutual Fund,SBI,2025-09-22,SBI's Alpha Growth Mutual Fund gave me good returns this quarter.,Reddit,4,true,Bergnaumfurt,0.999834906856047,
+rev_0097,MaxReturns Fixed Deposit,ICICI,2025-07-14,ICICI misled me about MaxReturns Fixed Deposit. Now facing bad service.,Twitter,1,false,Daly City,0.19780909596784396,bad service
+rev_0098,EasyInvest Savings Account,HDFC,2025-05-20,Avoid EasyInvest Savings Account from HDFC! They have difficult claims.,Twitter,1,true,South Terrillport,0.21140136549289879,difficult claims
+rev_0099,SecureLife Insurance Policy,ICICI,2025-04-13,Terrible experience with SecureLife Insurance Policy. agent misconduct.,Trustpilot,1,false,Reganfort,0.21316497228668882,agent misconduct
+rev_0100,EasyInvest Savings Account,Axis,2025-09-18,EasyInvest Savings Account from Axis is okay. Nothing special.,Reddit,1,true,Port Cesar,0.38526682645157284,
+rev_0101,WealthBuilder Pension Plan,Axis,2025-07-08,No complaints about WealthBuilder Pension Plan. Service was excellent.,Reddit,4,true,Lake Rick,0.9621526124153712,
+rev_0102,Alpha Growth Mutual Fund,SBI,2025-11-20,Terrible experience with Alpha Growth Mutual Fund. agent misconduct.,Reddit,1,true,South Ericbury,0.18102921076144687,agent misconduct
+rev_0103,MaxReturns Fixed Deposit,ICICI,2025-05-30,No complaints about MaxReturns Fixed Deposit. Service was excellent.,Trustpilot,3,false,North Napoleonville,0.758096724544312,
+rev_0104,Alpha Growth Mutual Fund,SBI,2025-01-13,Avoid Alpha Growth Mutual Fund from SBI! They have misleading information.,Reddit,1,true,Port Jeremiemouth,0.03175654805200948,misleading information
+rev_0105,MaxReturns Fixed Deposit,HDFC,2025-01-11,MaxReturns Fixed Deposit from HDFC is okay. Nothing special.,Reddit,2,false,Fort Cayla,0.5393957639620407,
+rev_0106,MaxReturns Fixed Deposit,ICICI,2025-11-13,"Mixed feelings about MaxReturns Fixed Deposit. Some good, some bad.",Trustpilot,3,false,Port Xander,0.6268088261865636,
+rev_0107,SecureLife Insurance Policy,HDFC,2025-02-14,Terrible experience with SecureLife Insurance Policy. poor returns.,Reddit,1,true,Streichborough,0.011879171225163564,poor returns
+rev_0108,SecureLife Insurance Policy,SBI,2025-02-25,Avoid SecureLife Insurance Policy from SBI! They have poor returns.,Twitter,1,false,South Audie,0.20727899673170727,poor returns
+rev_0109,SecureLife Insurance Policy,HDFC,2025-09-15,Terrible experience with SecureLife Insurance Policy. bad service.,Reddit,1,true,Warren,0.043175599361452245,bad service
+rev_0110,WealthBuilder Pension Plan,Kotak,2025-12-12,Not sure about WealthBuilder Pension Plan. Need to wait and watch.,Reddit,2,true,Fort Ericka,0.5959113008989678,
+rev_0111,MaxReturns Fixed Deposit,ICICI,2025-05-07,ICICI misled me about MaxReturns Fixed Deposit. Now facing hidden charges.,Play Store,1,true,Damianhaven,0.03531501862434594,hidden charges
+rev_0112,MaxReturns Fixed Deposit,Kotak,2025-06-06,"Mixed feelings about MaxReturns Fixed Deposit. Some good, some bad.",Twitter,2,false,Montebello,0.4704867931283939,
+rev_0113,EasyInvest Savings Account,SBI,2025-10-19,Terrible experience with EasyInvest Savings Account. poor returns.,Play Store,1,false,West Clementineboro,0.017192698122397276,poor returns
+rev_0114,SecureLife Insurance Policy,ICICI,2025-12-10,ICICI misled me about SecureLife Insurance Policy. Now facing hidden charges.,Trustpilot,1,false,Boulder,0.22452219454999253,hidden charges
+rev_0115,WealthBuilder Pension Plan,Axis,2025-05-12,Happy with my WealthBuilder Pension Plan from Axis. Returns are as promised.,Twitter,4,false,Wisokyville,0.8933615977653194,
+rev_0116,MaxReturns Fixed Deposit,HDFC,2025-11-16,MaxReturns Fixed Deposit from HDFC is okay. Nothing special.,Reddit,2,false,East Giuseppeland,0.41071692511154156,
+rev_0117,WealthBuilder Pension Plan,Kotak,2025-10-23,Kotak misled me about WealthBuilder Pension Plan. Now facing difficult claims.,Reddit,1,true,Spencerboro,0.20161638312730248,difficult claims
+rev_0118,MaxReturns Fixed Deposit,HDFC,2025-08-17,Happy with my MaxReturns Fixed Deposit from HDFC. Returns are as promised.,Reddit,4,false,Ferryworth,0.9057356981234042,
+rev_0119,EasyInvest Savings Account,Kotak,2025-04-08,Kotak misled me about EasyInvest Savings Account. Now facing long processing time.,Twitter,1,false,North Priscilla,0.10305558166269835,long processing time
+rev_0120,Alpha Growth Mutual Fund,SBI,2025-12-16,Not sure about Alpha Growth Mutual Fund. Need to wait and watch.,Twitter,1,true,Fort Spencer,0.33403899259982883,
+rev_0121,WealthBuilder Pension Plan,HDFC,2025-11-18,HDFC misled me about WealthBuilder Pension Plan. Now facing hidden charges.,Trustpilot,1,true,Lake Ervincester,0.1226744503314997,hidden charges
+rev_0122,Alpha Growth Mutual Fund,Kotak,2025-01-29,Kotak's Alpha Growth Mutual Fund gave me good returns this quarter.,Twitter,4,true,St. George,0.8683370060521649,
+rev_0123,MaxReturns Fixed Deposit,Axis,2025-04-06,Terrible experience with MaxReturns Fixed Deposit. poor returns.,Twitter,1,true,South Leora,0.0032322618316958152,poor returns
+rev_0124,EasyInvest Savings Account,Axis,2025-10-31,Avoid EasyInvest Savings Account from Axis! They have bad service.,Play Store,1,true,North Javonworth,0.24998899909160213,bad service
+rev_0125,Alpha Growth Mutual Fund,SBI,2025-01-27,SBI misled me about Alpha Growth Mutual Fund. Now facing bad service.,Reddit,1,true,South Hadley,0.24911816722317587,bad service
+rev_0126,MaxReturns Fixed Deposit,HDFC,2025-07-11,Terrible experience with MaxReturns Fixed Deposit. difficult claims.,Play Store,1,true,Port Monserrat,0.0945815253074315,difficult claims
+rev_0127,EasyInvest Savings Account,HDFC,2025-05-08,HDFC's EasyInvest Savings Account gave me good returns this quarter.,Play Store,3,true,Paolofurt,0.7208824764592182,
+rev_0128,MaxReturns Fixed Deposit,Kotak,2025-02-04,Avoid MaxReturns Fixed Deposit from Kotak! They have difficult claims.,Trustpilot,1,false,Jeniferfurt,0.03571468465894789,difficult claims
+rev_0129,Alpha Growth Mutual Fund,HDFC,2025-04-09,Happy with my Alpha Growth Mutual Fund from HDFC. Returns are as promised.,Twitter,3,true,South Samanta,0.7030143754510807,
+rev_0130,MaxReturns Fixed Deposit,SBI,2025-08-16,"Mixed feelings about MaxReturns Fixed Deposit. Some good, some bad.",Trustpilot,3,false,Port Jaydahaven,0.6972752318069257,
+rev_0131,SecureLife Insurance Policy,SBI,2025-10-22,Avoid SecureLife Insurance Policy from SBI! They have bad service.,Trustpilot,1,true,Willyworth,0.17563916410447375,bad service
+rev_0132,WealthBuilder Pension Plan,ICICI,2025-07-13,No complaints about WealthBuilder Pension Plan. Service was excellent.,Reddit,4,false,Raphaelborough,0.9260938973361459,
+rev_0133,WealthBuilder Pension Plan,Axis,2025-09-30,No complaints about WealthBuilder Pension Plan. Service was excellent.,Reddit,4,false,Fort Sandra,0.8809599845869329,
+rev_0134,SecureLife Insurance Policy,ICICI,2025-06-13,ICICI misled me about SecureLife Insurance Policy. Now facing agent misconduct.,Play Store,1,false,East Marvinstad,0.10355394532324082,agent misconduct
+rev_0135,MaxReturns Fixed Deposit,HDFC,2025-07-16,HDFC misled me about MaxReturns Fixed Deposit. Now facing long processing time.,Trustpilot,1,true,Brooklyn Park,0.03994345084462758,long processing time
+rev_0136,SecureLife Insurance Policy,Axis,2025-12-31,Terrible experience with SecureLife Insurance Policy. long processing time.,Play Store,1,true,New Antoinette,0.14655100355781672,long processing time
+rev_0137,EasyInvest Savings Account,HDFC,2025-06-05,No complaints about EasyInvest Savings Account. Service was excellent.,Play Store,4,true,Destineyshire,0.9286434672481386,
+rev_0138,Alpha Growth Mutual Fund,Kotak,2025-06-26,Kotak's Alpha Growth Mutual Fund gave me good returns this quarter.,Reddit,3,true,Altoona,0.7260553983977082,
+rev_0139,Alpha Growth Mutual Fund,SBI,2025-08-26,Terrible experience with Alpha Growth Mutual Fund. difficult claims.,Twitter,1,true,West Nyasia,0.18687685858103584,difficult claims
+rev_0140,WealthBuilder Pension Plan,HDFC,2025-12-16,Terrible experience with WealthBuilder Pension Plan. misleading information.,Twitter,1,true,Santinoborough,0.29042969050059647,misleading information
+rev_0141,MaxReturns Fixed Deposit,ICICI,2025-04-22,No complaints about MaxReturns Fixed Deposit. Service was excellent.,Reddit,4,true,Altoona,0.8196965734856133,
+rev_0142,EasyInvest Savings Account,SBI,2025-10-17,Happy with my EasyInvest Savings Account from SBI. Returns are as promised.,Twitter,3,true,Goyetteburgh,0.7257165787278866,
+rev_0143,SecureLife Insurance Policy,Axis,2025-06-21,Axis misled me about SecureLife Insurance Policy. Now facing bad service.,Reddit,1,false,Eddieburgh,0.1017439207834319,bad service
+rev_0144,WealthBuilder Pension Plan,ICICI,2025-04-11,Terrible experience with WealthBuilder Pension Plan. hidden charges.,Trustpilot,1,true,Sandy Springs,0.2746667060089135,hidden charges
+rev_0145,MaxReturns Fixed Deposit,SBI,2025-04-12,SBI misled me about MaxReturns Fixed Deposit. Now facing bad service.,Play Store,1,true,Elgin,0.10820220778076314,bad service
+rev_0146,EasyInvest Savings Account,Kotak,2025-02-22,Terrible experience with EasyInvest Savings Account. difficult claims.,Twitter,1,true,Stromanfurt,0.17726134637951937,difficult claims
+rev_0147,Alpha Growth Mutual Fund,ICICI,2025-05-28,ICICI's Alpha Growth Mutual Fund gave me good returns this quarter.,Trustpilot,4,true,O'Konshire,0.8950076818687671,
+rev_0148,Alpha Growth Mutual Fund,ICICI,2025-12-22,Terrible experience with Alpha Growth Mutual Fund. difficult claims.,Twitter,1,false,Jerdetown,0.06402663949850863,difficult claims
+rev_0149,MaxReturns Fixed Deposit,SBI,2025-08-06,"Mixed feelings about MaxReturns Fixed Deposit. Some good, some bad.",Twitter,2,false,New Emmalee,0.4849379061646739,
+rev_0150,WealthBuilder Pension Plan,HDFC,2025-10-13,No complaints about WealthBuilder Pension Plan. Service was excellent.,Reddit,3,false,Overland Park,0.7611701646215675,
+rev_0151,MaxReturns Fixed Deposit,Axis,2025-04-22,MaxReturns Fixed Deposit from Axis is okay. Nothing special.,Reddit,2,false,Hickleland,0.42612884219666797,
+rev_0152,WealthBuilder Pension Plan,Axis,2025-08-23,Axis misled me about WealthBuilder Pension Plan. Now facing bad service.,Twitter,1,false,Schambergerside,0.23712681842573868,bad service
+rev_0153,EasyInvest Savings Account,Axis,2025-08-20,EasyInvest Savings Account from Axis is okay. Nothing special.,Trustpilot,2,false,North Peggie,0.5846273770649986,
+rev_0154,MaxReturns Fixed Deposit,ICICI,2025-10-10,Terrible experience with MaxReturns Fixed Deposit. long processing time.,Play Store,1,false,Fort Mya,0.09169598294860823,long processing time
+rev_0155,EasyInvest Savings Account,Kotak,2025-04-06,Avoid EasyInvest Savings Account from Kotak! They have agent misconduct.,Twitter,1,false,South Kennedytown,0.2091471591618104,agent misconduct
+rev_0156,MaxReturns Fixed Deposit,ICICI,2025-08-21,ICICI's MaxReturns Fixed Deposit gave me good returns this quarter.,Reddit,4,true,Taylorsville,0.9658412184693914,
+rev_0157,WealthBuilder Pension Plan,SBI,2025-05-19,No complaints about WealthBuilder Pension Plan. Service was excellent.,Play Store,4,false,Wisokyton,0.8210238055545056,
+rev_0158,MaxReturns Fixed Deposit,Axis,2025-05-03,Happy with my MaxReturns Fixed Deposit from Axis. Returns are as promised.,Twitter,3,true,Fort August,0.7712434028864109,
+rev_0159,SecureLife Insurance Policy,Kotak,2025-02-19,Avoid SecureLife Insurance Policy from Kotak! They have poor returns.,Trustpilot,1,true,West Irving,0.27631834100301267,poor returns
+rev_0160,WealthBuilder Pension Plan,HDFC,2025-07-07,Not sure about WealthBuilder Pension Plan. Need to wait and watch.,Trustpilot,3,true,Warren,0.660626965740967,
+rev_0161,EasyInvest Savings Account,SBI,2025-03-15,SBI misled me about EasyInvest Savings Account. Now facing bad service.,Reddit,1,true,New Shad,0.17946364470512033,bad service
+rev_0162,WealthBuilder Pension Plan,SBI,2025-07-08,SBI misled me about WealthBuilder Pension Plan. Now facing difficult claims.,Reddit,1,true,Surprise,0.017292198724596985,difficult claims
+rev_0163,WealthBuilder Pension Plan,Kotak,2025-02-06,Kotak's WealthBuilder Pension Plan gave me good returns this quarter.,Reddit,4,true,Lake Ashtonhaven,0.9125249779388002,
+rev_0164,MaxReturns Fixed Deposit,ICICI,2025-07-15,Avoid MaxReturns Fixed Deposit from ICICI! They have bad service.,Play Store,1,false,West Loyalport,0.19330370237888636,bad service
+rev_0165,EasyInvest Savings Account,ICICI,2025-09-17,Terrible experience with EasyInvest Savings Account. hidden charges.,Play Store,1,false,Ulisesboro,0.1046714875663399,hidden charges
+rev_0166,WealthBuilder Pension Plan,ICICI,2025-08-26,Avoid WealthBuilder Pension Plan from ICICI! They have hidden charges.,Reddit,1,true,New Verdie,0.09204454986682262,hidden charges
+rev_0167,Alpha Growth Mutual Fund,Kotak,2025-08-19,Terrible experience with Alpha Growth Mutual Fund. poor returns.,Trustpilot,1,false,Port Tiffanyview,0.08060333562538381,poor returns
+rev_0168,EasyInvest Savings Account,Kotak,2025-05-18,No complaints about EasyInvest Savings Account. Service was excellent.,Twitter,4,true,Port Rosalynfort,0.9901508338694327,
+rev_0169,WealthBuilder Pension Plan,Axis,2025-09-12,Axis misled me about WealthBuilder Pension Plan. Now facing long processing time.,Play Store,1,false,Weimannchester,0.16118092590525898,long processing time
+rev_0170,MaxReturns Fixed Deposit,SBI,2025-08-17,SBI's MaxReturns Fixed Deposit gave me good returns this quarter.,Twitter,4,false,Port Theresa,0.9092304301477239,
+rev_0171,Alpha Growth Mutual Fund,Axis,2026-01-08,Happy with my Alpha Growth Mutual Fund from Axis. Returns are as promised.,Reddit,3,false,Wisozkberg,0.7150675645993058,
+rev_0172,EasyInvest Savings Account,ICICI,2025-01-17,Happy with my EasyInvest Savings Account from ICICI. Returns are as promised.,Twitter,3,false,York,0.7958449037297034,
+rev_0173,MaxReturns Fixed Deposit,Kotak,2025-05-03,Avoid MaxReturns Fixed Deposit from Kotak! They have misleading information.,Trustpilot,1,true,West Jaquelin,0.24249225453068762,misleading information
+rev_0174,EasyInvest Savings Account,Kotak,2025-02-11,Kotak misled me about EasyInvest Savings Account. Now facing bad service.,Reddit,1,true,Galveston,0.09302837637863766,bad service
+rev_0175,EasyInvest Savings Account,HDFC,2025-05-07,HDFC misled me about EasyInvest Savings Account. Now facing long processing time.,Play Store,1,true,Orphashire,0.006056691799101776,long processing time
+rev_0176,WealthBuilder Pension Plan,Kotak,2025-09-03,Kotak misled me about WealthBuilder Pension Plan. Now facing difficult claims.,Play Store,1,false,Daltonfurt,0.2807352581255462,difficult claims
+rev_0177,WealthBuilder Pension Plan,Kotak,2025-11-17,Avoid WealthBuilder Pension Plan from Kotak! They have poor returns.,Play Store,1,false,Schillermouth,0.2668106666904527,poor returns
+rev_0178,SecureLife Insurance Policy,ICICI,2025-09-22,ICICI misled me about SecureLife Insurance Policy. Now facing poor returns.,Trustpilot,1,false,Santa Cruz,0.2118907302333024,poor returns
+rev_0179,MaxReturns Fixed Deposit,ICICI,2025-09-08,Happy with my MaxReturns Fixed Deposit from ICICI. Returns are as promised.,Twitter,3,false,North Little Rock,0.7357493609256728,
+rev_0180,Alpha Growth Mutual Fund,HDFC,2025-11-23,Not sure about Alpha Growth Mutual Fund. Need to wait and watch.,Reddit,2,false,East Ottis,0.4733316155486784,
+rev_0181,WealthBuilder Pension Plan,ICICI,2025-06-11,Avoid WealthBuilder Pension Plan from ICICI! They have agent misconduct.,Trustpilot,1,true,Naomietown,0.24835735987298524,agent misconduct
+rev_0182,SecureLife Insurance Policy,SBI,2025-08-06,Avoid SecureLife Insurance Policy from SBI! They have misleading information.,Twitter,1,false,Layneport,0.23450379147076225,misleading information
+rev_0183,WealthBuilder Pension Plan,ICICI,2025-03-03,ICICI misled me about WealthBuilder Pension Plan. Now facing bad service.,Twitter,1,false,Madera,0.01304086896026264,bad service
+rev_0184,SecureLife Insurance Policy,ICICI,2025-09-15,Avoid SecureLife Insurance Policy from ICICI! They have hidden charges.,Twitter,1,true,Fort Dennis,0.0073391692391051805,hidden charges
+rev_0185,Alpha Growth Mutual Fund,Kotak,2025-10-09,Kotak misled me about Alpha Growth Mutual Fund. Now facing difficult claims.,Reddit,1,true,Pamelaland,0.15432854367402635,difficult claims
+rev_0186,MaxReturns Fixed Deposit,Axis,2025-07-13,MaxReturns Fixed Deposit from Axis is okay. Nothing special.,Play Store,2,true,Maybellechester,0.4530517928619728,
+rev_0187,EasyInvest Savings Account,ICICI,2025-08-11,Not sure about EasyInvest Savings Account. Need to wait and watch.,Trustpilot,1,true,Estellafield,0.39845206674592826,
+rev_0188,EasyInvest Savings Account,SBI,2025-01-22,No complaints about EasyInvest Savings Account. Service was excellent.,Reddit,4,false,Bartolettiland,0.8334145172135248,
+rev_0189,Alpha Growth Mutual Fund,Axis,2025-01-29,Axis misled me about Alpha Growth Mutual Fund. Now facing bad service.,Reddit,1,false,Rashawnville,0.05680478228292307,bad service
+rev_0190,MaxReturns Fixed Deposit,Axis,2025-12-06,Avoid MaxReturns Fixed Deposit from Axis! They have poor returns.,Play Store,1,false,Murphyhaven,0.02534346734338272,poor returns
+rev_0191,Alpha Growth Mutual Fund,HDFC,2025-10-23,HDFC's Alpha Growth Mutual Fund gave me good returns this quarter.,Reddit,3,false,South Deangelohaven,0.7012110020035645,
+rev_0192,EasyInvest Savings Account,Axis,2025-03-28,Terrible experience with EasyInvest Savings Account. poor returns.,Trustpilot,1,true,Lake Leslieboro,0.22686116236722073,poor returns
+rev_0193,EasyInvest Savings Account,Axis,2025-03-08,Terrible experience with EasyInvest Savings Account. bad service.,Twitter,1,false,Port Haydenport,0.29799307820000837,bad service
+rev_0194,MaxReturns Fixed Deposit,SBI,2025-02-14,Terrible experience with MaxReturns Fixed Deposit. difficult claims.,Trustpilot,1,false,North Edwardoworth,0.21559773767845553,difficult claims
+rev_0195,Alpha Growth Mutual Fund,HDFC,2025-09-30,HDFC's Alpha Growth Mutual Fund gave me good returns this quarter.,Play Store,3,false,Antoniofort,0.7559516906812017,
+rev_0196,Alpha Growth Mutual Fund,Axis,2025-10-27,Axis's Alpha Growth Mutual Fund gave me good returns this quarter.,Twitter,3,false,Pasco,0.7122521460996408,
+rev_0197,Alpha Growth Mutual Fund,SBI,2025-07-23,Terrible experience with Alpha Growth Mutual Fund. difficult claims.,Twitter,1,true,West Randiview,0.2840024519948972,difficult claims
+rev_0198,WealthBuilder Pension Plan,ICICI,2025-07-29,Happy with my WealthBuilder Pension Plan from ICICI. Returns are as promised.,Reddit,4,true,South Ryleehaven,0.8499122796775929,
+rev_0199,MaxReturns Fixed Deposit,SBI,2025-06-22,Avoid MaxReturns Fixed Deposit from SBI! They have bad service.,Reddit,1,false,Port Micheal,0.10644512930802755,bad service

@@ -1,0 +1,131 @@
+'use client';
+import { useState } from 'react';
+import { Upload, FileText, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+
+export function PDFUploader({ onExtractionComplete }) {
+    const [isDragging, setIsDragging] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadStatus, setUploadStatus] = useState(null); 
+
+    const handleDrag = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === 'dragenter' || e.type === 'dragover') {
+            setIsDragging(true);
+        } else if (e.type === 'dragleave') {
+            setIsDragging(false);
+        }
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleFiles(e.dataTransfer.files[0]);
+        }
+    };
+
+    const handleChange = (e) => {
+        e.preventDefault();
+        if (e.target.files && e.target.files[0]) {
+            handleFiles(e.target.files[0]);
+        }
+    };
+
+    const handleFiles = async (file) => {
+        if (file.type !== 'application/pdf') {
+            setUploadStatus('error');
+            return;
+        }
+
+        setIsUploading(true);
+        setUploadStatus(null);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/api/process-pdf', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error('Upload failed');
+
+            const result = await response.json();
+            setUploadStatus('success');
+            if (onExtractionComplete) onExtractionComplete(result);
+        } catch (error) {
+            console.error(error);
+            setUploadStatus('error');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    return (
+        <div
+            className="card"
+            style={{
+                border: isDragging ? '2px dashed #818cf8' : '2px dashed rgba(255,255,255,0.1)',
+                background: isDragging ? 'rgba(129, 140, 248, 0.1)' : 'rgba(255,255,255,0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '200px',
+                cursor: 'pointer',
+                position: 'relative'
+            }}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+        >
+            <input
+                type="file"
+                style={{ position: 'absolute', inset: 0, opacity: 0, width: '100%', height: '100%', cursor: 'pointer' }}
+                accept=".pdf"
+                onChange={handleChange}
+                disabled={isUploading}
+            />
+
+            <div className="flex-col items-center justify-center text-center" style={{ display: 'flex', gap: '1rem' }}>
+                {isUploading ? (
+                    <>
+                        <Loader2 size={40} className="text-primary animate-spin" style={{ color: '#818cf8', animation: 'spin 1s linear infinite' }} />
+                        <div>
+                            <p className="font-bold text-white">Analyzing Contract...</p>
+                            <p className="text-sm text-muted">Extracting financial promises via OCR</p>
+                        </div>
+                    </>
+                ) : uploadStatus === 'success' ? (
+                    <>
+                        <div style={{ width: '48px', height: '48px', background: 'rgba(16, 185, 129, 0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#34d399' }}>
+                            <CheckCircle size={24} />
+                        </div>
+                        <div>
+                            <p className="font-bold text-white">Analysis Complete</p>
+                            <p className="text-sm text-muted">Ready for next document</p>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: isDragging ? '#818cf8' : 'rgba(255,255,255,0.1)', color: isDragging ? 'white' : '#a1a1aa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Upload size={24} />
+                        </div>
+                        <div>
+                            <p className="text-lg font-bold text-white">Drop product PDF here</p>
+                            <p className="text-sm text-muted" style={{ maxWidth: '250px' }}>
+                                Automatically extracts APY, Tenure, and Risk terms.
+                            </p>
+                        </div>
+                    </>
+                )}
+            </div>
+            <style jsx>{`
+                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            `}</style>
+        </div>
+    );
+}
