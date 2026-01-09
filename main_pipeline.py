@@ -15,8 +15,8 @@ sys.path.append(str(Path(__file__).parent))
 try:
     from backend.expectation_engine.promise_extractor import PromiseExtractor
     print("[OK] Loaded PromiseExtractor")
-except ImportError as e:
-    print(f"[WARNING] {e}")
+except (ImportError, Exception) as e:
+    print(f"[WARNING] Failed to load PromiseExtractor: {e}")
     # Create simple PromiseExtractor placeholder
     class PromiseExtractor:
         def batch_extract(self, data_dir):
@@ -32,8 +32,8 @@ except ImportError as e:
 try:
     from backend.reality_engine.sentiment_analyzer import AdvancedSentimentAnalyzer, SentimentResult
     print("[OK] Loaded AdvancedSentimentAnalyzer")
-except ImportError as e:
-    print(f"[WARNING] {e}")
+except (ImportError, Exception) as e:
+    print(f"[WARNING] Failed to load AdvancedSentimentAnalyzer: {e}")
     # Define simple fallback classes
     from dataclasses import dataclass
     from typing import List, Tuple
@@ -74,8 +74,8 @@ except ImportError as e:
 try:
     from backend.gap_analyzer.gap_detector import GapDetector, GapAnalysisResult
     print("[OK] Loaded GapDetector")
-except ImportError as e:
-    print(f"[WARNING] {e}")
+except (ImportError, Exception) as e:
+    print(f"[WARNING] Failed to load GapDetector: {e}")
     # Define simple fallback classes
     from dataclasses import dataclass
     from typing import List

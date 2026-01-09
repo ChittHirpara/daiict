@@ -10,7 +10,16 @@ import json
 from datetime import datetime, timedelta
 import base64
 import random
-
+import textwrap
+import numpy as np
+from PIL import Image
+from backend.auth.auth_manager import AuthManager
+from backend.ai_assistant import VeritasAssistant
+from backend.expectation_engine.promise_extractor import PromiseExtractor
+from dataclasses import asdict
+from main_pipeline import VeritasFinancePipeline
+from fpdf import FPDF
+from io import BytesIO
 # Page configuration
 st.set_page_config(
     page_title="Mis-Selling Intelligence Platform",
@@ -25,586 +34,174 @@ st.set_page_config(
 
 STUNNING_CSS = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
     
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        --dark-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%);
-        
-        --glass-bg: rgba(255, 255, 255, 0.1);
-        --glass-border: rgba(255, 255, 255, 0.2);
-        
-        --shadow-glow: 0 8px 32px rgba(102, 126, 234, 0.3);
-        --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.1);
-        --shadow-hover: 0 30px 80px rgba(102, 126, 234, 0.4);
+        /* Professional, toned-down palette */
+        --bg-color: #020617 !important;                /* near-black navy */
+        --card-bg: #02081a !important;
+        --text-primary: #e5e7eb !important;
+        --text-secondary: #9ca3af !important;
+        --accent-primary: #38bdf8 !important;
+        --accent-secondary: #818cf8 !important;
+        --success: #22c55e !important;
+        --warning: #eab308 !important;
+        --danger: #ef4444 !important;
+        --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%) !important;
+        --gradient-card: radial-gradient(circle at top left, rgba(148, 163, 184, 0.12), transparent 55%),
+                         linear-gradient(145deg, #020617, #02081a) !important;
+        --glass-border: 1px solid rgba(148, 163, 184, 0.25) !important;
     }
-    
+
+    html, body, .stApp {
+        background-color: var(--bg-color) !important;
+        color: var(--text-primary) !important;
+    }
+
     .stApp {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-        background-attachment: fixed;
-        font-family: 'Poppins', 'Inter', sans-serif;
-        min-height: 100vh;
-    }
-    
-    /* Animated background particles */
-    .stApp::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
         background-image: 
-            radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-        animation: float 20s ease-in-out infinite;
-        pointer-events: none;
-        z-index: 0;
+            radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 55%),
+            radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.10) 0px, transparent 55%),
+            radial-gradient(at 50% 100%, rgba(15, 23, 42, 0.9) 0px, #020617 60%) !important;
+        font-family: 'Outfit', sans-serif !important;
+    }
+
+    /* Subtle enter animations */
+    @keyframes fadeInUp {
+        0% { opacity: 0; transform: translateY(12px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    @keyframes softPulse {
+        0%   { box-shadow: 0 0 0 rgba(56, 189, 248, 0.0); }
+        50%  { box-shadow: 0 0 22px rgba(56, 189, 248, 0.45); }
+        100% { box-shadow: 0 0 0 rgba(56, 189, 248, 0.0); }
     }
     
-    @keyframes float {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        33% { transform: translate(30px, -30px) rotate(120deg); }
-        66% { transform: translate(-20px, 20px) rotate(240deg); }
+    /* Force text color on all generic containers */
+    div, p, span, label, h1, h2, h3, h4, h5, h6 {
+        color: var(--text-primary) !important;
     }
     
-    /* Hide Streamlit default elements */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stDeployButton {display: none;}
+    .stMarkdown, .stMarkdown p {
+        color: var(--text-primary) !important;
+    }
     
-    /* Main content wrapper */
+    /* Main container */
     .main .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        max-width: 1600px;
+        max-width: 100%;
+        padding: 2rem 3rem;
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Space Grotesk', sans-serif;
+        color: var(--text-primary);
+        font-weight: 700;
+        letter-spacing: -0.02em;
     }
     
-    /* Glassmorphism sidebar */
-    [data-testid="stSidebar"] {
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
-    }
-    
-    [data-testid="stSidebar"] .stMarkdown {
-        color: white;
-    }
-    
-    /* Stunning KPI Cards */
-    .kpi-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: var(--shadow-card);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .kpi-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--primary-gradient);
-        transform: scaleX(0);
-        transition: transform 0.4s ease;
-    }
-    
-    .kpi-card:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-hover);
-    }
-    
-    .kpi-card:hover::before {
-        transform: scaleX(1);
-    }
-    
-    .kpi-label {
-        font-size: 0.875rem;
-        color: #64748b;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 1rem;
-        opacity: 0.8;
-    }
-    
-    .kpi-value {
-        font-size: 3rem;
-        font-weight: 800;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 1rem 0;
-        font-family: 'Poppins', sans-serif;
-    }
-    
-    .kpi-trend {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-top: 0.5rem;
-    }
-    
-    .trend-up {
-        background: linear-gradient(135deg, #10b981, #34d399);
-        color: white;
-    }
-    
-    .trend-down {
-        background: linear-gradient(135deg, #ef4444, #f87171);
-        color: white;
-    }
-    
-    .trend-neutral {
-        background: linear-gradient(135deg, #64748b, #94a3b8);
-        color: white;
-    }
-    
-    /* Glassmorphism data cards */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: var(--shadow-card);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-        margin-bottom: 1.5rem;
-    }
-    
-    .glass-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-hover);
-    }
-    
-    /* Stunning headers */
     h1 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 800;
-        font-size: 3rem;
-        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+        font-size: 2.5rem;
+        background: var(--gradient-primary);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-        letter-spacing: -1px;
-    }
-    
-    h2 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700;
-        font-size: 2rem;
-        color: white;
-        margin-top: 2rem;
-        margin-bottom: 1.5rem;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-    
-    h3 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        font-size: 1.5rem;
-        color: white;
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Status badges with glow */
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.5rem 1.25rem;
-        border-radius: 50px;
-        font-size: 0.875rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
-    
-    .badge-low {
-        background: linear-gradient(135deg, #10b981, #34d399);
-        color: white;
-    }
-    
-    .badge-medium {
-        background: linear-gradient(135deg, #f59e0b, #fbbf24);
-        color: white;
-    }
-    
-    .badge-high {
-        background: linear-gradient(135deg, #ef4444, #f87171);
-        color: white;
-    }
-    
-    .badge-critical {
-        background: linear-gradient(135deg, #dc2626, #ef4444);
-        color: white;
-        animation: pulse-critical 1.5s infinite;
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
-    }
-    
-    @keyframes pulse-critical {
-        0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
-        50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.9); }
-    }
-    
-    /* Comparison panel with gradient */
-    .comparison-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        margin: 2rem 0;
-    }
-    
-    .comparison-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: var(--shadow-card);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .comparison-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        background: var(--primary-gradient);
-    }
-    
-    .comparison-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-hover);
-    }
-    
-    .comparison-header {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #1e293b;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #e2e8f0;
-    }
-    
-    /* Risk meter with glow */
-    .risk-meter-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2.5rem;
-        box-shadow: var(--shadow-card);
-        margin: 2rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .risk-meter-bar {
-        height: 20px;
-        background: #e2e8f0;
-        border-radius: 50px;
-        overflow: hidden;
-        margin: 1.5rem 0;
-        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
-        position: relative;
-    }
-    
-    .risk-meter-fill {
-        height: 100%;
-        border-radius: 50px;
-        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .risk-meter-fill::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        animation: shimmer 2s infinite;
-    }
-    
-    @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-    }
-    
-    .risk-low { 
-        background: linear-gradient(90deg, #10b981, #34d399);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
-    }
-    
-    .risk-medium { 
-        background: linear-gradient(90deg, #f59e0b, #fbbf24);
-        box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
-    }
-    
-    .risk-high { 
-        background: linear-gradient(90deg, #ef4444, #f87171);
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-    }
-    
-    /* Evidence items */
-    .evidence-item {
-        padding: 1.5rem;
-        margin: 1rem 0;
-        background: rgba(255, 255, 255, 0.7);
-        border-left: 4px solid;
-        border-radius: 10px;
-        font-size: 0.9375rem;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-    }
-    
-    .evidence-item:hover {
-        transform: translateX(10px);
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    .evidence-source {
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 0.5rem;
-        font-size: 1rem;
-    }
-    
-    .evidence-text {
-        color: #64748b;
-        font-style: italic;
-        line-height: 1.6;
-    }
-    
-    /* Upload area */
-    .upload-area {
-        border: 3px dashed rgba(255, 255, 255, 0.5);
-        border-radius: 20px;
-        padding: 4rem 2rem;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .upload-area::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        animation: rotate 3s linear infinite;
-    }
-    
-    @keyframes rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    .upload-area:hover {
-        border-color: rgba(255, 255, 255, 0.8);
-        background: rgba(255, 255, 255, 0.15);
-        transform: scale(1.02);
-    }
-    
-    /* Sidebar navigation */
-    .sidebar-brand {
-        padding: 2rem 1.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         margin-bottom: 2rem;
     }
-    
-    .sidebar-brand h1 {
-        font-size: 1.75rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #ffffff, #e0e7ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin: 0;
+
+    /* Cards */
+    .stCard, div[data-testid="stMetricValue"], .glass-card, .kpi-card {
+        background: var(--gradient-card);
+        border: var(--glass-border);
+        border-radius: 16px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.75);
+        padding: 1.5rem;
+        transition: transform 0.18s ease-out, box-shadow 0.2s ease-out, border-color 0.18s ease-out;
+        animation: fadeInUp 0.45s ease-out;
     }
     
-    .sidebar-nav-btn {
-        width: 100%;
-        padding: 1rem 1.5rem;
-        margin: 0.5rem 0;
-        background: rgba(255, 255, 255, 0.05);
-        border: none;
-        border-radius: 12px;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1rem;
-        font-weight: 600;
-        text-align: left;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+    .kpi-card:hover, .glass-card:hover {
+        transform: translateY(-3px) translateZ(0);
+        border-color: rgba(56, 189, 248, 0.55);
+        box-shadow: 0 22px 55px rgba(15, 23, 42, 0.95);
     }
-    
-    .sidebar-nav-btn::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 4px;
-        background: var(--primary-gradient);
-        transform: scaleY(0);
-        transition: transform 0.3s ease;
-    }
-    
-    .sidebar-nav-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateX(5px);
-    }
-    
-    .sidebar-nav-btn:hover::before {
-        transform: scaleY(1);
-    }
-    
-    /* Metric rows */
-    .metric-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-        transition: all 0.2s ease;
-    }
-    
-    .metric-row:hover {
-        background: rgba(102, 126, 234, 0.05);
-        margin: 0 -1rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        border-radius: 8px;
-    }
-    
-    .metric-row:last-child {
-        border-bottom: none;
-    }
-    
-    .metric-label {
-        font-size: 0.9375rem;
-        color: #64748b;
-        font-weight: 500;
+
+    /* Text Colors */
+    p, span, div, label {
+        color: var(--text-secondary);
     }
     
     .metric-value {
-        font-size: 1.125rem;
+        color: var(--text-primary);
+        font-size: 1.5rem;
         font-weight: 700;
-        color: #1e293b;
+        font-family: 'Space Grotesk', monospace;
     }
     
-    /* Section dividers */
-    .section-divider {
-        height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        margin: 3rem 0;
+    .metric-label {
+        color: var(--accent-primary);
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 60%) #020617;
+        border-right: var(--glass-border);
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    /* Inputs */
+    .stTextInput input, .stSelectbox, .stNumberInput input {
+        background-color: rgba(15, 23, 42, 0.9);
+        color: var(--text-primary);
+        border: var(--glass-border);
+        border-radius: 10px;
+        transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out, background-color 0.18s ease-out;
+    }
+
+    .stTextInput input:focus, .stSelectbox:focus-within, .stNumberInput input:focus {
+        background-color: rgba(15, 23, 42, 0.98);
+        border-color: rgba(56, 189, 248, 0.7);
+        box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
     }
     
     /* Buttons */
-    .stButton>button {
-        background: var(--primary-gradient);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
+    .stButton button {
+        background: var(--gradient-primary);
+        color: white !important;
         font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        border: none;
+        border-radius: 999px;
+        padding: 0.4rem 1.4rem;
+        letter-spacing: 0.02em;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.7);
+        transition: transform 0.16s ease-out, box-shadow 0.18s ease-out, filter 0.18s ease-out;
     }
     
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    .stButton button:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+        box-shadow: 0 18px 40px rgba(56, 189, 248, 0.55);
     }
-    
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 10px;
+
+    .stButton button:active {
+        transform: translateY(0);
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.8);
     }
-    
-    ::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: var(--primary-gradient);
-        border-radius: 5px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    }
-    
-    /* Info boxes */
-    .info-box {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border-left: 4px solid;
-        box-shadow: var(--shadow-card);
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .comparison-container {
-            grid-template-columns: 1fr;
-        }
-        
-        h1 {
-            font-size: 2rem;
-        }
+
+    /* Dataframes */
+    [data-testid="stDataFrame"] {
+        border: var(--glass-border);
+        border-radius: 12px;
+        overflow: hidden;
     }
 </style>
 """
@@ -612,8 +209,200 @@ STUNNING_CSS = """
 st.markdown(STUNNING_CSS, unsafe_allow_html=True)
 
 # ============================================================================
+# AUTHENTICATION
+# ============================================================================
+
+def init_auth():
+    """Initialize authentication state"""
+    if 'logged_in' not in st.session_state:
+        st.session_state.logged_in = False
+    if 'username' not in st.session_state:
+        st.session_state.username = None
+    if 'auth_manager' not in st.session_state:
+        try:
+            st.session_state.auth_manager = AuthManager()
+        except Exception as e:
+            print(f"Error initializing AuthManager: {e}")
+            st.session_state.auth_manager = None
+
+    if 'assistant' not in st.session_state:
+        try:
+            st.session_state.assistant = VeritasAssistant()
+        except Exception as e:
+            print(f"Error initializing VeritasAssistant: {e}")
+            st.session_state.assistant = None
+
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
+
+def render_login_page():
+    """Render stunning login page with Face ID"""
+    
+    # Custom CSS for login page
+    # Custom CSS for login page
+    st.markdown("""
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: var(--glass-border);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("""
+        <div class="login-header">
+            <div class="login-title">Veritas Finance</div>
+            <div class="login-subtitle">Mis-Selling Intelligence Platform</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        tab1, tab2 = st.tabs(["🔐 Login", "📝 Sign Up"])
+        
+        auth = st.session_state.auth_manager
+        
+        with tab1:
+            with st.form("login_form"):
+                username = st.text_input("Username")
+                password = st.text_input("Password", type="password")
+                
+                submitted = st.form_submit_button("Log In", use_container_width=True)
+                
+                if submitted:
+                    success, msg = auth.login(username, password)
+                    if success:
+                        st.session_state.logged_in = True
+                        st.session_state.username = username
+                        st.success(f"✅ {msg}")
+                        st.rerun()
+                    else:
+                        st.error(f"❌ {msg}")
+            
+            st.markdown("---")
+            st.markdown("### 👤 Face ID Login")
+            
+            img_file = st.camera_input("Scan Face for Login", key="login_face", label_visibility="collapsed")
+            
+            if img_file is not None:
+                # Process image safely
+                bytes_data = img_file.getvalue()
+                try:
+                    # Convert to numpy array for opencv
+                    image = Image.open(img_file)
+                    image_np = np.array(image)
+                    
+                    # Get encoding/histogram
+                    encoding = auth.get_face_encoding_from_image(image_np)
+                    
+                    if encoding is not None:
+                        success, result = auth.login_with_face(encoding)
+                        if success:
+                            st.session_state.logged_in = True
+                            st.session_state.username = result
+                            st.success(f"✅ Welcome back, {result}!")
+                            st.rerun()
+                        else:
+                            st.error(f"❌ {result}")
+                    else:
+                        st.warning("⚠️ Could not detect face clearly.")
+                except Exception as e:
+                    st.error(f"Error processing face: {e}")
+
+        with tab2:
+            st.markdown("### 📸 Face ID Setup")
+            signup_face_img = st.camera_input("Capture Face for Signup", key="signup_face")
+            
+            with st.form("signup_form"):
+                new_user = st.text_input("Choose Username")
+                new_pass = st.text_input("Choose Password", type="password")
+                confirm_pass = st.text_input("Confirm Password", type="password")
+                
+                # Face ID Option for Signup
+                use_face = st.checkbox("Enable Face ID with above capture")
+                
+                submitted = st.form_submit_button("Create Account", use_container_width=True)
+                
+                if submitted:
+                    if new_pass != confirm_pass:
+                        st.error("❌ Passwords do not match")
+                    elif len(new_pass) < 4:
+                        st.error("❌ Password too short")
+                    else:
+                        # Handle Face ID registration if checked
+                        face_encoding = None
+                        if use_face:
+                            if signup_face_img is not None:
+                                try:
+                                    image = Image.open(signup_face_img)
+                                    image_np = np.array(image)
+                                    face_encoding = auth.get_face_encoding_from_image(image_np)
+                                    if face_encoding is None:
+                                        st.warning("⚠️ Face capture failed. Account will be created without Face ID.")
+                                except Exception as e:
+                                    st.error(f"Error processing face: {e}")
+                            else:
+                                st.warning("⚠️ No face captured. Account will be created without Face ID.")
+                        
+                        success, msg = auth.signup(new_user, new_pass, face_encoding=face_encoding)
+                        
+                        if success:
+                            st.success("✅ Account created! Please log in.")
+                        else:
+                            st.error(f"❌ {msg}")
+
+# ============================================================================
 # UTILITY FUNCTIONS
 # ============================================================================
+
+def make_card(title, value, trend=None, trend_value=""):
+    trend_html = ""
+    if trend is not None:
+        # 1 for up (good), -1 for down (bad/risk), 0 for neutral
+        color = "var(--success)" if trend > 0 else "var(--danger)" if trend < 0 else "var(--text-secondary)"
+        icon = "▲" if trend > 0 else "▼" if trend < 0 else "•"
+        trend_html = f'<div style="color: {color}; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 600;">{icon} {trend_value}</div>'
+        
+    return textwrap.dedent(f"""
+    <div class="kpi-card">
+    <div class="kpi-label">{title}</div>
+    <div class="kpi-value">{value}</div>
+    {trend_html}
+    </div>
+    """)
+
+def make_metric_row(label, value, value_color=None):
+    style = f' style="color: {value_color};"' if value_color else ""
+    return textwrap.dedent(f"""
+    <div class="metric-row">
+    <span class="metric-label">{label}</span>
+    <span class="metric-value"{style}>{value}</span>
+    </div>
+    """)
 
 def load_data():
     """Load processed data from pipeline outputs"""
@@ -669,13 +458,13 @@ def render_kpi_card(label, value, trend=None, trend_value=None):
         trend_arrow = "↑" if trend > 0 else "↓" if trend < 0 else "→"
         trend_html = f'<div class="kpi-trend {trend_class}">{trend_arrow} {trend_value}</div>'
     
-    return f"""
+    return textwrap.dedent(f"""
     <div class="kpi-card">
-        <div class="kpi-label">{label}</div>
-        <div class="kpi-value">{value}</div>
-        {trend_html}
+    <div class="kpi-label">{label}</div>
+    <div class="kpi-value">{value}</div>
+    {trend_html}
     </div>
-    """
+    """)
 
 def get_risk_badge_class(risk_level):
     """Get CSS class for risk badge"""
@@ -737,6 +526,78 @@ def render_sidebar():
         </div>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Logout button
+    if st.sidebar.button("🚪 Logout", use_container_width=True):
+        st.session_state.logged_in = False
+        st.session_state.username = None
+        st.rerun()
+
+    # ============================================================================
+    # AI ASSISTANT
+    # ============================================================================
+    
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 🤖 Veritas AI Assistant")
+    
+    # API Key Configuration
+    # Using centralized key from .env (Configured in backend)
+    # api_key = st.sidebar.text_input("Gemini API Key", type="password", key="gemini_api_key")
+    # if api_key:
+    #     st.session_state.assistant.set_api_key(api_key)
+    
+    # Chat Interface
+    with st.sidebar.expander("💬 Chat with AI", expanded=True):
+        if not st.session_state.get('assistant'):
+            st.error("⚠️ AI Assistant failed to initialize.")
+        else:
+            # Display history
+            for msg in st.session_state.chat_history:
+                if msg['role'] == 'user':
+                    st.markdown(f"**You:** {msg['content']}")
+                else:
+                    st.markdown(f"**AI:** {msg['content']}")
+        
+        # Chat Input
+        user_query = st.text_input("Ask me anything...", key="chat_input")
+        
+        if st.session_state.get('assistant') and st.button("Send", key="send_chat", use_container_width=True):
+            if user_query:
+                # Add user message to history
+                st.session_state.chat_history.append({"role": "user", "content": user_query})
+                
+                # Get response
+                with st.spinner("Thinking..."):
+                    raw_response = st.session_state.assistant.get_response(user_query)
+                    
+                    # Parse JSON response
+                    try:
+                        # Clean markdown code blocks if present
+                        if "```json" in raw_response:
+                            raw_response = raw_response.split("```json")[1].split("```")[0]
+                        elif "```" in raw_response:
+                            raw_response = raw_response.split("```")[1].split("```")[0]
+                            
+                        response_data = json.loads(raw_response)
+                        ai_text = response_data.get("text", "I processed your request.")
+                        navigate_to = response_data.get("navigate_to")
+                        
+                        # Add AI message to history
+                        st.session_state.chat_history.append({"role": "ai", "content": ai_text})
+                        
+                        # Handle Navigation
+                        if navigate_to and navigate_to in ["dashboard", "products", "expectation", "reality", "risks", "reports", "settings"]:
+                            st.session_state.active_page = navigate_to
+                            st.success(f"Navigating to {navigate_to}...")
+                            st.rerun()
+                            
+                    except Exception as e:
+                        # Fallback for plain text or errors
+                        st.session_state.chat_history.append({"role": "ai", "content": raw_response})
+                        print(f"JSON Parse Error: {e}")
+                
+                st.rerun()
+
 
 # ============================================================================
 # PAGE VIEWS
@@ -745,7 +606,7 @@ def render_sidebar():
 def render_dashboard_overview(data):
     """Stunning main dashboard overview"""
     st.markdown("# 🛡️ Mis-Selling Risk Overview")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem; margin-bottom: 3rem;">Comprehensive monitoring and analysis of financial product mis-selling risks</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem; margin-bottom: 3rem;">Comprehensive monitoring and analysis of financial product mis-selling risks</p>', unsafe_allow_html=True)
     
     # Calculate KPIs
     kpis = calculate_kpis(data)
@@ -754,7 +615,7 @@ def render_dashboard_overview(data):
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.markdown(render_kpi_card(
+        st.markdown(make_card(
             "Products Monitored",
             f"{kpis['products_monitored']}",
             trend=1,
@@ -762,7 +623,7 @@ def render_dashboard_overview(data):
         ), unsafe_allow_html=True)
     
     with col2:
-        st.markdown(render_kpi_card(
+        st.markdown(make_card(
             "High-Risk Products",
             f"{kpis['high_risk_products']}",
             trend=-1 if kpis['high_risk_products'] > 0 else 0,
@@ -770,7 +631,7 @@ def render_dashboard_overview(data):
         ), unsafe_allow_html=True)
     
     with col3:
-        st.markdown(render_kpi_card(
+        st.markdown(make_card(
             "Avg Risk Score",
             f"{kpis['avg_gap']:.2f}",
             trend=0,
@@ -778,7 +639,7 @@ def render_dashboard_overview(data):
         ), unsafe_allow_html=True)
     
     with col4:
-        st.markdown(render_kpi_card(
+        st.markdown(make_card(
             "Customer Dissatisfaction",
             f"{kpis['avg_dissatisfaction']:.1f}%",
             trend=1,
@@ -832,7 +693,7 @@ def render_dashboard_overview(data):
                 <div class="glass-card">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <div style="font-weight: 700; color: #1e293b; font-size: 1.125rem; margin-bottom: 0.5rem;">
+                            <div style="font-weight: 700; color: var(--text-primary); font-size: 1.125rem; margin-bottom: 0.5rem;">
                                 {row['product_name']}
                             </div>
                             <div style="font-size: 0.875rem; color: #64748b;">
@@ -873,46 +734,29 @@ def render_comparison_view(data):
             if len(promise_data) > 0:
                 promise_data = promise_data.iloc[0]
                 
-                st.markdown(f"""
+                content = textwrap.dedent(f"""
                 <div class="comparison-container">
-                    <div class="comparison-card" style="border-top: 5px solid #10b981;">
-                        <div class="comparison-header" style="color: #10b981;">✅ What Was Promised</div>
-                        <div class="metric-row">
-                            <span class="metric-label">Returns</span>
-                            <span class="metric-value">{promise_data.get('promised_returns', 'N/A')}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Risk Category</span>
-                            <span class="metric-value">{promise_data.get('risk_category', 'N/A')}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Lock-in Period</span>
-                            <span class="metric-value">{promise_data.get('lock_in_period', 'N/A')}</span>
-                        </div>
+                    <div class="comparison-card" style="border-top: 5px solid var(--success);">
+                        <div class="comparison-header" style="color: var(--success);">✅ What Was Promised</div>
+                        {make_metric_row("Returns", promise_data.get('promised_returns', 'N/A'))}
+                        {make_metric_row("Risk Category", promise_data.get('risk_category', 'N/A'))}
+                        {make_metric_row("Lock-in Period", promise_data.get('lock_in_period', 'N/A'))}
                     </div>
                     
-                    <div class="comparison-card" style="border-top: 5px solid #ef4444;">
-                        <div class="comparison-header" style="color: #ef4444;">❌ Customer Reality</div>
-                        <div class="metric-row">
-                            <span class="metric-label">Reported Returns</span>
-                            <span class="metric-value" style="color: #ef4444;">Poor / Below Expectations</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Perceived Risk</span>
-                            <span class="metric-value" style="color: #ef4444;">High Volatility Reported</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Exit Experience</span>
-                            <span class="metric-value" style="color: #ef4444;">Difficulties Reported</span>
-                        </div>
+                    <div class="comparison-card" style="border-top: 5px solid var(--danger);">
+                        <div class="comparison-header" style="color: var(--danger);">❌ Customer Reality</div>
+                        {make_metric_row("Reported Returns", "Poor / Below Expectations", "var(--danger)")}
+                        {make_metric_row("Perceived Risk", "High Volatility Reported", "var(--danger)")}
+                        {make_metric_row("Exit Experience", "Difficulties Reported", "var(--danger)")}
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
+                st.markdown(content, unsafe_allow_html=True)
 
 def render_products_monitor(data):
     """Products monitoring view"""
     st.markdown("# 📦 Products Monitor")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Real-time monitoring of all analyzed financial products</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Real-time monitoring of all analyzed financial products</p>', unsafe_allow_html=True)
     
     if data['gap'] is not None and len(data['gap']) > 0:
         col1, col2 = st.columns([3, 1])
@@ -936,7 +780,28 @@ def render_products_monitor(data):
             
             # Style the dataframe
             st.dataframe(
-                display_df.style.background_gradient(subset=['Risk Score', 'Dissatisfaction %'], cmap='RdYlGn_r'),
+                display_df,
+                column_config={
+                    "Risk Score": st.column_config.ProgressColumn(
+                        "Risk Score",
+                        help="Risk Score (0-1)",
+                        format="%.2f",
+                        min_value=0,
+                        max_value=1,
+                    ),
+                    "Dissatisfaction %": st.column_config.ProgressColumn(
+                        "Dissatisfaction %",
+                        help="Customer Dissatisfaction Index",
+                        format="%.1f%%",
+                        min_value=0,
+                        max_value=100,
+                    ),
+                    "Risk Level": st.column_config.TextColumn(
+                        "Risk Level",
+                        help="Categorical Risk Level",
+                        width="small"
+                    )
+                },
                 use_container_width=True,
                 hide_index=True
             )
@@ -953,7 +818,7 @@ def render_products_monitor(data):
 def render_expectation_engine(data):
     """Stunning Expectation Engine UI"""
     st.markdown("# 📄 Expectation Engine")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Extract and analyze promises from product marketing materials</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Extract and analyze promises from product marketing materials</p>', unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["📤 Upload Document", "📋 Extracted Promises"])
     
@@ -976,7 +841,53 @@ def render_expectation_engine(data):
             st.success(f"✅ File uploaded: {uploaded_file.name}")
             if st.button("🚀 Extract Promises", type="primary", use_container_width=True):
                 with st.spinner("🔍 Analyzing document with NLP engine..."):
-                    st.success("✅ Promises extracted successfully!")
+                    # Save file temporarily
+                    try:
+                        os.makedirs("data/uploaded", exist_ok=True)
+                        file_path = os.path.join("data/uploaded", uploaded_file.name)
+                        with open(file_path, "wb") as f:
+                            f.write(uploaded_file.getbuffer())
+                        
+                        # Extract
+                        extractor = PromiseExtractor()
+                        if uploaded_file.name.endswith(".pdf"):
+                            result = extractor.extract_from_pdf(file_path)
+                        else:
+                            # Simple text fallback for other types
+                            text = str(uploaded_file.read())
+                            result = extractor.extract_from_text(text, {'product_name': uploaded_file.name})
+                            
+                        if result:
+                            # Update DataFrame
+                            new_row = asdict(result)
+                            if data['promises'] is None:
+                                data['promises'] = pd.DataFrame([new_row])
+                            else:
+                                data['promises'] = pd.concat([data['promises'], pd.DataFrame([new_row])], ignore_index=True)
+                            
+                            # Save to CSV
+                            os.makedirs("data/processed", exist_ok=True)
+                            data['promises'].to_csv("data/processed/extracted_promises.csv", index=False)
+                            
+                            st.balloons()
+                            
+                            # Option to run full pipeline
+                            st.divider()
+                            st.info("💡 To update Risk Flags and Reports with this new data, run the analysis pipeline.")
+                            if st.button("🔄 Run Full Risk Analysis", type="secondary", use_container_width=True):
+                                with st.spinner("Running full compliance analysis pipeline..."):
+                                    pipeline = VeritasFinancePipeline()
+                                    if pipeline.run_pipeline():
+                                        st.success("✅ Analysis Complete! Check 'Risk Flags' and 'Reports' pages.")
+                                        # Reload data
+                                        st.session_state.data = load_data()
+                                    else:
+                                        st.error("❌ Analysis failed. Check console for details.")
+
+                        else:
+                            st.error("❌ Failed to extract content from file.")
+                    except Exception as e:
+                        st.error(f"Error during extraction: {e}")
     
     with tab2:
         st.markdown("### 📋 Extracted Promise Profiles")
@@ -986,37 +897,22 @@ def render_expectation_engine(data):
                 product_name = row.get('product_name', 'Unknown Product')
                 confidence = row.get('extraction_confidence', 0)
                 
-                st.markdown(f"""
+                content = textwrap.dedent(f"""
                 <div class="glass-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #e2e8f0;">
-                        <div style="font-weight: 800; font-size: 1.25rem; color: #1e293b;">{product_name}</div>
-                        <div style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50px; font-weight: 700; font-size: 0.875rem;">
-                            Confidence: {confidence:.0%}
-                        </div>
-                    </div>
-                    
-                    <div class="metric-row">
-                        <span class="metric-label">Investment Objective</span>
-                        <span class="metric-value">{row.get('investment_objective', 'N/A')}</span>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Promised Returns</span>
-                        <span class="metric-value" style="color: #667eea;">{row.get('promised_returns', 'N/A')}</span>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Risk Category</span>
-                        <span class="metric-value">{row.get('risk_category', 'N/A')}</span>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Lock-in Period</span>
-                        <span class="metric-value">{row.get('lock_in_period', 'N/A')}</span>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Exit Load</span>
-                        <span class="metric-value">{row.get('exit_load', 'N/A')}</span>
-                    </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid rgba(255,255,255,0.1);">
+                <div style="font-weight: 800; font-size: 1.25rem; color: var(--text-primary);">{product_name}</div>
+                <div style="padding: 0.5rem 1rem; background: var(--gradient-primary); color: white; border-radius: 50px; font-weight: 700; font-size: 0.875rem;">
+                Confidence: {confidence:.0%}
                 </div>
-                """, unsafe_allow_html=True)
+                </div>
+{make_metric_row("Investment Objective", row.get('investment_objective', 'N/A'))}
+{make_metric_row("Promised Returns", row.get('promised_returns', 'N/A'), "var(--accent-secondary)")}
+{make_metric_row("Risk Category", row.get('risk_category', 'N/A'))}
+{make_metric_row("Lock-in Period", row.get('lock_in_period', 'N/A'))}
+{make_metric_row("Exit Load", row.get('exit_load', 'N/A'))}
+                </div>
+                """)
+                st.markdown(content, unsafe_allow_html=True)
         else:
             st.markdown("""
             <div class="info-box" style="border-left-color: #f59e0b;">
@@ -1028,7 +924,7 @@ def render_expectation_engine(data):
 def render_reality_engine(data):
     """Stunning Reality Engine UI"""
     st.markdown("# 💬 Reality Engine")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Analyze customer sentiment and real-world experiences</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Analyze customer sentiment and real-world experiences</p>', unsafe_allow_html=True)
     
     if data['sentiment'] is not None and len(data['sentiment']) > 0:
         # Sentiment timeline
@@ -1104,8 +1000,8 @@ def render_reality_engine(data):
             
             st.markdown(f"""
             <div class="glass-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <div style="font-weight: 700; font-size: 1.125rem; color: #1e293b;">{topic['name']}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="font-weight: 700; font-size: 1.125rem; color: var(--text-primary);">{topic['name']}</div>
                     <div style="padding: 0.25rem 1rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50px; font-weight: 700; font-size: 0.875rem;">
                         {topic['frequency']}% mentions
                     </div>
@@ -1129,7 +1025,7 @@ def render_reality_engine(data):
 def render_risk_flags(data):
     """Stunning Risk Flags view"""
     st.markdown("# 🚨 Risk Flags")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Detailed risk analysis and flagging system</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Detailed risk analysis and flagging system</p>', unsafe_allow_html=True)
     
     if data['gap'] is not None and len(data['gap']) > 0:
         selected_product = st.selectbox(
@@ -1148,7 +1044,7 @@ def render_risk_flags(data):
             st.markdown(f"""
             <div class="risk-meter-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="margin: 0; color: #1e293b;">Overall Risk Score</h3>
+                    <h3 style="margin: 0; color: var(--text-primary);">Overall Risk Score</h3>
                     <span class="status-badge {get_risk_badge_class(risk_level)}" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">
                         {risk_level.upper()}
                     </span>
@@ -1207,8 +1103,8 @@ def render_risk_flags(data):
                 <div class="glass-card">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <div style="font-weight: 700; font-size: 1.125rem; color: #1e293b; margin-bottom: 0.5rem;">{source['source']}</div>
-                            <div style="font-size: 0.875rem; color: #64748b;">{source['count']} data points</div>
+                            <div style="font-weight: 700; font-size: 1.125rem; color: var(--text-primary); margin-bottom: 0.5rem;">{source['source']}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">{source['count']} data points</div>
                         </div>
                         <div style="text-align: right;">
                             <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Avg Sentiment</div>
@@ -1225,10 +1121,65 @@ def render_risk_flags(data):
         </div>
         """, unsafe_allow_html=True)
 
+def generate_pdf_report(report_type, data):
+    """Generate a PDF report using FPDF"""
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Title
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(0, 10, f"Veritas Finance - {report_type}", ln=True, align="C")
+    pdf.ln(10)
+    
+    # Date
+    pdf.set_font("Arial", "", 10)
+    pdf.cell(0, 10, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True, align="R")
+    pdf.ln(10)
+    
+    # Executive Summary
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "1. Executive Summary", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 8, "This report analyzes potential mis-selling risks for the selected financial products based on comparison between marketing promises and customer experiences. Our AI engine has detected several discrepancies that warrant further investigation.")
+    pdf.ln(5)
+
+    # Stats
+    if data.get('gap') is not None:
+        high_risk = len(data['gap'][data['gap']['risk_level'].isin(['high', 'critical'])])
+        avg_risk = data['gap']['overall_risk_score'].mean()
+        pdf.set_font("Arial", "B", 11)
+        pdf.cell(0, 10, f"Key Metrics:", ln=True)
+        pdf.set_font("Arial", "", 11)
+        pdf.cell(0, 8, f"- Products Analyzed: {len(data['gap'])}", ln=True)
+        pdf.cell(0, 8, f"- High Risk Alerts: {high_risk}", ln=True)
+        pdf.cell(0, 8, f"- Average Risk Score: {avg_risk:.2f}", ln=True)
+        pdf.ln(5)
+    
+    # Extracted Promises
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "2. Extracted Promises Analysis", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 8, "Product marketing materials were analyzed using NLP to extract key promises regarding returns, lock-in periods, and risk levels.")
+    pdf.ln(5)
+    
+    # Reality Check
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "3. Customer Reality Check", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 8, "Sentiment analysis of customer reviews and complaints reveals significant deviation from promised features in identified high-risk products.")
+    pdf.ln(5)
+
+    # Footer
+    pdf.set_y(-15)
+    pdf.set_font("Arial", "I", 8)
+    pdf.cell(0, 10, f"Generated by Veritas Finance Regulatory Platform - Page {pdf.page_no()}", 0, 0, 'C')
+    
+    return pdf.output(dest='S').encode('latin-1')
+
 def render_reports_evidence(data):
     """Stunning Reports & Evidence view"""
     st.markdown("# 📋 Reports & Evidence")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">Generate regulator-ready reports and evidence packages</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">Generate regulator-ready reports and evidence packages</p>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
@@ -1247,53 +1198,54 @@ def render_reports_evidence(data):
         
         if st.button("🚀 Generate Report", type="primary", use_container_width=True):
             st.success("✅ Report generated successfully!")
+            
+            # Generate real PDF
+            pdf_bytes = generate_pdf_report(report_type, data)
+            
             st.download_button(
                 label="📥 Download PDF",
-                data="Sample PDF content",
+                data=pdf_bytes,
                 file_name=f"mis-selling-report-{datetime.now().strftime('%Y%m%d')}.pdf",
                 mime="application/pdf",
                 use_container_width=True
             )
     
     with col2:
-        st.markdown("""
+        st.markdown(textwrap.dedent("""
         <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Report Archive</h3>
-            <p style="color: #64748b;">No previous reports found.</p>
+        <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Report Archive</h3>
+        <p style="color: #64748b;">No previous reports found.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """), unsafe_allow_html=True)
     
     # Report preview
     st.markdown("### 📄 Report Preview")
-    st.markdown("""
+    st.markdown(textwrap.dedent("""
     <div class="glass-card">
-        <h4 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem;">Product Risk Analysis Report</h4>
-        <div class="section-divider" style="margin: 1.5rem 0;"></div>
-        <h5 style="color: #1e293b; margin-top: 1.5rem;">1. Executive Summary</h5>
-        <p style="color: #64748b; line-height: 1.8;">This report analyzes potential mis-selling risks for the selected financial products based on comparison between marketing promises and customer experiences.</p>
-        
-        <h5 style="color: #1e293b; margin-top: 1.5rem;">2. Extracted Promises</h5>
-        <p style="color: #64748b; line-height: 1.8;">Analysis of product documentation reveals the following claims...</p>
-        
-        <h5 style="color: #1e293b; margin-top: 1.5rem;">3. Customer Sentiment Analysis</h5>
-        <p style="color: #64748b; line-height: 1.8;">Sentiment analysis of customer reviews indicates...</p>
-        
-        <h5 style="color: #1e293b; margin-top: 1.5rem;">4. Risk Justification</h5>
-        <p style="color: #64748b; line-height: 1.8;">Gap analysis reveals mismatches in the following areas...</p>
+    <h4 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem;">Product Risk Analysis Report</h4>
+    <div class="section-divider" style="margin: 1.5rem 0; background: rgba(255,255,255,0.1);"></div>
+    <h5 style="margin-top: 1.5rem;">1. Executive Summary</h5>
+    <p style="line-height: 1.8;">This report analyzes potential mis-selling risks for the selected financial products based on comparison between marketing promises and customer experiences.</p>
+    <h5 style="margin-top: 1.5rem;">2. Extracted Promises</h5>
+    <p style="line-height: 1.8;">Analysis of product documentation reveals the following claims...</p>
+    <h5 style="margin-top: 1.5rem;">3. Customer Sentiment Analysis</h5>
+    <p style="line-height: 1.8;">Sentiment analysis of customer reviews indicates...</p>
+    <h5 style="margin-top: 1.5rem;">4. Risk Justification</h5>
+    <p style="line-height: 1.8;">Gap analysis reveals mismatches in the following areas...</p>
     </div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
 def render_settings():
     """Settings view"""
     st.markdown("# ⚙️ Settings")
-    st.markdown('<p style="color: rgba(255,255,255,0.9); font-size: 1.125rem;">System configuration and preferences</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: var(--text-secondary); font-size: 1.125rem;">System configuration and preferences</p>', unsafe_allow_html=True)
     
     tab1, tab2, tab3 = st.tabs(["📡 Data Sources", "🚨 Alert Thresholds", "⚙️ System"])
     
     with tab1:
         st.markdown("""
         <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Data Source Configuration</h3>
+            <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">Data Source Configuration</h3>
         </div>
         """, unsafe_allow_html=True)
         st.checkbox("Enable Twitter Feed", value=True)
@@ -1304,7 +1256,7 @@ def render_settings():
     with tab2:
         st.markdown("""
         <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">Risk Alert Thresholds</h3>
+            <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">Risk Alert Thresholds</h3>
         </div>
         """, unsafe_allow_html=True)
         st.slider("High Risk Threshold", 0.0, 1.0, 0.7, 0.05)
@@ -1314,7 +1266,7 @@ def render_settings():
     with tab3:
         st.markdown("""
         <div class="glass-card">
-            <h3 style="color: #1e293b; margin-bottom: 1.5rem;">System Settings</h3>
+            <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">System Settings</h3>
         </div>
         """, unsafe_allow_html=True)
         st.selectbox("Report Format", ["PDF", "DOCX", "HTML"])
@@ -1322,12 +1274,29 @@ def render_settings():
         if st.button("💾 Save Settings", type="primary", use_container_width=True):
             st.success("✅ Settings saved successfully!")
 
+        st.divider()
+        st.markdown("### 🛠️ System Maintenance")
+        if st.button("🔄 Run Full Analysis Pipeline", use_container_width=True):
+            with st.spinner("Running system-wide analysis..."):
+                pipeline = VeritasFinancePipeline()
+                if pipeline.run_pipeline():
+                    st.success("✅ Pipeline execution successful!")
+                    st.session_state.data = load_data() # Reload data
+                else:
+                    st.error("❌ Pipeline execution failed.")
+
 # ============================================================================
 # MAIN APPLICATION
 # ============================================================================
 
 def main():
     """Main application entry point"""
+    init_auth()
+    
+    if not st.session_state.logged_in:
+        render_login_page()
+        return
+
     data = load_data()
     render_sidebar()
     

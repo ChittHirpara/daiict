@@ -53,11 +53,24 @@ class VeritasAssistant:
         return self._get_legacy_response(user_query)
 
     def _get_gemini_response(self, query: str) -> str:
-        """Use Gemini to generate a response with data context"""
+        """Use Gemini to generate a response with data context and navigation intent"""
         
         # Construct Data Context
-        context_str = "You are Veritas AI, a financial regulatory assistant. You analyze financial products for mis-selling risks.\n"
-        context_str += "Here is the summary of the latest analysis:\n\n"
+        context_str = "You are Veritas AI, a smart financial regulatory assistant for the Mis-selling Detection System.\n"
+        context_str += "You have control over the dashboard navigation. You MUST return your response in a strict JSON format.\n"
+        context_str += "Structure: {\"text\": \"Your natural language response here\", \"navigate_to\": \"page_id_or_null\"}\n\n"
+        
+        context_str += "Available Page IDs for 'navigate_to':\n"
+        context_str += "- 'dashboard' (Overview/Home)\n"
+        context_str += "- 'products' (Products Monitor/List)\n"
+        context_str += "- 'expectation' (Expectation Engine/Upload)\n"
+        context_str += "- 'reality' (Reality Engine/Sentiment)\n"
+        context_str += "- 'risks' (Risk Flags)\n"
+        context_str += "- 'reports' (Reports & Evidence)\n"
+        context_str += "- 'settings' (Settings)\n"
+        context_str += "- null (If no navigation is needed)\n\n"
+        
+        context_str += "System Context:\n"
         
         if not self.gap_df.empty:
             stats = {
@@ -65,7 +78,7 @@ class VeritasAssistant:
                 "high_risk_count": len(self.gap_df[self.gap_df['risk_level'].isin(['high', 'critical'])]),
                 "avg_dissatisfaction": self.gap_df['dissatisfaction_index'].mean() if 'dissatisfaction_index' in self.gap_df.columns else 0
             }
-            context_str += f"Statistics: {stats}\n\n"
+            context_str += f"Current Statistics: {stats}\n\n"
             
             # Add top 5 risky products details
             risky_products = self.gap_df.sort_values('overall_risk_score', ascending=False).head(5)
@@ -74,70 +87,73 @@ class VeritasAssistant:
                 context_str += f"- Name: {row.get('product_name')}\n"
                 context_str += f"  Risk Level: {row.get('risk_level')}\n"
                 context_str += f"  Score: {row.get('overall_risk_score')}\n"
-                context_str += f"  Issues: {row.get('mismatches')}\n"
         else:
             context_str += "No analysis data available yet. Ask the user to run the pipeline.\n"
             
-        context_str += "\nAnswer the user's question based on this data. Be professional, concise, and helpful."
-        
+        context_str += "\nInstructions:\n"
+        context_str += "1. If the user asks to go to a page, navigate there.\n"
+        context_str += "2. If the user asks about data, answer based on the context.\n"
+        context_str += "3. Keep answers concise (< 50 words).\n"
+        context_str += "4. ALWAYS return valid JSON."
+
         return self.gemini.generate_response(query, context_str)
 
     def _get_legacy_response(self, query: str) -> str:
-        """Legacy Pattern Matching (Fallback)"""
+        """Legacy Pattern Matching (Fallback) - Returns JSON format for consistency"""
         query = query.lower()
+        response_text = ""
+        navigate_to = None
         
-        # 1. GREETINGS
-        if re.search(r'\b(hi|hello|hey|greetings)\b', query):
-            return "Hello! I am the Veritas AI Assistant (Legacy Mode). I can help you analyze financial products. add a Gemini API Key for smarter answers!"
+        # 1. NAVIGATION
+        if "dashboard" in query or "home" in query:
+             response_text = "Navigating to Dashboard..."
+             navigate_to = "dashboard"
+        elif "product" in query and "list" in query:
+             response_text = "Opening Products Monitor..."
+             navigate_to = "products"
+        elif "expectation" in query or "upload" in query:
+             response_text = "Opening Expectation Engine..."
+             navigate_to = "expectation"
+        elif "reality" in query or "sentiment" in query:
+             response_text = "Opening Reality Engine..."
+             navigate_to = "reality"
+        elif "risk" in query and "page" in query:
+             response_text = "Opening Risk Flags..."
+             navigate_to = "risks"
+        
+        # 2. GREETINGS
+        elif re.search(r'\b(hi|hello|hey|greetings)\b', query):
+            response_text = "Hello! I am Veritas AI. I can help you analyze data or navigate the app. Try 'Go to risks' or 'Show summary'."
+            
+        # 3. OVERALL STATUS
+        elif re.search(r'\b(summary|status|overview|how many)\b', query):
+            response_text = self._get_overall_summary_text()
 
-        # 2. OVERALL STATUS / SUMMARY
-        if re.search(r'\b(summary|status|overview|how many)\b', query):
-            return self._get_overall_summary()
-
-        # 3. HIGH RISK QUERIES
-        if re.search(r'\b(risk|risky|danger|alert|violation)\b', query):
-            return self._get_risk_analysis()
-
-        # 4. EXPLAIN PRODUCT (Specific Query)
-        product_match = self._extract_product_name(query)
-        if product_match:
-            return self._explain_product(product_match)
+        # 4. HIGH RISK QUERIES
+        elif re.search(r'\b(risk|risky|danger|alert|violation)\b', query):
+            response_text = self._get_risk_analysis_text()
 
         # FALLBACK
-        return "I'm in Legacy Mode. Please add a Gemini API Key in the sidebar for full AI capabilities. You can ask me about 'high risk products' or 'summary'."
+        else:
+            response_text = "I'm in Legacy Mode. Please add a Gemini API Key for full AI capabilities."
 
-    def _get_overall_summary(self) -> str:
+        return json.dumps({"text": response_text, "navigate_to": navigate_to})
+
+    def _get_overall_summary_text(self) -> str:
         if self.gap_df.empty:
-            return "I don't have enough data yet. Please run the analysis pipeline first."
+            return "No data analyzed yet."
         
         total = len(self.gap_df)
         high_risk = len(self.gap_df[self.gap_df['risk_level'].isin(['high', 'critical'])])
-        avg_dissatisfaction = self.gap_df['dissatisfaction_index'].mean() if 'dissatisfaction_index' in self.gap_df.columns else 0
-        
-        return f"""**Analysis Summary**:
-- I have monitored **{total} products** in total.
-- **{high_risk} products** have been flagged as **High/Critical Risk**.
-- The average customer dissatisfaction rate is **{avg_dissatisfaction:.1f}%**.
+        return f"Monitored: {total} products. High Risk: {high_risk}."
 
-Would you like to see the high-risk products? Type 'show high risk'."""
-
-    def _get_risk_analysis(self) -> str:
-        if self.gap_df.empty:
-            return "No risk data available yet."
-            
+    def _get_risk_analysis_text(self) -> str:
+        if self.gap_df.empty: return "No data."
         high_risk_df = self.gap_df[self.gap_df['risk_level'].isin(['high', 'critical'])]
+        if high_risk_df.empty: return "No high risk products detected."
         
-        if high_risk_df.empty:
-            return "Good news! I haven't detected any critical mis-selling cases in the current batch of data."
-            
-        response = "**⚠️ Critical Risk Alerts Detected:**\n\n"
-        for _, row in high_risk_df.iterrows():
-            name = row.get('product_name', 'Unknown')
-            score = row.get('overall_risk_score', 0)
-            response += f"- **{name}** (Risk Score: {score:.2f}/1.0)\n"
-            
-        response += "\nI recommend issuing show-cause notices for these products immediately."
-        return response
+        names = ", ".join(high_risk_df['product_name'].head(3).tolist())
+        return f"Accessing Risk Data. Found critical risks: {names}..."
 
     def _extract_product_name(self, query: str) -> Optional[str]:
         """Try to fuzzy match a product name from the query"""
@@ -145,42 +161,13 @@ Would you like to see the high-risk products? Type 'show high risk'."""
         
         products = self.gap_df['product_name'].unique()
         for product in products:
-            # Simple substring check
             if product.lower() in query:
                 return product
-            # Check parts of name
-            parts = product.split()
-            if len(parts) > 1 and f"{parts[0]} {parts[1]}".lower() in query:
-                return product
         return None
-
-    def _explain_product(self, product_name: str) -> str:
-        row = self.gap_df[self.gap_df['product_name'] == product_name].iloc[0]
-        
-        risk_level = row.get('risk_level', 'Unknown').upper()
-        sentiment = row.get('sentiment_score', 0.5)
-        mismatches_text = ""
-        
-        try:
-            mismatches = json.loads(row.get('mismatches', '[]'))
-            if mismatches:
-                mismatches_text = "\n**Key Violations:**\n"
-                for m in mismatches[:3]:
-                    mismatches_text += f"- {m.get('promise_aspect')}: {m.get('complaint_topic')}\n"
-        except:
-            pass
-            
-        return f"""**Analysis for {product_name}**:
-
-**Risk Level**: {risk_level}
-**Customer Sentiment**: {sentiment:.2f} (0=Negative, 1=Positive)
-
-{mismatches_text}
-**My Recommendation**: {json.loads(row.get('recommendations', '["Review required"]'))[0]}
-"""
 
 if __name__ == "__main__":
     # Test
     bot = VeritasAssistant()
     print(bot.get_response("hello"))
-    print(bot.get_response("show me high risk products"))
+    print(bot.get_response("go to dashboard"))
+

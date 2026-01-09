@@ -61,3 +61,6 @@ data/raw/
 *.h5
 *.model
 ml_models/
+
+# Secrets
+.env

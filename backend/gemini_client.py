@@ -1,7 +1,14 @@
 
-import google.generativeai as genai
+try:
+    import google.generativeai as genai
+    HAS_GENAI = True
+except ImportError:
+    HAS_GENAI = False
 import os
 from typing import Optional
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class GeminiClient:
     """
@@ -16,20 +23,26 @@ class GeminiClient:
             self._configure_genai()
     
     def _configure_genai(self):
+        if not HAS_GENAI:
+            print("Warning: google-generativeai library not found.")
+            self.model = None
+            return
+
         try:
             genai.configure(api_key=self.api_key)
-            # Try using the newer Flash model which is faster and usually standard
-            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            # Use standard gemini-pro model
+            self.model = genai.GenerativeModel('gemini-pro')
             self.chat_session = self.model.start_chat(history=[])
-            print("Message from GeminiClient: Successfully configured Gemini 1.5 Flash.")
+            print("Message from GeminiClient: Successfully configured Gemini Pro.")
         except Exception as e:
             print(f"Error configuring Gemini: {e}")
             try:
                 # Fallback to listing models to help debug
-                print("Available models:")
-                for m in genai.list_models():
-                    if 'generateContent' in m.supported_generation_methods:
-                        print(f"  - {m.name}")
+                if HAS_GENAI:
+                    print("Available models:")
+                    for m in genai.list_models():
+                        if 'generateContent' in m.supported_generation_methods:
+                            print(f"  - {m.name}")
             except:
                 pass
             self.model = None

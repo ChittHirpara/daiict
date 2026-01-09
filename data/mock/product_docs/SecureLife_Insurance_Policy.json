@@ -1,13 +1,13 @@
 {
   "product_name": "SecureLife Insurance Policy",
-  "issuer": "Axis",
-  "launch_date": "2025-08-15",
+  "issuer": "SBI",
+  "launch_date": "2024-08-16",
   "investment_objective": "To provide income distribution and capital appreciation",
   "promised_returns": "18.5% p.a. (Guaranteed)",
   "risk_category": "Moderate",
-  "lock_in_period": "5 years",
+  "lock_in_period": "1 years",
   "exit_load": "0.7% if redeemed before 3 years",
-  "min_investment": "\u20b95000",
+  "min_investment": "\u20b910000",
   "key_features": [
     "Monthly income option available",
     "Tax benefits under section 80C",

@@ -1,26 +1,16 @@
 product_name,issuer,investment_objective,promised_returns,risk_category,lock_in_period,exit_load,min_investment,key_features,warnings,extraction_confidence
-Alpha Growth Mutual Fund,Kotak,"product_name: Alpha Growth Mutual Fund
-issuer: Kotak
-launch_date: 2024-05-19
-investment_objective: To provide income distribution and capital appreciation
-promised_returns: 14",14.0%,Unknown,,,,"['5% if redeemed before 3 years\nmin_investment: ₹10000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']","['risk_category: Low\nlock_in_period: 3 years\nexit_load: 0', '5% if redeemed before 3 years\nmin_investment: ₹10000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.2
-EasyInvest Savings Account,SBI,"product_name: EasyInvest Savings Account
+Alpha Growth Mutual Fund,SBI,"product_name: Alpha Growth Mutual Fund
 issuer: SBI
-launch_date: 2025-12-09
-investment_objective: To generate capital appreciation by investing in equity and equity-related instruments
-promised_returns: 12",12.7%,Unknown,,,,"['7% if redeemed before 3 years\nmin_investment: ₹50000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']","['risk_category: Moderate\nlock_in_period: 1 years\nexit_load: 0', '7% if redeemed before 3 years\nmin_investment: ₹50000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.2
-MaxReturns Fixed Deposit,SBI,"product_name: MaxReturns Fixed Deposit
-issuer: SBI
-launch_date: 2025-01-25
-investment_objective: High growth through aggressive equity allocation
-promised_returns: 13",13.0%,Unknown,,,,"['2% if redeemed before 1 years\nmin_investment: ₹1000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']","['risk_category: High\nlock_in_period: 1 years\nexit_load: 1', '2% if redeemed before 1 years\nmin_investment: ₹1000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.2
-SecureLife Insurance Policy,Axis,"product_name: SecureLife Insurance Policy
-issuer: Axis
-launch_date: 2025-08-15
+launch_date: 2025-12-20
 investment_objective: To provide income distribution and capital appreciation
-promised_returns: 18",18.5%,Unknown,,,,"['7% if redeemed before 3 years\nmin_investment: ₹5000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']","['(Guaranteed)\nrisk_category: Moderate\nlock_in_period: 5 years\nexit_load: 0', '7% if redeemed before 3 years\nmin_investment: ₹5000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.2
-WealthBuilder Pension Plan,Axis,"product_name: WealthBuilder Pension Plan
-issuer: Axis
-launch_date: 2025-03-01
+promised_returns: 9",9.6%,Unknown,,,,"['9% if redeemed before 3 years\nmin_investment: ₹5000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']","['risk_category: High\nlock_in_period: 5 years\nexit_load: 1', '9% if redeemed before 3 years\nmin_investment: ₹5000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.2
+MaxReturns Fixed Deposit,ICICI,"product_name: MaxReturns Fixed Deposit
+issuer: ICICI
+launch_date: 2024-08-26
 investment_objective: To generate capital appreciation by investing in equity and equity-related instruments
-promised_returns: 10",10.3%,Unknown,,,,"['1% if redeemed before 3 years\nmin_investment: ₹50000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']","['risk_category: Moderate\nlock_in_period: 5 years\nexit_load: 1', '1% if redeemed before 3 years\nmin_investment: ₹50000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.2
+promised_returns: 13",13.7%,Unknown,,,,"['3% if redeemed before 1 years\nmin_investment: ₹50000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']","['risk_category: High\nlock_in_period: 10 years\nexit_load: 1', '3% if redeemed before 1 years\nmin_investment: ₹50000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.2
+SecureLife Insurance Policy,SBI,"product_name: SecureLife Insurance Policy
+issuer: SBI
+launch_date: 2024-08-16
+investment_objective: To provide income distribution and capital appreciation
+promised_returns: 18",18.5%,Unknown,,,,"['7% if redeemed before 3 years\nmin_investment: ₹10000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']","['(Guaranteed)\nrisk_category: Moderate\nlock_in_period: 1 years\nexit_load: 0', '7% if redeemed before 3 years\nmin_investment: ₹10000\nkey_features: Monthly income option available, Tax benefits under section 80C, Life cover included, Loan against policy available\nwarnings: Returns are not guaranteed, Past performance is not indicative of future results, Market risks apply']",0.2

@@ -1,11 +1,11 @@
 # Product Analysis: MaxReturns Fixed Deposit
 
-*Analysis Date: 2026-01-07 12:22:58*
+*Analysis Date: 2026-01-08 23:09:29*
 
 ## Risk Overview
-- **Risk Level**: MEDIUM
-- **Risk Score**: 0.30/1.0
-- **Dissatisfaction Index**: 53.8%
+- **Risk Level**: LOW
+- **Risk Score**: 0.26/1.0
+- **Dissatisfaction Index**: 40.0%
 
 ## Detected Issues
 ### Issue 1

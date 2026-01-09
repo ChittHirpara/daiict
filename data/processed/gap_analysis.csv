@@ -1,6 +1,4 @@
 product_name,promise_confidence,sentiment_score,dissatisfaction_index,mismatches,overall_risk_score,risk_level,recommendations
-Alpha Growth Mutual Fund,0.2,0.3611111111111111,47.22222222222222,[],0.2816666666666666,low,"[""Improve transparency in marketing materials"", ""Enhance customer complaint resolution process""]"
-EasyInvest Savings Account,0.2,0.4230769230769231,35.8974358974359,[],0.24769230769230766,low,"[""Improve transparency in marketing materials"", ""Enhance customer complaint resolution process""]"
-MaxReturns Fixed Deposit,0.2,0.3717948717948718,53.84615384615385,[],0.30153846153846153,medium,"[""\ud83d\udcca Regular monitoring recommended"", ""Require clearer disclosure documents"", ""Sample audit of customer experiences"", ""Improve transparency in marketing materials"", ""Enhance customer complaint resolution process""]"
-SecureLife Insurance Policy,0.2,0.20454545454545456,59.09090909090909,[],0.31727272727272726,medium,"[""\ud83d\udcca Regular monitoring recommended"", ""Require clearer disclosure documents"", ""Sample audit of customer experiences"", ""Improve transparency in marketing materials"", ""Enhance customer complaint resolution process""]"
-WealthBuilder Pension Plan,0.2,0.5357142857142857,35.714285714285715,[],0.2471428571428571,low,"[""Improve transparency in marketing materials"", ""Enhance customer complaint resolution process""]"
+Alpha Growth Mutual Fund,0.2,0.5,40.0,[],0.26,low,"[""Improve transparency in marketing materials"", ""Enhance customer complaint resolution process""]"
+MaxReturns Fixed Deposit,0.2,0.5,40.0,[],0.26,low,"[""Improve transparency in marketing materials"", ""Enhance customer complaint resolution process""]"
+SecureLife Insurance Policy,0.2,0.5,40.0,[],0.26,low,"[""Improve transparency in marketing materials"", ""Enhance customer complaint resolution process""]"
