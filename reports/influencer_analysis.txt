@@ -3,7 +3,7 @@
 ║         INFLUENCER VS REALITY TRACKER - ANALYSIS REPORT        ║
 ╚═══════════════════════════════════════════════════════════════╝
 
-Generated: 2026-01-08 23:09:29
+Generated: 2026-01-09 09:50:25
 
 ═══════════════════════════════════════════════════════════════
 SUMMARY
@@ -20,9 +20,9 @@ Influencer: @FinExpert
 Followers: 500,000
 Product Promoted: Alpha Growth Mutual Fund
 Promotion Type: Positive Review
-Risk Level: LOW
-Risk Score: 0.26/1.0
-Customer Dissatisfaction: 40.0%
+Risk Level: MEDIUM
+Risk Score: 0.35/1.0
+Customer Dissatisfaction: 69.2%
 Mismatches Detected: 0
 
 Recommendation: ✅ No significant issues detected
@@ -33,9 +33,9 @@ Influencer: @FinExpert
 Followers: 500,000
 Product Promoted: MaxReturns Fixed Deposit
 Promotion Type: Positive Review
-Risk Level: LOW
-Risk Score: 0.26/1.0
-Customer Dissatisfaction: 40.0%
+Risk Level: MEDIUM
+Risk Score: 0.36/1.0
+Customer Dissatisfaction: 72.0%
 Mismatches Detected: 0
 
 Recommendation: ✅ No significant issues detected
@@ -46,9 +46,9 @@ Influencer: @MoneyGuru
 Followers: 300,000
 Product Promoted: SecureLife Insurance Policy
 Promotion Type: Positive Review
-Risk Level: LOW
-Risk Score: 0.26/1.0
-Customer Dissatisfaction: 40.0%
+Risk Level: MEDIUM
+Risk Score: 0.44/1.0
+Customer Dissatisfaction: 100.0%
 Mismatches Detected: 0
 
 Recommendation: ✅ No significant issues detected

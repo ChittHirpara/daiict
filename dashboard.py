@@ -540,11 +540,8 @@ def render_sidebar():
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 🤖 Veritas AI Assistant")
     
-    # API Key Configuration
-    # Using centralized key from .env (Configured in backend)
-    # api_key = st.sidebar.text_input("Gemini API Key", type="password", key="gemini_api_key")
-    # if api_key:
-    #     st.session_state.assistant.set_api_key(api_key)
+    # API Key Configuration REMOVED
+
     
     # Chat Interface
     with st.sidebar.expander("💬 Chat with AI", expanded=True):
