@@ -1,13 +1,13 @@
 {
   "product_name": "Alpha Growth Mutual Fund",
-  "issuer": "SBI",
-  "launch_date": "2025-12-20",
+  "issuer": "Axis",
+  "launch_date": "2024-06-20",
   "investment_objective": "To provide income distribution and capital appreciation",
-  "promised_returns": "9.6% p.a.",
+  "promised_returns": "13.1% p.a.",
   "risk_category": "High",
   "lock_in_period": "5 years",
-  "exit_load": "1.9% if redeemed before 3 years",
-  "min_investment": "\u20b95000",
+  "exit_load": "0.9% if redeemed before 2 years",
+  "min_investment": "₹1000",
   "key_features": [
     "Monthly income option available",
     "Tax benefits under section 80C",

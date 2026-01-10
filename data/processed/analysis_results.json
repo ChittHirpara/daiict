@@ -1,0 +1,118 @@
+[
+  {
+    "product_name": "Alpha Growth Mutual Fund",
+    "promise_confidence": 0.8,
+    "sentiment_score": 0.6162162162162161,
+    "dissatisfaction_index": 40.54054054054054,
+    "mismatches": [
+      {
+        "promise_aspect": "RETURNS",
+        "complaint_topic": "Poor Returns",
+        "severity": 0.8027027027027027,
+        "evidence": [
+          "Promised features related to returns",
+          "Customers specifically complained about returns"
+        ],
+        "mismatch_type": "direct_contradiction",
+        "confidence": 0.8
+      }
+    ],
+    "overall_risk_score": 0.6835135135135134,
+    "risk_level": "high",
+    "recommendations": [
+      "⚠️ High priority review needed",
+      "Verify discrepancy in RETURNS claims",
+      "Improve transparency in marketing materials"
+    ]
+  },
+  {
+    "product_name": "EasyInvest Savings Account",
+    "promise_confidence": 0.8,
+    "sentiment_score": 0.5106382978723406,
+    "dissatisfaction_index": 42.5531914893617,
+    "mismatches": [
+      {
+        "promise_aspect": "RETURNS",
+        "complaint_topic": "Poor Returns",
+        "severity": 0.8127659574468085,
+        "evidence": [
+          "Promised features related to returns",
+          "Customers specifically complained about returns"
+        ],
+        "mismatch_type": "direct_contradiction",
+        "confidence": 0.8
+      }
+    ],
+    "overall_risk_score": 0.696595744680851,
+    "risk_level": "high",
+    "recommendations": [
+      "⚠️ High priority review needed",
+      "Verify discrepancy in RETURNS claims",
+      "Improve transparency in marketing materials"
+    ]
+  },
+  {
+    "product_name": "MaxReturns Fixed Deposit",
+    "promise_confidence": 0.8,
+    "sentiment_score": 0.40465116279069774,
+    "dissatisfaction_index": 51.162790697674424,
+    "mismatches": [],
+    "overall_risk_score": 0.29348837209302325,
+    "risk_level": "low",
+    "recommendations": [
+      "Improve transparency in marketing materials"
+    ]
+  },
+  {
+    "product_name": "SecureLife Insurance Policy",
+    "promise_confidence": 1,
+    "sentiment_score": 0.1620689655172414,
+    "dissatisfaction_index": 100,
+    "mismatches": [
+      {
+        "promise_aspect": "RETURNS",
+        "complaint_topic": "Poor Returns",
+        "severity": 1,
+        "evidence": [
+          "Promised features related to returns",
+          "Customers specifically complained about returns"
+        ],
+        "mismatch_type": "direct_contradiction",
+        "confidence": 0.8
+      }
+    ],
+    "overall_risk_score": 1,
+    "risk_level": "critical",
+    "recommendations": [
+      "🚨 IMMEDIATE INVESTIGATION REQUIRED",
+      "Verify discrepancy in RETURNS claims",
+      "Improve transparency in marketing materials"
+    ]
+  },
+  {
+    "product_name": "WealthBuilder Pension Plan",
+    "promise_confidence": 0.8,
+    "sentiment_score": 0.3818181818181818,
+    "dissatisfaction_index": 52.27272727272727,
+    "mismatches": [
+      {
+        "promise_aspect": "RETURNS",
+        "complaint_topic": "Poor Returns",
+        "severity": 0.8613636363636363,
+        "evidence": [
+          "Promised features related to returns",
+          "Customers specifically complained about returns"
+        ],
+        "mismatch_type": "direct_contradiction",
+        "confidence": 0.8
+      }
+    ],
+    "overall_risk_score": 0.7597727272727273,
+    "risk_level": "high",
+    "recommendations": [
+      "⚠️ High priority review needed",
+      "Verify discrepancy in RETURNS claims",
+      "Improve transparency in marketing materials"
+    ]
+  }
+]

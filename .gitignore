@@ -1,66 +1,41 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Virtual Environment
-venv/
-env/
-ENV/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# testing
+/coverage
 
-# OS
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+*.pem
 
-# Data files (don't commit large data)
-data/mock/*.csv
-data/raw/
-*.pdf
-*.log
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# Jupyter
-.ipynb_checkpoints
+# env files (can opt-in for committing if needed)
+.env*
 
-# Streamlit
-.streamlit/
+# vercel
+.vercel
 
-# Temporary files
-*.tmp
-*.temp
-
-# Large model files (don't commit)
-*.pkl
-*.h5
-*.model
-ml_models/
-
-# Secrets
-.env
+# typescript
+*.tsbuildinfo
+next-env.d.ts
