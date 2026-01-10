@@ -31,6 +31,11 @@ class FinancialDataGenerator:
     
     def generate_product_document(self, product_name):
         """Generate a realistic product PDF content (simulated)"""
+        if product_name == "SecureLife Insurance Policy":
+             promised_returns = "18.5% p.a. (Guaranteed)"
+        else:
+             promised_returns = f"{random.uniform(8, 15):.1f}% p.a."
+
         doc = {
             "product_name": product_name,
             "issuer": random.choice(self.banks),
@@ -41,7 +46,7 @@ class FinancialDataGenerator:
                 "Capital protection with moderate returns",
                 "High growth through aggressive equity allocation"
             ]),
-            "promised_returns": f"{random.uniform(8, 15):.1f}% p.a.",
+            "promised_returns": promised_returns,
             "risk_category": random.choice(["Low", "Moderate", "High"]),
             "lock_in_period": f"{random.choice([1, 3, 5, 10])} years",
             "exit_load": f"{random.uniform(0.5, 2):.1f}% if redeemed before {random.choice([1, 3])} years",
@@ -78,13 +83,17 @@ class FinancialDataGenerator:
             bank = random.choice(self.banks)
             date = fake.date_between(start_date='-1y', end_date='today')
             
-            # Create different types of reviews
-            review_type = random.choices(
-                ['positive', 'negative', 'neutral'],
-                weights=[0.3, 0.5, 0.2]
-            )[0]
-            
-            complaint = random.choice(self.complaint_types) if review_type == 'negative' else None
+            # RIGGED SCENARIO: Force SecureLife to have negative reviews
+            if product == "SecureLife Insurance Policy":
+                review_type = 'negative'
+                complaint = "hidden charges" # Consistent complaint
+            else:
+                # Create different types of reviews
+                review_type = random.choices(
+                    ['positive', 'negative', 'neutral'],
+                    weights=[0.3, 0.5, 0.2]
+                )[0]
+                complaint = random.choice(self.complaint_types) if review_type == 'negative' else None
             
             if review_type == 'positive':
                 templates = [

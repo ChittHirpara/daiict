@@ -1,4 +1,4 @@
-# 🏆 Hackathon Presentation Script - VERITAS FINANCE
+# Hackathon Presentation Script - VERITAS FINANCE
 
 ## Time: 7 Minutes Total
 
@@ -12,26 +12,26 @@ Traditional detection takes 11 months. We reduce it to 48 hours.
 ### **Minute 1-3: LIVE DEMO**
 "Here's our real-time dashboard monitoring 5 financial products right now.
 [POINT TO ALERTS]
-🚨 Critical alert: Alpha Growth MF promised 15% returns, customers getting 3%.
-🚨 High risk: SecureLife Insurance hiding fees in 78% of cases.
+Critical alert: Alpha Growth MF promised 15% returns, customers getting 3%.
+High risk: SecureLife Insurance hiding fees in 78% of cases.
 
 Our AI analyzes promises from documents [CLICK] and reality from social media [CLICK] to find gaps in real-time."
 
 ### **Minute 3-5: TECHNOLOGY**
 "Three innovations make this possible:
-1. ⚡ Real-time NLP comparing marketing promises vs customer sentiment
-2. 🔍 Predictive analytics forecasting mis-selling before it explodes
-3. 🛡️ Regulator copilot automating investigations
+1. Real-time NLP comparing marketing promises vs customer sentiment
+2. Predictive analytics forecasting mis-selling before it explodes
+3. Regulator copilot automating investigations
 
 [SHOW ARCHITECTURE DIAGRAM]
 From PDFs and tweets to actionable alerts in seconds."
 
 ### **Minute 5-6: IMPACT**
 "In 6 months of simulated deployment:
-- 👥 Protected 2.5 million customers
-- 💸 Prevented ₹185 Crore in losses
-- ⚡ Reduced response time from 11 months to 48 hours
-- 🎯 94% detection accuracy
+- Protected 2.5 million customers
+- Prevented ₹185 Crore in losses
+- Reduced response time from 11 months to 48 hours
+- 94% detection accuracy
 
 [SHOW IMPACT METRICS]"
 

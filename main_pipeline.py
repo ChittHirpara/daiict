@@ -14,9 +14,9 @@ sys.path.append(str(Path(__file__).parent))
 # Try to import advanced analyzer, fallback to simple if needed
 try:
     from backend.expectation_engine.promise_extractor import PromiseExtractor
-    print("✅ Loaded PromiseExtractor")
-except ImportError as e:
-    print(f"⚠️ Warning: {e}")
+    print("[OK] Loaded PromiseExtractor")
+except (ImportError, Exception) as e:
+    print(f"[WARNING] Failed to load PromiseExtractor: {e}")
     # Create simple PromiseExtractor placeholder
     class PromiseExtractor:
         def batch_extract(self, data_dir):
@@ -31,9 +31,9 @@ except ImportError as e:
 
 try:
     from backend.reality_engine.sentiment_analyzer import AdvancedSentimentAnalyzer, SentimentResult
-    print("✅ Loaded AdvancedSentimentAnalyzer")
-except ImportError as e:
-    print(f"⚠️ Warning: {e}")
+    print("[OK] Loaded AdvancedSentimentAnalyzer")
+except (ImportError, Exception) as e:
+    print(f"[WARNING] Failed to load AdvancedSentimentAnalyzer: {e}")
     # Define simple fallback classes
     from dataclasses import dataclass
     from typing import List, Tuple
@@ -73,9 +73,9 @@ except ImportError as e:
 
 try:
     from backend.gap_analyzer.gap_detector import GapDetector, GapAnalysisResult
-    print("✅ Loaded GapDetector")
-except ImportError as e:
-    print(f"⚠️ Warning: {e}")
+    print("[OK] Loaded GapDetector")
+except (ImportError, Exception) as e:
+    print(f"[WARNING] Failed to load GapDetector: {e}")
     # Define simple fallback classes
     from dataclasses import dataclass
     from typing import List
@@ -125,219 +125,391 @@ except ImportError as e:
             )
 
 class VeritasFinancePipeline:
+    """Main pipeline orchestrating all components of the mis-selling detection system."""
+    
     def __init__(self):
+        """Initialize pipeline with all components."""
         print("=" * 60)
         print("VERITAS FINANCE - Mis-selling Detection System")
         print("=" * 60)
         
-        # Initialize components
-        self.promise_extractor = PromiseExtractor()
-        self.sentiment_analyzer = AdvancedSentimentAnalyzer()
-        self.gap_detector = GapDetector()
+        # Initialize components with error handling
+        try:
+            self.promise_extractor = PromiseExtractor()
+            print("✅ Promise Extractor initialized")
+        except Exception as e:
+            print(f"⚠️ Warning: Could not initialize PromiseExtractor: {e}")
+            self.promise_extractor = None
+        
+        try:
+            self.sentiment_analyzer = AdvancedSentimentAnalyzer()
+            print("✅ Sentiment Analyzer initialized")
+        except Exception as e:
+            print(f"⚠️ Warning: Could not initialize SentimentAnalyzer: {e}")
+            self.sentiment_analyzer = None
+        
+        try:
+            self.gap_detector = GapDetector()
+            print("✅ Gap Detector initialized")
+        except Exception as e:
+            print(f"⚠️ Warning: Could not initialize GapDetector: {e}")
+            self.gap_detector = None
         
         # Results storage
         self.promises_df = None
         self.sentiment_results = {}
         self.gap_analyses = {}
+    
+    def validate_prerequisites(self) -> bool:
+        """
+        Validate that all prerequisites are met before running pipeline.
         
-    def run_pipeline(self):
-        """Run complete pipeline"""
+        Returns:
+            True if all prerequisites met, False otherwise
+        """
+        print("\n🔍 Validating prerequisites...")
+        
+        # Check data files
+        required_paths = [
+            "data/mock/product_docs",
+            "data/mock/customer_reviews.csv"
+        ]
+        
+        missing = []
+        for path in required_paths:
+            if not os.path.exists(path):
+                missing.append(path)
+        
+        if missing:
+            print("❌ Missing required data files:")
+            for path in missing:
+                print(f"   - {path}")
+            print("\n💡 Run: python mock_data_generator.py")
+            return False
+        
+        # Check components
+        if self.promise_extractor is None:
+            print("⚠️ Warning: PromiseExtractor not available")
+        if self.sentiment_analyzer is None:
+            print("⚠️ Warning: SentimentAnalyzer not available")
+        if self.gap_detector is None:
+            print("⚠️ Warning: GapDetector not available")
+        
+        print("✅ Prerequisites validated")
+        return True
+        
+    def run_pipeline(self) -> bool:
+        """
+        Run complete pipeline with error handling.
+        
+        Returns:
+            True if pipeline completed successfully, False otherwise
+        """
         print("\nStarting complete analysis pipeline...")
         
-        # Step 1: Extract Promises
-        print("\n1. STEP 1: Extracting Product Promises")
-        print("-" * 40)
-        self.extract_promises()
+        # Validate prerequisites
+        if not self.validate_prerequisites():
+            return False
         
-        # Step 2: Analyze Sentiment
-        print("\n2. STEP 2: Analyzing Customer Sentiment")
-        print("-" * 40)
-        self.analyze_sentiment()
+        try:
+            # Step 1: Extract Promises
+            print("\n1. STEP 1: Extracting Product Promises")
+            print("-" * 40)
+            if not self.extract_promises():
+                print("❌ Failed to extract promises")
+                return False
+            
+            # Step 2: Analyze Sentiment
+            print("\n2. STEP 2: Analyzing Customer Sentiment")
+            print("-" * 40)
+            if not self.analyze_sentiment():
+                print("❌ Failed to analyze sentiment")
+                return False
+            
+            # Step 3: Detect Gaps
+            print("\n3. STEP 3: Detecting Mis-selling Gaps")
+            print("-" * 40)
+            if not self.detect_gaps():
+                print("❌ Failed to detect gaps")
+                return False
+            
+            # Step 4: Generate Reports
+            print("\n4. STEP 4: Generating Reports & Dashboard")
+            print("-" * 40)
+            self.generate_reports()
+            
+            # Step 5: Run Additional Features
+            print("\n5. STEP 5: Running Additional Features")
+            print("-" * 40)
+            self.run_all_features()
+            
+            print("\n" + "=" * 60)
+            print("✅ PIPELINE EXECUTION COMPLETE!")
+            print("=" * 60)
+            return True
+            
+        except Exception as e:
+            print(f"\n❌ Pipeline failed with error: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+
+    def run_all_features(self):
+        """Run all additional features"""
         
-        # Step 3: Detect Gaps
-        print("\n3. STEP 3: Detecting Mis-selling Gaps")
-        print("-" * 40)
-        self.detect_gaps()
+        # 1. Generate Notices
+        try:
+            from features.notice_generator import generate_notices_from_csv
+            print("\n  Generating Regulatory Notices...")
+            generate_notices_from_csv()
+        except ImportError:
+            print("  ⚠️ Notice generator module not found")
+        except Exception as e:
+            print(f"  ⚠️ Notice generator failed: {e}")
+            
+        # 2. Track Influencers
+        try:
+            from features.influencer_tracker import track_influencers
+            print("\n  Tracking Influencers...")
+            track_influencers()
+        except ImportError:
+            print("  ⚠️ Influencer tracker module not found")
+        except Exception as e:
+            print(f"  ⚠️ Influencer tracker failed: {e}")
+            
+        # 3. Process Hinglish
+        try:
+            from features.hinglish_processor import process_hinglish_complaints
+            print("\n  Processing Hinglish Complaints...")
+            process_hinglish_complaints()
+        except ImportError:
+            print("  ⚠️ Hinglish processor module not found")
+        except Exception as e:
+            print(f"  ⚠️ Hinglish processor failed: {e}")
         
-        # Step 4: Generate Reports
-        print("\n4. STEP 4: Generating Reports & Dashboard")
-        print("-" * 40)
-        self.generate_reports()
+    def extract_promises(self) -> bool:
+        """
+        Extract promises from product documents.
         
-        print("\n" + "=" * 60)
-        print("PIPELINE EXECUTION COMPLETE!")
-        print("=" * 60)
+        Returns:
+            True if extraction successful, False otherwise
+        """
+        if self.promise_extractor is None:
+            print("❌ PromiseExtractor not available")
+            return False
         
-    def extract_promises(self):
-        """Extract promises from product documents"""
         data_dir = "data/mock/product_docs"
         
         if not os.path.exists(data_dir):
-            print(f"Creating sample data directory: {data_dir}")
-            os.makedirs(data_dir, exist_ok=True)
-            # Create sample product document
-            sample_doc = {
-                "product_name": "Alpha Growth Mutual Fund",
-                "promised_returns": "12% p.a.",
-                "risk_category": "High",
-                "key_features": ["Tax benefits", "High growth potential"],
-                "warnings": ["Market risks apply"]
-            }
-            with open(os.path.join(data_dir, "sample_product.json"), "w", encoding='utf-8') as f:
-                json.dump(sample_doc, f, indent=2)
+            print(f"❌ Data directory not found: {data_dir}")
+            print("💡 Run: python mock_data_generator.py")
+            return False
         
-        print(f"Processing product documents from: {data_dir}")
-        self.promises_df = self.promise_extractor.batch_extract(data_dir)
-        
-        # Save results
-        os.makedirs("data/processed", exist_ok=True)
-        self.promises_df.to_csv("data/processed/extracted_promises.csv", index=False)
-        print(f"Extracted {len(self.promises_df)} product promises")
-        
-        # Show preview
-        print("\nExtracted Promises Preview:")
-        for idx, row in self.promises_df.iterrows():
-            product_name = row['product_name'] if 'product_name' in row else f"Product {idx+1}"
-            returns = row.get('promised_returns', 'N/A')
-            risk = row.get('risk_category', 'N/A')
-            print(f"  {idx+1}. {product_name}")
-            print(f"     Returns: {returns}, Risk: {risk}")
+        try:
+            print(f"Processing product documents from: {data_dir}")
+            self.promises_df = self.promise_extractor.batch_extract(data_dir)
+            
+            if self.promises_df is None or len(self.promises_df) == 0:
+                print("⚠️ No promises extracted")
+                return False
+            
+            # Save results
+            os.makedirs("data/processed", exist_ok=True)
+            output_path = "data/processed/extracted_promises.csv"
+            self.promises_df.to_csv(output_path, index=False)
+            print(f"✅ Extracted {len(self.promises_df)} product promises")
+            print(f"   Saved to: {output_path}")
+            
+            # Show preview
+            print("\nExtracted Promises Preview:")
+            for idx, row in self.promises_df.iterrows():
+                product_name = row['product_name'] if 'product_name' in row else f"Product {idx+1}"
+                returns = row.get('promised_returns', 'N/A')
+                risk = row.get('risk_category', 'N/A')
+                print(f"  {idx+1}. {product_name}")
+                print(f"     Returns: {returns}, Risk: {risk}")
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error extracting promises: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
     
-    def analyze_sentiment(self):
-        """Analyze customer sentiment"""
+    def analyze_sentiment(self) -> bool:
+        """
+        Analyze customer sentiment from reviews.
+        
+        Returns:
+            True if analysis successful, False otherwise
+        """
+        if self.sentiment_analyzer is None:
+            print("❌ SentimentAnalyzer not available")
+            return False
+        
         reviews_path = "data/mock/customer_reviews.csv"
         
         if not os.path.exists(reviews_path):
-            print(f"Creating sample reviews data...")
-            os.makedirs("data/mock", exist_ok=True)
-            # Create sample reviews
-            sample_reviews = [
-                {"product": "Alpha Growth MF", "text": "Good returns, happy with investment", "sentiment_score": 0.8},
-                {"product": "Alpha Growth MF", "text": "Hidden charges, not transparent", "sentiment_score": 0.2},
-                {"product": "SecureLife Insurance", "text": "Bad service, avoid this", "sentiment_score": 0.1},
-                {"product": "SecureLife Insurance", "text": "Good coverage value", "sentiment_score": 0.7},
-            ]
-            reviews_df = pd.DataFrame(sample_reviews)
-            reviews_df.to_csv(reviews_path, index=False)
-            print(f"Created sample reviews at: {reviews_path}")
+            print(f"❌ Reviews file not found: {reviews_path}")
+            print("💡 Run: python mock_data_generator.py")
+            return False
         
-        print(f"Analyzing customer reviews from: {reviews_path}")
-        reviews_df = pd.read_csv(reviews_path)
-        
-        # Get unique products
-        if 'product' in reviews_df.columns:
+        try:
+            print(f"Analyzing customer reviews from: {reviews_path}")
+            reviews_df = pd.read_csv(reviews_path)
+            
+            if len(reviews_df) == 0:
+                print("⚠️ No reviews found in file")
+                return False
+            
+            # Get unique products
+            if 'product' not in reviews_df.columns:
+                print("⚠️ 'product' column not found in reviews")
+                return False
+            
             products = reviews_df['product'].unique()
-        else:
-            # Create sample products if column doesn't exist
-            products = ["Alpha Growth MF", "SecureLife Insurance", "MaxReturns FD"]
-        
-        for product in products[:3]:  # Limit to 3 products for demo
-            print(f"  Analyzing: {product}")
-            try:
-                result = self.sentiment_analyzer.analyze_product_sentiment(reviews_df, product)
-                self.sentiment_results[product] = result
-            except Exception as e:
-                print(f"    Error: {e}")
-                # Create simple result
-                self.sentiment_results[product] = SentimentResult(
-                    product=product,
-                    avg_sentiment=0.5,
-                    positive_count=5,
-                    negative_count=5,
-                    neutral_count=5,
-                    total_reviews=15,
-                    dissatisfaction_index=33.3,
-                    top_complaints=[("Sample complaint", 3.0)],
-                    sentiment_trend=pd.DataFrame({'date': [datetime.now()], 'sentiment_value': [0.5]}),
-                    risk_score=0.33
-                )
-        
-        print(f"Analyzed sentiment for {len(self.sentiment_results)} products")
-        
-        # Save sentiment results
-        sentiment_data = []
-        for product, result in self.sentiment_results.items():
-            sentiment_data.append(vars(result))
-        
-        sentiment_df = pd.DataFrame(sentiment_data)
-        sentiment_path = "data/processed/sentiment_analysis.csv"
-        sentiment_df.to_csv(sentiment_path, index=False)
-        print(f"Saved sentiment results to: {sentiment_path}")
-        
-    def detect_gaps(self):
-        """Detect gaps between promises and reality"""
-        if self.promises_df is None or len(self.sentiment_results) == 0:
-            print("Creating sample data for gap analysis...")
-            # Create sample data
-            self.promises_df = pd.DataFrame([{
-                'product_name': 'Alpha Growth MF',
-                'promised_returns': '12%',
-                'risk_category': 'Low',
-                'extraction_confidence': 0.8
-            }])
             
-            self.sentiment_results['Alpha Growth MF'] = SentimentResult(
-                product='Alpha Growth MF',
-                avg_sentiment=0.3,
-                dissatisfaction_index=70.0,
-                risk_score=0.7,
-                positive_count=3,
-                negative_count=7,
-                neutral_count=2,
-                total_reviews=12,
-                top_complaints=[("Poor returns", 5.0), ("Hidden charges", 3.0)],
-                sentiment_trend=pd.DataFrame({'date': [datetime.now()], 'sentiment_value': [0.3]})
-            )
-        
-        print("Detecting mismatches between promises and customer experience...")
-        
-        for _, promise_row in self.promises_df.iterrows():
-            product_name = promise_row['product_name'] if 'product_name' in promise_row else 'Unknown Product'
+            if len(products) == 0:
+                print("⚠️ No products found in reviews")
+                return False
             
-            if product_name in self.sentiment_results or 'Unknown' in product_name:
+            print(f"Found {len(products)} products to analyze")
+            
+            for product in products:
+                print(f"  Analyzing: {product}")
+                try:
+                    result = self.sentiment_analyzer.analyze_product_sentiment(reviews_df, product)
+                    self.sentiment_results[product] = result
+                    print(f"    ✅ Sentiment: {result.avg_sentiment:.2f}, Dissatisfaction: {result.dissatisfaction_index:.1f}%")
+                except Exception as e:
+                    print(f"    ⚠️ Error analyzing {product}: {e}")
+                    continue
+            
+            if len(self.sentiment_results) == 0:
+                print("❌ No sentiment results generated")
+                return False
+            
+            print(f"✅ Analyzed sentiment for {len(self.sentiment_results)} products")
+            
+            # Save sentiment results
+            sentiment_data = []
+            for product, result in self.sentiment_results.items():
+                result_dict = vars(result)
+                # Handle DataFrame serialization
+                if 'sentiment_trend' in result_dict and isinstance(result_dict['sentiment_trend'], pd.DataFrame):
+                    result_dict['sentiment_trend'] = result_dict['sentiment_trend'].to_json()
+                # Handle list of tuples
+                if 'top_complaints' in result_dict:
+                    result_dict['top_complaints'] = str(result_dict['top_complaints'])
+                sentiment_data.append(result_dict)
+            
+            sentiment_df = pd.DataFrame(sentiment_data)
+            sentiment_path = "data/processed/sentiment_analysis.csv"
+            os.makedirs("data/processed", exist_ok=True)
+            sentiment_df.to_csv(sentiment_path, index=False)
+            print(f"✅ Saved sentiment results to: {sentiment_path}")
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error analyzing sentiment: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+        
+    def detect_gaps(self) -> bool:
+        """
+        Detect gaps between promises and reality.
+        
+        Returns:
+            True if gap detection successful, False otherwise
+        """
+        if self.gap_detector is None:
+            print("❌ GapDetector not available")
+            return False
+        
+        if self.promises_df is None or len(self.promises_df) == 0:
+            print("❌ No promises data available")
+            return False
+        
+        if len(self.sentiment_results) == 0:
+            print("❌ No sentiment results available")
+            return False
+        
+        try:
+            print("Detecting mismatches between promises and customer experience...")
+            
+            for _, promise_row in self.promises_df.iterrows():
+                product_name = promise_row.get('product_name', 'Unknown Product')
+                
+                if product_name not in self.sentiment_results:
+                    print(f"  ⚠️ Skipping {product_name}: No sentiment data")
+                    continue
+                
                 promise_dict = promise_row.to_dict()
-                sentiment_dict = vars(self.sentiment_results.get(product_name, 
-                    SentimentResult(
-                        product=product_name,
-                        avg_sentiment=0.5,
-                        dissatisfaction_index=50.0,
-                        risk_score=0.5,
-                        positive_count=5,
-                        negative_count=5,
-                        neutral_count=5,
-                        total_reviews=15,
-                        top_complaints=[("No data", 1.0)],
-                        sentiment_trend=pd.DataFrame({'date': [datetime.now()], 'sentiment_value': [0.5]})
-                    )
-                ))
+                sentiment_result = self.sentiment_results[product_name]
+                sentiment_dict = vars(sentiment_result)
+                
+                # Handle DataFrame serialization
+                if 'sentiment_trend' in sentiment_dict and isinstance(sentiment_dict['sentiment_trend'], pd.DataFrame):
+                    sentiment_dict['sentiment_trend'] = sentiment_dict['sentiment_trend'].to_dict()
                 
                 print(f"  Analyzing: {product_name}")
-                gap_result = self.gap_detector.analyze_gap(promise_dict, sentiment_dict)
-                self.gap_analyses[product_name] = gap_result
-        
-        print(f"Gap analysis complete for {len(self.gap_analyses)} products")
-        
-        # Save gap analysis results
-        gap_data = []
-        for product, result in self.gap_analyses.items():
-            result_dict = vars(result)
-            # Convert mismatches to serializable format
-            if hasattr(result, 'mismatches'):
-                result_dict['mismatches'] = [
-                    {
-                        'promise_aspect': m.promise_aspect,
-                        'complaint_topic': m.complaint_topic,
-                        'severity': m.severity,
-                        'mismatch_type': m.mismatch_type
-                    }
-                    for m in result.mismatches
-                ]
-            gap_data.append(result_dict)
-        
-        gap_df = pd.DataFrame(gap_data)
-        gap_path = "data/processed/gap_analysis.csv"
-        gap_df.to_csv(gap_path, index=False)
-        print(f"Saved gap analysis to: {gap_path}")
+                try:
+                    gap_result = self.gap_detector.analyze_gap(promise_dict, sentiment_dict)
+                    self.gap_analyses[product_name] = gap_result
+                    print(f"    ✅ Risk: {gap_result.risk_level.upper()} ({gap_result.overall_risk_score:.2f}), Mismatches: {len(gap_result.mismatches)}")
+                except Exception as e:
+                    print(f"    ⚠️ Error analyzing gap for {product_name}: {e}")
+                    continue
+            
+            if len(self.gap_analyses) == 0:
+                print("❌ No gap analyses generated")
+                return False
+            
+            print(f"✅ Gap analysis complete for {len(self.gap_analyses)} products")
+            
+            # Save gap analysis results
+            gap_data = []
+            for product, result in self.gap_analyses.items():
+                result_dict = vars(result)
+                # Convert mismatches to serializable format
+                if hasattr(result, 'mismatches') and result.mismatches:
+                    result_dict['mismatches'] = json.dumps([
+                        {
+                            'promise_aspect': m.promise_aspect,
+                            'complaint_topic': m.complaint_topic,
+                            'severity': m.severity,
+                            'mismatch_type': m.mismatch_type,
+                            'confidence': m.confidence
+                        }
+                        for m in result.mismatches
+                    ])
+                else:
+                    result_dict['mismatches'] = json.dumps([])
+                
+                # Convert recommendations to JSON
+                if hasattr(result, 'recommendations') and result.recommendations:
+                    result_dict['recommendations'] = json.dumps(result.recommendations)
+                else:
+                    result_dict['recommendations'] = json.dumps([])
+                
+                gap_data.append(result_dict)
+            
+            gap_df = pd.DataFrame(gap_data)
+            gap_path = "data/processed/gap_analysis.csv"
+            os.makedirs("data/processed", exist_ok=True)
+            gap_df.to_csv(gap_path, index=False)
+            print(f"✅ Saved gap analysis to: {gap_path}")
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error detecting gaps: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
         
     def generate_reports(self):
         """Generate comprehensive reports and dashboard"""
@@ -659,41 +831,35 @@ class VeritasFinancePipeline:
 
 # Run the pipeline
 if __name__ == "__main__":
-    try:
-        pipeline = VeritasFinancePipeline()
-        pipeline.run_pipeline()
-        
+    pipeline = VeritasFinancePipeline()
+    success = pipeline.run_pipeline()
+    
+    if success:
         print("\n" + "=" * 60)
-        print("PIPELINE SUCCESSFULLY COMPLETED!")
+        print("✅ PIPELINE SUCCESSFULLY COMPLETED!")
         print("=" * 60)
-        print("\nGenerated Reports:")
+        print("\n📊 Generated Reports:")
         print("  - reports/executive_summary.md")
         print("  - reports/interactive_dashboard.html (or simple_dashboard.html)")
         print("  - reports/product_reports/*.md")
-        print("  - data/processed/*.csv")
-        print("\nTo view the dashboard:")
-        print("  Open 'reports/simple_dashboard.html' in your browser")
-        print("\nTo launch presentation dashboard:")
-        print("  streamlit run presentation_mode.py")
+        print("\n📁 Processed Data:")
+        print("  - data/processed/extracted_promises.csv")
+        print("  - data/processed/sentiment_analysis.csv")
+        print("  - data/processed/gap_analysis.csv")
+        print("\n🚀 Next Steps:")
+        print("  To view the dashboard:")
+        print("    streamlit run dashboard.py")
+        print("  To launch presentation:")
+        print("    streamlit run presentation_mode.py")
         print("  Then open: http://localhost:8501")
-        
-    except Exception as e:
-        print(f"\nError in pipeline: {e}")
-        import traceback
-        traceback.print_exc()
-        print("\nCreating minimal reports for presentation...")
-        
-        # Create minimal reports even if pipeline fails
-        os.makedirs("reports", exist_ok=True)
-        with open("reports/executive_summary.md", "w", encoding='utf-8') as f:
-            f.write("# Veritas Finance - Executive Summary\n\n")
-            f.write("## System Overview\n")
-            f.write("- AI-powered mis-selling detection\n")
-            f.write("- Real-time monitoring of 5+ products\n")
-            f.write("- 94% detection accuracy\n")
-        
-        with open("reports/simple_dashboard.html", "w", encoding='utf-8') as f:
-            f.write("<h1>Veritas Finance Dashboard</h1>")
-            f.write("<p>Real-time mis-selling detection system</p>")
-        
-        print("Created minimal reports for presentation")
+    else:
+        print("\n" + "=" * 60)
+        print("❌ PIPELINE COMPLETED WITH ERRORS")
+        print("=" * 60)
+        print("\n💡 Troubleshooting:")
+        print("  1. Ensure mock data is generated:")
+        print("     python mock_data_generator.py")
+        print("  2. Check that all dependencies are installed:")
+        print("     pip install -r requirements.txt")
+        print("  3. Verify data files exist in data/mock/")
+        sys.exit(1)
