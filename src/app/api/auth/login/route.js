@@ -34,7 +34,7 @@ export async function POST(request) {
             );
         }
 
-        return NextResponse.json(
+        const response = NextResponse.json(
             {
                 message: 'Login successful',
                 user: {
@@ -46,6 +46,16 @@ export async function POST(request) {
             },
             { status: 200 }
         );
+
+        // Set a simple auth cookie
+        response.cookies.set('auth_token', 'true', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 // 1 day
+        });
+
+        return response;
     } catch (error) {
         console.error('Login error:', error);
         return NextResponse.json(

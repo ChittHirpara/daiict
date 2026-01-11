@@ -3,11 +3,15 @@ import { NextResponse } from 'next/server';
 export function middleware(request) {
     const path = request.nextUrl.pathname;
 
-    // If accessing root, and not having a specific cookie (mock check), redirect to /signup
-    // Ideally we check for a session token.
+    // Check for auth cookie
+    const authToken = request.cookies.get('auth_token')?.value;
+
     if (path === '/') {
-        // For demonstration as per user request "whenever user visits, the signup page first should be open"
-        // We will redirect root to signup.
+        // If valid auth token exists, let them pass to dashboard
+        if (authToken) {
+            return NextResponse.next();
+        }
+        // Otherwise redirect to signup
         return NextResponse.redirect(new URL('/signup', request.url));
     }
 
