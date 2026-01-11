@@ -1,5 +1,5 @@
 'use client';
-
+import { useState , useEffect } from 'react';
 import { Settings as SettingsIcon, User, Shield, Bell, Moon, Sun, Smartphone, LogOut, Trash2 } from 'lucide-react';
 export default function SettingsPage() {
     const [users, setUsers] = useState([]);

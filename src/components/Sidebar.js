@@ -10,7 +10,6 @@ const NAV_ITEMS = [
     { name: 'Insights', href: '/insights', icon: TrendingUp },
     { name: 'Reports', href: '/reports', icon: ClipboardList },
     { name: 'Settings', href: '/settings', icon: Settings },
-    { name: 'Help', href: '/help', icon: HelpCircle },
 ];
 
 export function Sidebar() {

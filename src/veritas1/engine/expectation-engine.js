@@ -144,6 +144,26 @@ export class ExpectationEngine {
     }
 
     /**
+     * Process a PDF buffer
+     * @param {Buffer} buffer 
+     * @param {string} originalFilename
+     * @returns {Promise<FinancialPromise>}
+     */
+    async extractFromBuffer(buffer, originalFilename = 'Unknown Details.pdf') {
+        try {
+            const data = await pdf(buffer);
+            const text = data.text.replace(/\s+/g, ' ').trim();
+
+            const productName = originalFilename.replace('.pdf', '').replace(/_/g, ' ').replace(/^\d+_/, '');
+
+            return this.extractFromText(text, { product_name: productName, issuer: 'Detected from PDF' });
+        } catch (error) {
+            console.error(`Error processing PDF buffer:`, error);
+            return null;
+        }
+    }
+
+    /**
      * Process a PDF file
      * @param {string} filePath 
      * @param {string} [originalFilename] Optional original filename to use for product extraction
@@ -152,13 +172,7 @@ export class ExpectationEngine {
     async extractFromPdf(filePath, originalFilename = null) {
         try {
             const dataBuffer = fs.readFileSync(filePath);
-            const data = await pdf(dataBuffer);
-            const text = data.text.replace(/\s+/g, ' ').trim();
-
-            const filename = (originalFilename || path.basename(filePath));
-            const productName = filename.replace('.pdf', '').replace(/_/g, ' ').replace(/^\d+_/, ''); // Remove timestamp prefix if present
-
-            return this.extractFromText(text, { product_name: productName, issuer: 'Detected from PDF' });
+            return this.extractFromBuffer(dataBuffer, originalFilename || path.basename(filePath));
         } catch (error) {
             console.error(`Error reading PDF ${filePath}:`, error);
             return null;
