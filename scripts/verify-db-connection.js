@@ -6,7 +6,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Manually load .env.local
 try {
     const envPath = path.resolve(process.cwd(), '.env.local');
     if (fs.existsSync(envPath)) {
@@ -34,7 +33,6 @@ if (!MONGODB_URI) {
 }
 
 console.log('Attempting to connect to MongoDB...');
-// Mask the URI for safety in logs
 console.log(`URI: ${MONGODB_URI.replace(/:([^:@]+)@/, ':****@')}`);
 
 mongoose.connect(MONGODB_URI)
@@ -44,7 +42,6 @@ mongoose.connect(MONGODB_URI)
     })
     .catch(err => {
         console.error('❌ FAILED: Could not connect to MongoDB.');
-        // console.error(err); // Try to show less verbose error first
         if (err.name === 'MongooseServerSelectionError') {
             console.error('Error: Could not connect to any servers in your MongoDB Atlas cluster.');
             console.error('Possible causes:');

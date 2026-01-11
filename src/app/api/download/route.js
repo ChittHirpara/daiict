@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import Report from '@/models/Report';
+import dbConnect from '@/veritas1/db/connection';
+import Report from '@/veritas1/db/Report';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);

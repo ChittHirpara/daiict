@@ -1,12 +1,12 @@
 {
   "product_name": "WealthBuilder Pension Plan",
   "issuer": "SBI",
-  "launch_date": "2024-03-06",
-  "investment_objective": "To provide income distribution and capital appreciation",
-  "promised_returns": "8.3% p.a.",
-  "risk_category": "Low",
-  "lock_in_period": "10 years",
-  "exit_load": "1.8% if redeemed before 1 years",
+  "launch_date": "2024-12-18",
+  "investment_objective": "High growth through aggressive equity allocation",
+  "promised_returns": "13.5% p.a.",
+  "risk_category": "Moderate",
+  "lock_in_period": "5 years",
+  "exit_load": "1.2% if redeemed before 2 years",
   "min_investment": "₹1000",
   "key_features": [
     "Monthly income option available",

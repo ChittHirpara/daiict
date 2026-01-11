@@ -23,30 +23,36 @@ export class ExpectationEngine {
     constructor() {
         this.patterns = {
             returns: [
-                /(\d+(\.\d+)?)%\s*(p\.a\.|per annum|annual|yearly)/i,
-                /returns?\s*(?:of|up to|around)\s*(\d+(\.\d+)?)%/i,
-                /earn\s*(?:up to\s*)?(\d+(\.\d+)?)%/i,
-                /yield\s*(?:of\s*)?(\d+(\.\d+)?)%/i
+                /(\d+(\.\d+)?)%\s*(p\.a\.|per annum|annual|yearly|return|yield)/i,
+                /returns?\s*(?:of|up to|around|@)\s*(\d+(\.\d+)?)%/i,
+                /(?:earn|yield|get)\s*(?:up to\s*)?(\d+(\.\d+)?)%/i,
+                /(\d+(\.\d+)?)%\s*interest/i
             ],
             risk: [
                 /(low|moderate|high|very high)\s*risk/i,
                 /risk\s*(?:level|category|profile):?\s*(low|moderate|high)/i,
                 /capital\s+protection/i,
-                /principal\s+guaranteed/i
+                /principal\s+guaranteed/i,
+                /safe\s+investment/i
             ],
             lock_in: [
-                /lock[-\s]*in\s*(?:period)?:?\s*(\d+)\s*(?:years?|months?)/i,
-                /maturity[:\s]*(\d+)\s*(?:years?|months?)/i,
-                /minimum\s*tenure:?\s*(\d+)\s*(?:years?|months?)/i
+                /lock[-\s]*in\s*(?:period)?:?\s*(\d+)\s*(years?|yrs?|months?|mths?)/i,
+                /maturity[:\s]*(\d+)\s*(years?|yrs?|months?|mths?)/i,
+                /minimum\s*tenure:?\s*(\d+)\s*(years?|yrs?|months?|mths?)/i,
+                /tenure:?\s*(\d+)\s*(years?|yrs?|months?|mths?)/i,
+                /duration:?\s*(\d+)\s*(years?|yrs?|months?|mths?)/i
             ],
             fees: [
                 /exit\s*load:?\s*(\d+(\.\d+)?)%/i,
                 /early\s*withdrawal\s*charge:?\s*(\d+(\.\d+)?)%/i,
-                /management\s*fee:?\s*(\d+(\.\d+)?)%/i
+                /management\s*fee:?\s*(\d+(\.\d+)?)%/i,
+                /fee:?\s*(\d+(\.\d+)?)%/i
             ],
             investment: [
                 /minimum\s*investment:?\s*[₹$]?\s*(\d+(?:,\d+)*(?:\.\d+)?)/i,
-                /invest\s*as\s*low\s*as\s*[₹$]?\s*(\d+(?:,\d+)*(?:\.\d+)?)/i
+                /invest\s*as\s*low\s*as\s*[₹$]?\s*(\d+(?:,\d+)*(?:\.\d+)?)/i,
+                /min\.?\s*inv\.?:?\s*[₹$]?\s*(\d+(?:,\d+)*(?:\.\d+)?)/i,
+                /starts\s*at\s*[₹$]?\s*(\d+(?:,\d+)*(?:\.\d+)?)/i
             ]
         };
     }
@@ -84,13 +90,20 @@ export class ExpectationEngine {
         // Extract Features and Warnings using keywords
         sentences.forEach(sent => {
             const lower = sent.toLowerCase();
-            if (['feature', 'benefit', 'advantage', 'offer'].some(w => lower.includes(w))) {
-                if (sent.split(' ').length < 30) extraction.key_features.push(sent);
+            if (['feature', 'benefit', 'advantage', 'offer', 'highlight', 'why invest'].some(w => lower.includes(w))) {
+                if (sent.split(' ').length < 40) extraction.key_features.push(sent);
             }
-            if (['warning', 'risk', 'caution', 'note:', 'important:', 'disclaimer'].some(w => lower.includes(w))) {
+            if (['warning', 'risk', 'caution', 'note:', 'important:', 'disclaimer', 'subject to'].some(w => lower.includes(w))) {
                 extraction.warnings.push(sent);
             }
         });
+
+        // Fallback: If no features found, take meaningful sentences
+        if (extraction.key_features.length === 0) {
+            extraction.key_features = sentences
+                .filter(s => s.length > 30 && s.length < 150 && !s.toLowerCase().includes('risk'))
+                .slice(0, 3);
+        }
 
         // Extract structured data using Regex
         for (const [category, patterns] of Object.entries(this.patterns)) {
@@ -109,7 +122,7 @@ export class ExpectationEngine {
                                 extraction.risk_category = 'Low';
                             }
                         }
-                        else if (category === 'lock_in') extraction.lock_in_period = `${match[1]} years`;
+                        else if (category === 'lock_in') extraction.lock_in_period = `${match[1]} ${match[2] || 'years'}`;
                         else if (category === 'fees') extraction.exit_load = `${match[1]}%`;
                         else if (category === 'investment') extraction.min_investment = `₹${match[1]}`;
                     }
@@ -133,16 +146,17 @@ export class ExpectationEngine {
     /**
      * Process a PDF file
      * @param {string} filePath 
+     * @param {string} [originalFilename] Optional original filename to use for product extraction
      * @returns {Promise<FinancialPromise>}
      */
-    async extractFromPdf(filePath) {
+    async extractFromPdf(filePath, originalFilename = null) {
         try {
             const dataBuffer = fs.readFileSync(filePath);
             const data = await pdf(dataBuffer);
             const text = data.text.replace(/\s+/g, ' ').trim();
 
-            const filename = path.basename(filePath);
-            const productName = filename.replace('.pdf', '').replace(/_/g, ' ');
+            const filename = (originalFilename || path.basename(filePath));
+            const productName = filename.replace('.pdf', '').replace(/_/g, ' ').replace(/^\d+_/, ''); // Remove timestamp prefix if present
 
             return this.extractFromText(text, { product_name: productName, issuer: 'Detected from PDF' });
         } catch (error) {

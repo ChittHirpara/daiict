@@ -24,7 +24,7 @@ function loadEnv() {
 loadEnv();
 
 // Import pipeline AFTER loading env vars so dbConnect gets the URI
-import { pipeline } from '../lib/engines/pipeline.js';
+import { pipeline } from '../pipeline.js';
 
 async function main() {
     try {
