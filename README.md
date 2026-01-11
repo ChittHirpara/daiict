@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📊 AI Tool for Detecting Financial Product Mis-Selling
 
-## Getting Started
+## 🧩 Problem Statement
+Financial products such as mutual funds, fixed deposits, and insurance policies are often marketed using attractive promises that do not fully align with actual product terms or real customer experiences. This mismatch between **Expectation** (marketing claims) and **Reality** (customer experience) is known as **mis-selling**.
 
-First, run the development server:
+Regulatory authorities are mostly reactive, addressing issues only after consumer complaints arise. There is a need for a **proactive, automated system** that can identify potential mis-selling risks before large-scale consumer harm occurs.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎯 Project Objective
+The goal of this project is to build a **decentralized AI-based prototype** that acts as an **independent guardian for financial consumers** by:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- Extracting explicit promises from public financial product documents  
+- Analyzing real consumer sentiment from public and consumer-generated sources  
+- Automatically flagging mismatches between promised benefits and actual customer experience  
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The system relies entirely on **public and simulated consumer data**, without using direct bank or institutional data feeds.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🏗️ System Architecture Overview
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Public Product Documents (PDFs)  
+⬇  
+**Expectation Engine (NLP)**  
+⬇  
+Structured Promise Profile  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Consumer Feedback (Reviews, Posts, Complaints)  
+⬇  
+**Reality Engine (Sentiment Analysis)**  
+⬇  
+Customer Dissatisfaction & Risk Indicators  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔍 1. Expectation Engine (NLP-Based)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 📥 Input
+- Simulated public documentation such as:
+  - Mutual Fund Scheme Information Documents
+  - Marketing brochures
+  - Insurance policy documents
+
+### ⚙️ Analysis
+Uses **Natural Language Processing (NLP)** techniques to extract quantifiable promises and key product terms, including:
+
+- Investment objectives and return claims  
+- Lock-in periods, fees, and exit loads  
+- Risk statements (e.g., *Low Risk*, *Capital Protection*)
+
+### 📤 Output
+A structured **Promise Profile** containing:
+- Claimed returns
+- Risk level
+- Fees and charges
+- Time horizon
+- Constraints and conditions
+
+---
+
+## 📉 2. Reality Engine (Sentiment Analysis)
+
+### 📥 Input
+- Simulated large-scale unstructured consumer data:
+  - Social media posts
+  - Online reviews
+  - Complaint logs
+  - Forum discussions
+
+### ⚙️ Analysis
+Applies:
+- **Sentiment Analysis** to measure customer satisfaction
+- **Topic Modelling** to identify recurring complaint themes
+
+### 📤 Output
+- Customer Dissatisfaction Index / Rolling Sentiment Score  
+- Top 3 negative topics such as:
+  - Hidden or high fees
+  - Poor customer service
+  - Misleading return expectations
+  - Exit-related issues
+
+---
+
+## 🚨 Mis-Selling Risk Detection
+By comparing:
+- **What was promised** (Expectation Engine)  
+- **What customers experienced** (Reality Engine)  
+
+The system automatically flags:
+- Potential mis-selling risks  
+- Gaps between marketing claims and customer reality  
+- Products requiring regulatory or supervisory attention  
+
+---
+
+## 🧪 Data Sources
+- Public or simulated financial product documents (PDFs)
+- Simulated consumer-generated content
+- No proprietary or bank-internal data is used
+
+---
+
+## 🛠️ Technologies Used
+- Python  
+- Natural Language Processing (NLP)
+- Sentiment Analysis
+- Topic Modelling
+- PDF Text Extraction
+- Dashboard / Visualization Tools (if applicable)
+
+---
+
+## 📌 Key Features
+- Proactive mis-selling detection  
+- Fully decentralized data sourcing  
+- Explainable promise vs reality comparison  
+- Scalable across financial products  
+
+---
+
+## 🔮 Future Enhancements
+- Real-time data ingestion  
+- Multilingual document and sentiment analysis  
+- Risk scoring dashboards for regulators  
+- Automated alerts for high-risk products  
+
+---
+
+## 👨‍💻 Team
+Developed as part of an academic project focused on **AI-driven financial consumer protection**.
