@@ -1,18 +1,21 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, AlertTriangle, PieChart, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, FileText, PieChart, TrendingUp, ClipboardList, Settings, HelpCircle } from 'lucide-react';
 
 const NAV_ITEMS = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Expectation Engine', href: '/engine/expectation', icon: FileText },
     { name: 'Reality Engine', href: '/engine/reality', icon: PieChart },
-    { name: 'Risk Analysis', href: '/risk', icon: ShieldAlert },
-    { name: 'Reports', href: '/reports', icon: AlertTriangle },
+    { name: 'Insights', href: '/insights', icon: TrendingUp },
+    { name: 'Reports', href: '/reports', icon: ClipboardList },
+    { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export function Sidebar() {
     const pathname = usePathname();
+
+    if (pathname === '/login') return null;
 
     return (
         <aside className="sidebar">

@@ -7,8 +7,10 @@ export default function ExpectationEnginePage() {
     const [data, setData] = useState([]);
 
     const handleExtraction = (result) => {
-        if (result) {
+        if (result && result.product_name) {
             setData(prev => [result, ...prev]);
+        } else {
+            console.error('Invalid extraction result:', result);
         }
     };
 
@@ -48,7 +50,7 @@ export default function ExpectationEnginePage() {
                     ) : (
                         <div className="flex-col gap-md">
                             {data.map((item, i) => (
-                                <div key={i} className="card glass" style={{ cursor: 'default' }}>
+                                <div key={item.id || `extraction-${i}-${Date.now()}`} className="card glass" style={{ cursor: 'default' }}>
                                     <div className="flex-row justify-between items-start" style={{ marginBottom: '1rem', display: 'flex' }}>
                                         <div className="flex-row items-center gap-sm" style={{ display: 'flex' }}>
                                             <div style={{ padding: '0.5rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '0.5rem', color: '#818cf8' }}>
@@ -66,7 +68,51 @@ export default function ExpectationEnginePage() {
 
                                     {/* Structured Extracted Promises */}
                                     <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid var(--color-border)', marginBottom: '1rem' }}>
-                                        <p className="text-xs text-muted uppercase font-bold" style={{ marginBottom: '0.5rem' }}>Extracted Promises & Key Features</p>
+
+                                        {/* Investment Objective */}
+                                        {item.investment_objective && (
+                                            <div style={{ marginBottom: '1rem' }}>
+                                                <p className="text-xs text-muted uppercase font-bold">Investment Objective</p>
+                                                <p className="text-sm text-white italic">"{item.investment_objective}"</p>
+                                            </div>
+                                        )}
+
+                                        <div className="grid-cols-2 gap-sm" style={{ marginBottom: '1rem' }}>
+                                            <div style={{ padding: '0.5rem', background: 'rgba(52, 211, 153, 0.1)', borderRadius: '0.25rem' }}>
+                                                <p className="text-xs text-muted uppercase font-bold">Promised Returns</p>
+                                                <p className="text-lg font-bold" style={{ color: '#34d399' }}>{item.promised_returns || 'N/A'}</p>
+                                            </div>
+                                            <div style={{ padding: '0.5rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '0.25rem' }}>
+                                                <p className="text-xs text-muted uppercase font-bold">Lock-in Period</p>
+                                                <p className="text-lg font-bold text-white">{item.lock_in_period || 'N/A'}</p>
+                                            </div>
+                                            <div style={{ padding: '0.5rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '0.25rem' }}>
+                                                <p className="text-xs text-muted uppercase font-bold">Exit Load</p>
+                                                <p className="text-lg font-bold text-white">{item.exit_load || 'N/A'}</p>
+                                            </div>
+                                            <div style={{ padding: '0.5rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '0.25rem' }}>
+                                                <p className="text-xs text-muted uppercase font-bold">Min Investment</p>
+                                                <p className="text-lg font-bold text-white">{item.min_investment || 'N/A'}</p>
+                                            </div>
+                                        </div>
+
+                                        {/* Warnings */}
+                                        {item.warnings && item.warnings.length > 0 && (
+                                            <div style={{ marginBottom: '1rem', padding: '0.75rem', borderLeft: '4px solid #f87171', background: 'rgba(248, 113, 113, 0.1)' }}>
+                                                <p className="text-xs text-red-400 uppercase font-bold flex-row items-center gap-xs" style={{ display: 'flex' }}>
+                                                    <AlertCircle size={12} /> Important Warnings
+                                                </p>
+                                                <ul style={{ paddingLeft: '1.25rem', margin: '0.5rem 0 0 0' }}>
+                                                    {item.warnings.map((warn, idx) => (
+                                                        <li key={idx} className="text-xs text-red-200" style={{ marginBottom: '0.25rem' }}>
+                                                            {warn}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+
+                                        <p className="text-xs text-muted uppercase font-bold" style={{ marginBottom: '0.5rem' }}>Key Features</p>
                                         {item.key_features && item.key_features.length > 0 ? (
                                             <ul style={{ paddingLeft: '1.25rem', margin: 0 }}>
                                                 {item.key_features.map((feature, idx) => (
@@ -78,13 +124,6 @@ export default function ExpectationEnginePage() {
                                         ) : (
                                             <p className="text-sm text-muted italic">No specific features listed in extracted text.</p>
                                         )}
-
-                                        {item.promised_returns && (
-                                            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                                                <p className="text-xs text-muted uppercase font-bold">Promised Returns</p>
-                                                <p className="text-lg font-bold text-white" style={{ color: '#34d399' }}>{item.promised_returns}</p>
-                                            </div>
-                                        )}
                                     </div>
 
 
@@ -92,7 +131,11 @@ export default function ExpectationEnginePage() {
                                         <div className="flex-row gap-md" style={{ display: 'flex' }}>
                                             <div>
                                                 <p className="text-xs text-muted uppercase">Confidence</p>
-                                                <p style={{ color: '#34d399', fontFamily: 'monospace', fontWeight: 'bold' }}>{(item.promise_confidence * 100).toFixed(0)}%</p>
+                                                <p style={{ color: '#34d399', fontFamily: 'monospace', fontWeight: 'bold' }}>
+                                                    {item.extraction_confidence 
+                                                        ? `${(item.extraction_confidence * 100).toFixed(0)}%` 
+                                                        : 'N/A'}
+                                                </p>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-muted uppercase">Risk Level</p>

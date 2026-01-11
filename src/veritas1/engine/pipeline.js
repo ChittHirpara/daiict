@@ -4,8 +4,8 @@ import Papa from 'papaparse';
 import { expectationEngine } from './expectation-engine.js';
 import { realityEngine } from './reality-engine.js';
 import { gapAnalyzer } from './gap-analyzer.js';
-import dbConnect from '../db.js';
-import Report from '../../models/Report.js';
+import dbConnect from '../db/connection.js';
+import Report from '../db/Report.js';
 
 export class Pipeline {
     constructor() {

@@ -1,4 +1,4 @@
-import { pipeline } from '@/lib/engines/pipeline';
+import { pipeline } from '@/veritas1/engine/pipeline';
 import { ArrowLeft, AlertTriangle, CheckCircle, TrendingDown, MessageCircle, FileText } from 'lucide-react';
 import Link from 'next/link';
 

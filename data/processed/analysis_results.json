@@ -2,72 +2,44 @@
   {
     "product_name": "Alpha Growth Mutual Fund",
     "promise_confidence": 0.8,
-    "sentiment_score": 0.6162162162162161,
-    "dissatisfaction_index": 40.54054054054054,
-    "mismatches": [
-      {
-        "promise_aspect": "RETURNS",
-        "complaint_topic": "Poor Returns",
-        "severity": 0.8027027027027027,
-        "evidence": [
-          "Promised features related to returns",
-          "Customers specifically complained about returns"
-        ],
-        "mismatch_type": "direct_contradiction",
-        "confidence": 0.8
-      }
-    ],
-    "overall_risk_score": 0.6835135135135134,
-    "risk_level": "high",
-    "recommendations": [
-      "⚠️ High priority review needed",
-      "Verify discrepancy in RETURNS claims",
-      "Improve transparency in marketing materials"
-    ]
-  },
-  {
-    "product_name": "EasyInvest Savings Account",
-    "promise_confidence": 0.8,
-    "sentiment_score": 0.5106382978723406,
-    "dissatisfaction_index": 42.5531914893617,
-    "mismatches": [
-      {
-        "promise_aspect": "RETURNS",
-        "complaint_topic": "Poor Returns",
-        "severity": 0.8127659574468085,
-        "evidence": [
-          "Promised features related to returns",
-          "Customers specifically complained about returns"
-        ],
-        "mismatch_type": "direct_contradiction",
-        "confidence": 0.8
-      }
-    ],
-    "overall_risk_score": 0.696595744680851,
-    "risk_level": "high",
-    "recommendations": [
-      "⚠️ High priority review needed",
-      "Verify discrepancy in RETURNS claims",
-      "Improve transparency in marketing materials"
-    ]
-  },
-  {
-    "product_name": "MaxReturns Fixed Deposit",
-    "promise_confidence": 0.8,
-    "sentiment_score": 0.40465116279069774,
-    "dissatisfaction_index": 51.162790697674424,
+    "sentiment_score": 0.6634146341463413,
+    "dissatisfaction_index": 21.951219512195124,
     "mismatches": [],
-    "overall_risk_score": 0.29348837209302325,
+    "overall_risk_score": 0.20585365853658535,
     "risk_level": "low",
     "recommendations": [
       "Improve transparency in marketing materials"
     ]
   },
   {
+    "product_name": "EasyInvest Savings Account",
+    "promise_confidence": 0.8,
+    "sentiment_score": 0.4897435897435898,
+    "dissatisfaction_index": 41.02564102564102,
+    "mismatches": [],
+    "overall_risk_score": 0.26307692307692304,
+    "risk_level": "low",
+    "recommendations": [
+      "Improve transparency in marketing materials"
+    ]
+  },
+  {
+    "product_name": "MaxReturns Fixed Deposit",
+    "promise_confidence": 0.8,
+    "sentiment_score": 0.334375,
+    "dissatisfaction_index": 65.625,
+    "mismatches": [],
+    "overall_risk_score": 0.336875,
+    "risk_level": "medium",
+    "recommendations": [
+      "Improve transparency in marketing materials"
+    ]
+  },
+  {
     "product_name": "SecureLife Insurance Policy",
-    "promise_confidence": 1,
-    "sentiment_score": 0.1620689655172414,
-    "dissatisfaction_index": 100,
+    "promise_confidence": 0.8,
+    "sentiment_score": 0.16799999999999998,
+    "dissatisfaction_index": 94,
     "mismatches": [
       {
         "promise_aspect": "RETURNS",
@@ -81,7 +53,7 @@
         "confidence": 0.8
       }
     ],
-    "overall_risk_score": 1,
+    "overall_risk_score": 0.982,
     "risk_level": "critical",
     "recommendations": [
       "🚨 IMMEDIATE INVESTIGATION REQUIRED",
@@ -92,13 +64,13 @@
   {
     "product_name": "WealthBuilder Pension Plan",
     "promise_confidence": 0.8,
-    "sentiment_score": 0.3818181818181818,
-    "dissatisfaction_index": 52.27272727272727,
+    "sentiment_score": 0.39999999999999997,
+    "dissatisfaction_index": 44.73684210526316,
     "mismatches": [
       {
         "promise_aspect": "RETURNS",
         "complaint_topic": "Poor Returns",
-        "severity": 0.8613636363636363,
+        "severity": 0.8236842105263158,
         "evidence": [
           "Promised features related to returns",
           "Customers specifically complained about returns"
@@ -107,7 +79,7 @@
         "confidence": 0.8
       }
     ],
-    "overall_risk_score": 0.7597727272727273,
+    "overall_risk_score": 0.7107894736842104,
     "risk_level": "high",
     "recommendations": [
       "⚠️ High priority review needed",

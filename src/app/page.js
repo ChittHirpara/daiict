@@ -1,4 +1,4 @@
-import { pipeline } from '@/lib/engines/pipeline';
+import { pipeline } from '@/veritas1/engine/pipeline';
 import { LayoutDashboard, AlertOctagon, TrendingUp, Users, ArrowRight, Activity, Calendar, CheckCircle, Server } from 'lucide-react';
 import Link from 'next/link';
 
